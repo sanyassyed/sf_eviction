@@ -1,6 +1,17 @@
+#### DATA FILES
 **/*.csv
 **/*.json
+
+#### TEST FILES
 test/
+
+#### JUPYTER NOTEBOOKS FILES
 **/*.ipynb_checkpoints
+
+#### ENVIRONMENT FILES
 set_env.bashrc
+.env
+.my_env/*
+
+#### CREDENTIALS
 credentials.txt
