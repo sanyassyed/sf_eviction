@@ -3,3 +3,4 @@
 test/
 **/*.ipynb_checkpoints
 set_env.bashrc
+credentials.txt
