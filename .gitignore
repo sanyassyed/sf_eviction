@@ -1,3 +1,5 @@
 **/*.csv
+**/*.json
 test/
 **/*.ipynb_checkpoints
+set_env.bashrc
