@@ -1,3 +1,4 @@
 **/*.csv
 test/
 **/*.ipynb_checkpoints
+credentials.txt
