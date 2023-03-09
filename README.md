@@ -70,7 +70,7 @@
 ## Project environment setup
 
 ### Set the virtual conda env
-* ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with pytho 3.10 and pip
+* ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with python 3.10 and pip
 *  `conda activate .my_env` - to activate the virtual env
 * `conda activate` -> don't use deactivate just use `activate` to go to base
 
@@ -102,7 +102,7 @@
 
 ### Environment Variables for the project
 
-<p> Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.) </p>
+Add environment variables as follows [More Info](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.)
 
 * `pip install python-decouple`
 * `touch .env` # create a new .env file
