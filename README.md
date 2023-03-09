@@ -1,3 +1,7 @@
+# Project Setup 
+
+## Instructions to create a project folder and setup version control using GIT 
+
 ### Creating a repo on the local system and pushing to git
 * Create a new folder for the project - sf_eviction
 * cd into sf_eviction
@@ -9,6 +13,8 @@
 * `git push -u origin master`
 * `username: sanyassyed`
 * `password <paste_the_personal_access_token_here>` -> you need to create this on the website of github and save the token securely for future use
+
+## Instructions to clone the project repo on a VM and enable pushing and pulling to and from repo respectively
 
 ### Connect remote VM to remote git repo via SSH
 ```bash
@@ -28,10 +34,10 @@
    # create a `config` file in .ssh folder
    nano config 
    # and write the below to file [Ctrl + O + Enter to save, Ctrl+X to exit]
-    Host sanyassyed.github.com
-        HostName github.com
-        PreferredAuthentications publickey
-        IdentityFile /home/sanyashireen/.ssh/vm_rsa
+   # write the path to the key from the root ~ and not /home
+    Host github.com
+        User git
+        IdentityFile ~/.ssh/vm_rsa
    # add the public key to the git account on github.com
    # clone repo as follows using SSH
    git clone git@github.com:sanyassyed/sf_eviction.git
@@ -47,13 +53,31 @@
    git commit -m "CICD: Initial commit from VM"
    git push -u origin master
    ```
+## Instructions to install required applications and packages on the VM
+
+### conda 
+* TODO:
+
+### Java
+* TODO: refer to week 5 de-zoomcamp
+
+### Spark
+* TODO: refer to week 5 de-zoomcamp
+
+### Jupyter notebook
+* TODO: Check if conda comes with jupyter notebook installed?
+
+## Project environment setup
 
 ### Set the virtual conda env
 * ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with pytho 3.10 and pip
 *  `conda activate .my_env` - to activate the virtual env
 * `conda activate` -> don't use deactivate just use `activate` to go to base
 
-### Using system jupyter in the kernel from conda virtual env [Ref](https://stackoverflow.com/questions/58068818/how-to-use-jupyter-notebooks-in-a-conda-environment)
+### Jupyter Notebook with different kernal 
+
+<p> Using jupyter installed on the system and  the kernel from conda virtual env [Ref](https://stackoverflow.com/questions/58068818/how-to-use-jupyter-notebooks-in-a-conda-environment) </p> 
+
 <p> We are going to use the pyhton in the conda virtual env and create a kernal and activate that in the system jupyter notebook </p>
 
 1. Add the conda virtual env python to kernal
@@ -64,18 +88,25 @@
     ipython kernel install --user --name=conda-myenv-kernel   # configure Jupyter to use Python kernel
     
     # Then run jupyter from the system installation or a different conda environment:
-    conda activate               # this step can be omitted by using a different terminal window than before
+    conda activate               # this step activates the system conda
     jupyter notebook             # run jupyter from system
     ```
     
 2. Select the `conda-myenv-kernal` in jupyter notebook form the `New` drop down box
-### Installing useful packages
-* 
-### Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.)
+
+
+### Installing packages on Conda Virtual env
+* `pip install <name_of_the_package>`
+* `python-decouple` -> used for setting up and using environment variable within the python code
+* `ipykernel` -> to add the virtual conda kernal to the list of kernals available on Jupyter notebook
+
+### Environment Variables for the project
+
+<p> Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.) </p>
 
 * `pip install python-decouple`
 * `touch .env` # create a new .env file
-* `nano .env`    # open the .env file in the nano text editor
+* `nano .env`    # open the .env file in the nano text editor and write the environment variables here
     * Now that you have your environment variables stored in a .env file, you can access them in your Python code like this:
     
         ```python
