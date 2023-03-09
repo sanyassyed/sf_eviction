@@ -115,5 +115,5 @@ Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and
         API_USERNAME = config('API_USER')
         API_KEY = config('API_KEY')
         ```
-    * To specify a different path for .env do [this](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
+    * To specify a different path for .env refer [here](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
 
