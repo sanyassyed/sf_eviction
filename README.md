@@ -69,7 +69,7 @@
     ```
     
 2. Select the `conda-myenv-kernal` in jupyter notebook form the `New` drop down box
-### Installin useful packages
+### Installing useful packages
 * 
 ### Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.)
 

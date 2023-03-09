@@ -1,0 +1,1 @@
+* [Bind Variables in SQL](https://stackoverflow.com/questions/11209538/what-does-a-colon-mean-in-sql-syntax)
