@@ -1,5 +1,14 @@
 # Project Setup 
 
+## Start the VM on GCP via CLI:
+```bash
+# Command to import environment variables in the windows os
+source env.bashrc
+gcloud compute instances start ${GCP_COMPUTE_ENGINE_NAME} --zone ${GCP_ZONE} --project ${GCP_PROJECT_ID}
+# Copy paste the Instance External IP in the ~/.ssh/config file
+ssh ${GCP_COMPUTE_ENGINE_NAME}
+```
+
 ## Instructions to create a project folder and setup version control using GIT 
 
 ### Creating a repo on the local system and pushing to git
@@ -121,8 +130,8 @@ Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and
         ```
     * To specify a different path for .env refer [here](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
 
-    ## Project Structure
-    TODO: later use tree command to copy paste updated structure 
+## Project Structure
+TODO: later use tree command to copy paste updated structure 
 ```bash
 sf_eviction/
 ├── terraform/

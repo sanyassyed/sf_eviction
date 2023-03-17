@@ -1,4 +1,3 @@
-
 # Project Plan
 ## Steps
 1. [X] Pull data from the source -> `Python`-> `Prefect`

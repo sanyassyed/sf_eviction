@@ -9,9 +9,10 @@ test/
 **/*.ipynb_checkpoints
 
 #### ENVIRONMENT FILES
-set_env.bashrc
 .env
 .my_env/*
+env.bashrc
+windows_setup.sh
 
 #### CREDENTIALS
 credentials.txt
