@@ -53,7 +53,11 @@
    git commit -m "CICD: Initial commit from VM"
    git push -u origin master
    ```
-## Instructions to install required applications and packages on the VM
+## Requirements 
+### API
+* TODO:
+
+Instructions to install required applications and packages on the VM
 
 ### conda 
 * TODO:
@@ -116,4 +120,9 @@ Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and
         API_KEY = config('API_KEY')
         ```
     * To specify a different path for .env refer [here](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
+
+    ## Project Structure
+
+    * data/ -> this folder contains the sample data.
+        - TODO: download sample data
 
