@@ -14,7 +14,7 @@
 3. [ ] Transform the data by applying schema i.e. fix data types, handle null values, remove uninteresting data etc -> `Python` -> `Spark` -> `Prefect`
 3. [ ] Save the TRANSFORMED data as partitioned - parquet files on `GCS` -> `Python` -> `Spark` -> `Prefect`
 4. [ ] Load Data from `GCS` into BQ to create external tables -> `Prefect Blocks`?
-5. [ ] From external table create partitioned tables ? **[Did this manually using the Query editor in BQ]**
+5. [ ] From external table create partitioned tables ? **[Did this manually using the Query editor in BQ]** Try doing this using Prefect & Spark? (Look at Hint 1)
 5. [ ] Using DBT transform - pull data from bq partitioned tables and create fact tables -> `dbt` -> `Piperider` ?
 4. [ ] Pull data from fact table and make visualizations -> `Looker`
 

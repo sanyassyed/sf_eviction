@@ -122,7 +122,26 @@ Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and
     * To specify a different path for .env refer [here](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
 
     ## Project Structure
-
-    * data/ -> this folder contains the sample data.
-        - TODO: download sample data
-
+    TODO: later use tree command to copy paste updated structure 
+```bash
+sf_eviction/
+├── terraform/
+│   ├── main.tf
+│   ├── variables.tf
+│   └── ...
+├── flows/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── main.py
+│   └── ...
+├── dbt/
+│   ├── analysis/
+│   ├── macros/
+│   ├── models/
+│   ├── snapshots/
+│   ├── tests/
+│   ├── dbt_project.yml
+│   └── ...
+├── README.md
+└── setup.py
+```
