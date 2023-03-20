@@ -1,6 +1,6 @@
 # Project Setup 
 
-## Start the VM on GCP via CLI - Step 1
+## Start the VM on GCP via CLI - **Step 1**
 ```bash
 # Command to import environment variables in the windows os
 source env.bashrc
@@ -10,7 +10,7 @@ ssh ${GCP_COMPUTE_ENGINE_NAME}
 ```
 
 ## Instructions to create a project folder and setup version control using GIT 
-TODO: Edit and only keep instructions to clone repo using http - Step 2
+TODO: Edit and only keep instructions to clone repo using http - **Step 2**
 ### Creating a repo on the local system and pushing to git
 * Create a new folder for the project - sf_eviction
 * cd into sf_eviction
@@ -24,7 +24,7 @@ TODO: Edit and only keep instructions to clone repo using http - Step 2
 * `password <paste_the_personal_access_token_here>` -> you need to create this on the website of github and save the token securely for future use
 
 ## Instructions to clone the project repo on a VM and enable pushing and pulling to and from repo respectively
-TODO: Step 2 (Edit this part to only reflect cloning the repo via http)
+
 ### Connect remote VM to remote git repo via SSH
 ```bash
    # generate a ssh key pair 
@@ -63,7 +63,7 @@ TODO: Step 2 (Edit this part to only reflect cloning the repo via http)
    git push -u origin master
    ```
 
-### Goto Project Directory - Step 3
+### Goto Project Directory - **Step 3**
 ```bash
 cd sf_eviction
 ```
@@ -86,13 +86,9 @@ Instructions to install required applications and packages on the VM
 * TODO: Check if conda comes with jupyter notebook installed?
 
 ## Project environment setup
-### goto project directory - Step 3
-```bash
-cd sf_eviction
-```
 ### Set the virtual conda env
 * ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with python 3.10 and pip
-*  `conda activate .my_env` - to activate the virtual env - Step 4
+*  `conda activate .my_env` - to activate the virtual env - **Step 4 Option a**
 * `conda activate` -> don't use deactivate just use `activate` to go to base
 
 ### Jupyter Notebook with different kernal 
@@ -115,10 +111,10 @@ Using jupyter installed on the system and  the kernel from conda virtual env [Re
     
 2. Select the `conda-myenv-kernal` in jupyter notebook form the `New` drop down box
 
-### Start Jupter notebooks
+### Start Jupter notebooks **Step 4 Option b**
 ```bash
 conda activate # to goto base conda which has the jupyter installation
-screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # to start jupyter in the background
+screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # to start jupyter in the background 
 # goto the browser and open http://localhost:8888 and select the virtual env kernal
 # to stop jupyter notebook
 pgrep jupyter
@@ -132,12 +128,6 @@ conda activate .my_env/
 * `pip install <name_of_the_package>`
 * `python-decouple` -> used for setting up and using environment variable within the python code
 * `ipykernel` -> to add the virtual conda kernal to the list of kernals available on Jupyter notebook
-
-### Run jupyter notebook in detached mode
-* `jupyter notebook --no-browser`
-* `pgrep jupyter` -> to find the PID of jupyter 
-*  `kill PID` -> to kill the process running in the background
-* to run jupyter even when SSH connection terminates use Tmux. More info [here](https://stackoverflow.com/questions/47331050/how-to-run-jupyter-notebook-in-the-background-no-need-to-keep-one-terminal-for)
 
 ### Environment Variables for the project
 
@@ -179,4 +169,50 @@ sf_eviction/
 │   └── ...
 ├── README.md
 └── setup.py
+```
+## Project Creation
+### Prefect
+2. Install prefect in the virtual env
+    ```bash
+    # In a conda environment, install all package dependencies with
+    conda activate .my_env/
+    pip install -r requirements_prefect.txt
+    pip install "prefect-gcp[cloud_storage]"
+    ```
+
+3. Use Prefect Cloud [Option 2: the other option is to use the local prefect orion for which you will use `prefect orion start`]
+* You must do this step first as the blocks will be created on Prefect Cloud once you log into it using API
+    * First Create a Prefect Cloud account
+    * Get the API as follows:   
+        - To create an API key, select the account icon at the bottom-left corner of the UI and select your account name and the cog-wheel. 
+        - This displays your account profile.
+        - Select the API Keys tab on the left
+        - Select the API Keys tab. This displays a list of previously generated keys and lets you create new API keys or delete keys.
+        - Create sf_eviction key and add this data to the .env file as PREFECT_CLOUD_API
+    ```bash
+    prefect cloud login -k ***PASTE API KEY HERE*****
+    ```
+    * Now you can use the Prefect cloud to register blocks and run your flows
+
+4. Create Prefect Blocks via code
+    * The block creation is done in the file prefect_gcp_block.py
+    * In this file we created a GCP Credentials Block - this is to connect to the GCP account
+    * And GCS Bucket Block - To access the Buckets in GCS.
+    * NOTE: Block names must only contain lowercase letters, numbers, and dashes
+    ```bash
+    # Run the prefect_gcp_block.py and register the block
+    prefect block register --file prefect_gcp_block.py
+    ```
+    Now for this project we will always connect to the Prefect orion cloud, pull the blocks from there and use it for running our flows.
+
+
+## Logging out:
+```bash
+#####Jupyter###
+pgrep jupyter
+# use the pid printed
+kill pid
+####Prefect####
+prefect cloud logout
+
 ```
