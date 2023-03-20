@@ -1,6 +1,6 @@
 # Project Setup 
 
-## Start the VM on GCP via CLI: Step 1
+## Start the VM on GCP via CLI - Step 1
 ```bash
 # Command to import environment variables in the windows os
 source env.bashrc
@@ -10,7 +10,7 @@ ssh ${GCP_COMPUTE_ENGINE_NAME}
 ```
 
 ## Instructions to create a project folder and setup version control using GIT 
-
+TODO: Edit and only keep instructions to clone repo using http - Step 2
 ### Creating a repo on the local system and pushing to git
 * Create a new folder for the project - sf_eviction
 * cd into sf_eviction
@@ -62,6 +62,11 @@ TODO: Step 2 (Edit this part to only reflect cloning the repo via http)
    git commit -m "CICD: Initial commit from VM"
    git push -u origin master
    ```
+
+### Goto Project Directory - Step 3
+```bash
+cd sf_eviction
+```
 ## Requirements 
 ### API
 * TODO:
@@ -110,6 +115,18 @@ Using jupyter installed on the system and  the kernel from conda virtual env [Re
     
 2. Select the `conda-myenv-kernal` in jupyter notebook form the `New` drop down box
 
+### Start Jupter notebooks
+```bash
+conda activate # to goto base conda which has the jupyter installation
+screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # to start jupyter in the background
+# goto the browser and open http://localhost:8888 and select the virtual env kernal
+# to stop jupyter notebook
+pgrep jupyter
+# use the pid printed
+kill pid
+# activate the project venv
+conda activate .my_env/
+```
 
 ### Installing packages on Conda Virtual env
 * `pip install <name_of_the_package>`
