@@ -1,6 +1,6 @@
 # Project Setup 
 
-## Start the VM on GCP via CLI:
+## Start the VM on GCP via CLI: Step 1
 ```bash
 # Command to import environment variables in the windows os
 source env.bashrc
@@ -24,7 +24,7 @@ ssh ${GCP_COMPUTE_ENGINE_NAME}
 * `password <paste_the_personal_access_token_here>` -> you need to create this on the website of github and save the token securely for future use
 
 ## Instructions to clone the project repo on a VM and enable pushing and pulling to and from repo respectively
-
+TODO: Step 2 (Edit this part to only reflect cloning the repo via http)
 ### Connect remote VM to remote git repo via SSH
 ```bash
    # generate a ssh key pair 
@@ -81,10 +81,13 @@ Instructions to install required applications and packages on the VM
 * TODO: Check if conda comes with jupyter notebook installed?
 
 ## Project environment setup
-
+### goto project directory - Step 3
+```bash
+cd sf_eviction
+```
 ### Set the virtual conda env
 * ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with python 3.10 and pip
-*  `conda activate .my_env` - to activate the virtual env
+*  `conda activate .my_env` - to activate the virtual env - Step 4
 * `conda activate` -> don't use deactivate just use `activate` to go to base
 
 ### Jupyter Notebook with different kernal 
@@ -112,6 +115,12 @@ Using jupyter installed on the system and  the kernel from conda virtual env [Re
 * `pip install <name_of_the_package>`
 * `python-decouple` -> used for setting up and using environment variable within the python code
 * `ipykernel` -> to add the virtual conda kernal to the list of kernals available on Jupyter notebook
+
+### Run jupyter notebook in detached mode
+* `jupyter notebook --no-browser`
+* `pgrep jupyter` -> to find the PID of jupyter 
+*  `kill PID` -> to kill the process running in the background
+* to run jupyter even when SSH connection terminates use Tmux. More info [here](https://stackoverflow.com/questions/47331050/how-to-run-jupyter-notebook-in-the-background-no-need-to-keep-one-terminal-for)
 
 ### Environment Variables for the project
 
