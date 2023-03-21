@@ -10,6 +10,7 @@ test/
 
 #### ENVIRONMENT FILES
 .env
+env*
 .my_env/*
 env.bashrc
 windows_setup.sh

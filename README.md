@@ -115,6 +115,16 @@ Using jupyter installed on the system and  the kernel from conda virtual env [Re
 ```bash
 conda activate # to goto base conda which has the jupyter installation
 screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # to start jupyter in the background 
+# This command launches a Jupyter Notebook server using the "screen" utility with the session name "jupyterscreen".
+# Here is a breakdown of the different components of the command:
+# screen: A terminal multiplexer that allows you to run multiple shell sessions within a single terminal window.
+# -A: Adapt the terminal's size to the current screen size.
+# -m: Start a new session without attaching to any existing sessions.
+# -d: Detach the screen session after it has been started.
+# -S jupyterscreen: Name the screen session "jupyterscreen".
+# jupyter notebook: Launch the Jupyter Notebook server.
+# --port=8888: Specify the port number on which the Jupyter Notebook server will run. In this case, it's set to port 8888.
+# When you run this command, it will start a detached screen session with the name "jupyterscreen" and launch a Jupyter Notebook server on port 8888 within that session. This means that you can access the Jupyter # Notebook server from another terminal window or from a web browser.
 # goto the browser and open http://localhost:8888 and select the virtual env kernal
 # to stop jupyter notebook
 pgrep jupyter
@@ -190,22 +200,38 @@ sf_eviction/
         - Select the API Keys tab. This displays a list of previously generated keys and lets you create new API keys or delete keys.
         - Create sf_eviction key and add this data to the .env file as PREFECT_CLOUD_API
     ```bash
-    prefect cloud login -k ***PASTE API KEY HERE*****
+    source env_variables.sh
+    prefect cloud login -k $PREFECT_CLOUD_API # or ${PREFECT_CLOUD_API}
     ```
     * Now you can use the Prefect cloud to register blocks and run your flows
 
 4. Create Prefect Blocks via code
-    * The block creation is done in the file prefect_gcp_block.py
+    * The block creation is done in the file `create_prefect_blocks.py`
     * In this file we created a GCP Credentials Block - this is to connect to the GCP account
     * And GCS Bucket Block - To access the Buckets in GCS.
     * NOTE: Block names must only contain lowercase letters, numbers, and dashes
     ```bash
-    # Run the prefect_gcp_block.py and register the block
-    prefect block register --file prefect_gcp_block.py
+    # Run the create_prefect_blocks.py and register the block
+    prefect block register --file create_prefect_blocks.py
     ```
     Now for this project we will always connect to the Prefect orion cloud, pull the blocks from there and use it for running our flows.
 
-
+5. Create flows in etl_web_gcs.py to
+    - Pull raw data from the web
+    - Store on VM locally
+    - Write Raw data to GCS
+    ```bash
+    # from project root folder sf_eviction
+    # make sure the virtual envi is activated and prefect cloud is logged in if not do the following steps to login
+    conda activate .my_env/
+    source env_variables.sh
+    prefect cloud login -k $PREFECT_CLOUD_API
+    # prefect block register --file create_prefect_blocks.py
+    python flows/etl_web_to_gcs.py
+    ```
+    - This will create a new folder called data_eviction in the project root folder with the data
+    - This data will then be read and written to GCS
+    - You can check the flow status on Prefect Cloud UI
 ## Logging out:
 ```bash
 #####Jupyter###
