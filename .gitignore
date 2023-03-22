@@ -1,6 +1,7 @@
 #### DATA FILES
 **/*.csv
 **/*.json
+**/data*
 
 #### TEST FILES
 test/

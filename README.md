@@ -248,7 +248,11 @@ sf_eviction/
     # run the deployment
     prefect deployment run ParentFlow/web_to_gcs_etl
     ```
-
+7. Iteration 2- Add more tasks
+     - To pull raw data from GCS and read into spark session
+     - Transform it
+     - Clean it
+     - Push it to GCS and create external table in BQ
 
 
 ## Logging out:

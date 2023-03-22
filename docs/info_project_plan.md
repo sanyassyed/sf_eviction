@@ -1,15 +1,16 @@
 # Project Plan
 ## Steps
+1. [ ] Setup Infrastructure using Terraform
 1. [X] Pull data from the source -> `Python`-> `Prefect`
     * [X] via wget
     * [ ] via requets/HttpHook package functions
-2. [ ] Option 1: Save the RAW data as parquet file -> `Python`-> `Prefect`
+2. [ ] Option 1: Save the RAW data as ~~parquet~~ csv file -> `Python`-> `Prefect`
     * [X] Locally in the data folder for testing / testing folder in `GoogleCloudStorage GCS`?
-    * [ ] On `GCS` ? -> `Prefect Blocks`
+    * [X] On `GCS` ? -> `Prefect Blocks`
 2. [X] Read data from local or `GCS` into pyspark DF -> `Python` -> `Spark` -> `Prefect` 
 2. [ ] Option 2: Save the RAW data as PARTITIONED parquet files -> `Python` -> `Spark` -> `Prefect`
-    * [ ] Locally in the data folder for testing  
-    * [ ] On `GCS` ? 
+    * [X] Locally in the data folder [for testing?]  
+    * [ ] ~~On `GCS`~~ ? Would lead to repetition, best to save partitioned data after cleaning
 3. [ ] Transform the data by applying schema i.e. fix data types, handle null values, remove uninteresting data etc -> `Python` -> `Spark` -> `Prefect`
 3. [ ] Save the TRANSFORMED data as partitioned - parquet files on `GCS` -> `Python` -> `Spark` -> `Prefect`
 4. [ ] Load Data from `GCS` into BQ to create external tables -> `Prefect Blocks`?
@@ -22,12 +23,12 @@
 * How will the new data be saved? Appended or Updated?
 
 
-Technologies
--> `Prefect`
--> `Docker`
--> `Spark`
--> `BigQuery`
--> `GoogleCloudStorage`
--> `dbt`
--> `Looker`
--> `Python`
+Technologies:
+- > `Prefect`
+- > `Docker`
+- > `Spark`
+- > `BigQuery`
+- > `GoogleCloudStorage`
+- > `dbt`
+- > `Looker`
+- > `Python`
