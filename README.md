@@ -258,10 +258,17 @@ sf_eviction/
 ## Logging out:
 ```bash
 #####Jupyter###
+# Option 1
 pgrep jupyter
 # use the pid printed
 kill pid
+# Option 2
+screen -ls
+screen -r jupyterscreen # whatever screen name you gave
+Ctrl + C
 ####Prefect####
+# prefect agent
+screen -r prefectagent # whatever screen name you gave
+Ctrl + C
 prefect cloud logout
-
 ```
