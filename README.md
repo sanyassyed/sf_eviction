@@ -227,11 +227,30 @@ sf_eviction/
     source env_variables.sh
     prefect cloud login -k $PREFECT_CLOUD_API
     # prefect block register --file create_prefect_blocks.py
+    # Only for testing
     python flows/etl_web_to_gcs.py
     ```
     - This will create a new folder called data_eviction in the project root folder with the data
     - This data will then be read and written to GCS
     - You can check the flow status on Prefect Cloud UI
+
+6. Create Deployment
+    * A flow can have multiple deployments and you can think of it as the container of metadata needed for the flow to be scheduled. This might be what type of infrastructure the flow will run on, or where the flow code is stored, maybe it’s scheduled or has certain parameters. [Ref:](https://github.com/discdiver/prefect-zoomcamp/tree/main/flows/03_deployments)
+
+    ```bash
+    # to deploy the flow with a schedule, it should then be available on prefect cloud under Deployments
+    python flows/deplot_etl_web_gcs.py
+    # inspect the deployment to check the pareameters and schedule
+    prefect deployment inspect ParentFlow/web_to_gcs_etl
+    # start the agent
+    prefect agent start --work-queue "development"
+    # in detached mode use `screen -A -m -d -S prefectagent prefect agent start --work-queue "development"`
+    # run the deployment
+    prefect deployment run ParentFlow/web_to_gcs_etl
+    ```
+
+
+
 ## Logging out:
 ```bash
 #####Jupyter###

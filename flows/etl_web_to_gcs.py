@@ -13,12 +13,14 @@ Run the `create_prefect_blocks.py` and register the block as follows
 # spark related packages
 # import pyspark
 # from pyspark.sql import SparkSession
-#other utility packages
+
+# other utility packages
 from decouple import config, AutoConfig
 import os
 import requests
 from datetime import datetime, timedelta
 from pathlib import Path
+
 # prefect related packages
 from prefect import flow, task
 from prefect.tasks import task_input_hash
@@ -28,7 +30,7 @@ from prefect_gcp.cloud_storage import GcsBucket
 config = AutoConfig(search_path='.env')
 GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
 
-@task(log_prints=True, tags=["extract"], cache_key_fn=task_input_hash, cache_expiration=timedelta(days=1))
+@task(retries=3, log_prints=True)
 def download_data(dataset_url:str, data_folder:str, raw_filename:str) -> Path:
     """ Task to pull raw csv data from the web
     :param dataset_url: data source url
@@ -55,6 +57,11 @@ def write_to_gcs(path:Path) -> None:
     gcs_block.upload_from_path(from_path=path, to_path=Path(path).as_posix()) # To handle the backslash that is being changed when writing to GCS
     return 
 
+# TODO:
+# Read raw data from GCS into pandas df [Iteration 2 -Pyspark df]
+# Clean it write to GCS clean_eviction.parquet
+# Write 1) external table to bq and 2)create partition table from it
+
 @flow(name='ParentFlow')
 def etl_parent_flow(dataset_name:str, filename:str) -> None:
     """
@@ -69,10 +76,7 @@ def etl_parent_flow(dataset_name:str, filename:str) -> None:
     file_path = download_data(data_url, data_dir, raw_filename)
     write_to_gcs(file_path)
 
-# TODO:
-# Read raw data from GCS into pandas df [Iteration 2 -Pyspark df]
-# Clean it write to GCS clean_eviction.parquet
-# Write 1) external table to bq and 2)create partition table from it
+
 
 if __name__=="__main__":
     """
