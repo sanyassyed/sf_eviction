@@ -3,7 +3,7 @@ from etl_web_to_gcs import etl_parent_flow
 from prefect.orion.schemas.schedules import CronSchedule
 
 # Deployment for Loading data to GCS from the web
-local_dep = Deployment.build_from_flow(flow = etl_parent_flow, name='web_to_gcs_etl', work_queue_name="development", entrypoint="flows/etl_web_to_gcs.py:etl_parent_flow", schedule =(CronSchedule(cron="5 0 1 * *", timezone="America/Chicago")), parameters={"dataset_name":'5cei-gny5', "filename":"eviction"})
+local_dep = Deployment.build_from_flow(flow = etl_parent_flow, name='web_to_gcs_etl', work_queue_name="development", entrypoint="flows/etl_web_to_gcs.py:etl_parent_flow", schedule =(CronSchedule(cron="5 0 1 * *", timezone="America/Chicago")), parameters={"dataset_name":'5cei-gny5', "filename_o":"eviction"})
 
 
 if __name__=="__main__":

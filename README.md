@@ -254,7 +254,16 @@ sf_eviction/
      - Clean it
      - Push it to GCS and create external table in BQ
 
-
+## Logging in: During Development
+```bash
+cd sf_eviction
+source env_variables.sh # set env variables with prefect api & pyspark path
+screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # start jupyter nb
+conda activate .my_env/ # activate virtual env for the project
+# if working with prefect
+prefect cloud login -k $PREFECT_CLOUD_API # login into prefect cloud
+screen -A -m -d -S prefectagentscreen prefect agent start --work-queue "development" # start agent
+```
 ## Logging out:
 ```bash
 #####Jupyter###
@@ -272,3 +281,11 @@ screen -r prefectagent # whatever screen name you gave
 Ctrl + C
 prefect cloud logout
 ```
+
+### TODO:
+* Next day 
+    - Look at postit
+* Later in the project
+    - Later modify the date to maybe seperate by month yeare etc
+    - Seperate lat and long info from the location column
+    - 

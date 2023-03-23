@@ -1,4 +1,3 @@
-# -- coding: utf-8 --
 """ 
 Description: Flows and Tasks that perform ELT
 Behaviour: 
@@ -65,7 +64,7 @@ def pull_from_gcs(filepath_raw:Path, data_dir:Path, filename:str)-> pyspark.sql.
     return path_target
 
 @task(retries=3, log_prints=True)
-def write_as_parquet(raw_data_filepath:Path, data_dir:Path, filename:str)-> pyspark.sql.dataframe.DataFrame:
+def write_as_parquet(raw_data_filepath:Path, data_dir:Path, filename:str, data_state:str)-> pyspark.sql.dataframe.DataFrame:
     """reads csv data and writes it as parquet"""
     spark = SparkSession.builder \
     .master("local[*]") \
@@ -75,10 +74,12 @@ def write_as_parquet(raw_data_filepath:Path, data_dir:Path, filename:str)-> pysp
     df = spark.read.option("header", "true").csv(str(raw_data_filepath))
     df = df.repartition(100)
     # folder to write the partition into
-    data_partition_dir = f'{data_dir}/{filename}_partitioned'
+    data_partition_dir = f'{data_dir}/{data_state}_{filename}_partitioned'
     # to ALLOW overwriting use this
     # writing the PySpark DF as a parquet file after changing the schema
     df.write.parquet(f'{data_partition_dir}/', mode='overwrite')
+
+
     spark.stop()
     print('\n\n spark task done! \n\n')
     return data_partition_dir
@@ -102,6 +103,7 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     year = time.year
     month = time.month
     day = time.day
+    data_state =['raw', 'clean']
     data_dir = Path(f"data_{filename_o}/{year}/{month}/{day}")
     filename = f'{filename_o}_{time.strftime("%Y-%m-%d")}'
 
@@ -112,8 +114,9 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     
     # testing
     # gcs_data_path = 'data_eviction/2023/3/22/gcs_raw_eviction_2023-03-22.csv'
+    # pq_parti_data_dir = 
     
-    pq_parti_data_dir = write_as_parquet(gcs_data_path, data_dir, filename)
+    pq_parti_data_dir = write_as_parquet(gcs_data_path, data_dir, filename, data_state[0])
     print(pq_parti_data_dir)
 
 
