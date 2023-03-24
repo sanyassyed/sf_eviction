@@ -107,6 +107,11 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     data_dir = Path(f"data_{filename_o}/{year}/{month}/{day}")
     filename = f'{filename_o}_{time.strftime("%Y-%m-%d")}'
 
+    # 1 - To download raw data to VM -> download_data(data_url, data_dir, filename)
+    # 2 - To write raw data VM to GCS -> write_to_gcs(filepath_raw)
+    # 3 - To clean raw data and write to VM -> clean_data(filepath_raw)
+    # 4 - To write clean data VM to BQ as external table -> write_to_bq(filepath_clean)
+    # 5 - To write clean data VM to GCS (Reuse 2?) -> write_to_gcs(filepath_clean)
     
     filepath_raw = download_data(data_url, data_dir, filename)
     write_to_gcs(filepath_raw)
