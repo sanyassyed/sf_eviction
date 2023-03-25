@@ -25,12 +25,16 @@ from prefect import flow, task
 from prefect.tasks import task_input_hash
 from prefect_gcp.cloud_storage import GcsBucket
 
+# spark related packages
+import pyspark
+from pyspark.sql import SparkSession, types
+
 # Loading Credentials
 config = AutoConfig(search_path='.env')
 GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
 
 @task(retries=3, log_prints=True)
-def download_data(dataset_url:str, data_dir:Path, filename:str) -> Path:
+def download_data(source_url:str, data_dir:Path, filename:str) -> Path:
     """ Task to pull raw csv data from the web
     :param dataset_url: data source url
     :param data_folder: local target folder for raw data
@@ -38,51 +42,75 @@ def download_data(dataset_url:str, data_dir:Path, filename:str) -> Path:
     :return: path to raw data downloaded on local system
     """
     data_dir.mkdir(parents=True, exist_ok=True)
-    filename_raw = f'web_raw_{filename}.csv'
-    filepath_raw = Path(f'{data_dir}/{filename_raw}')
+    target_path = Path(f'{data_dir}/{filename}')
     # download the csv
-    os.system(f"wget {dataset_url} -O {filepath_raw}")
-    return filepath_raw
+    os.system(f"wget {source_url} -O {target_path}")
+    return target_path
 
 @task(retries=3, log_prints=True)
-def write_to_gcs(path:Path) -> None:
+def write_to_gcs(path) -> None:
     """Loads the dataset from local system into GCS
     :param path: path to raw data on local system & the path to store the data in on GCS also
     :return: None
     """
     gcs_block = GcsBucket.load(GCS_BUCKET_BLOCK)
-    gcs_block.upload_from_path(from_path=path, to_path=Path(path).as_posix()) # To handle the backslash that is being changed when writing to GCS
+    if '.csv' in str(path):
+        gcs_block.upload_from_path(from_path=path, to_path=Path(path).as_posix()) # To handle the backslash that is being changed when writing to GCS
+    else:
+        gcs_block.upload_from_folder(from_folder=path, to_folder=Path(path).as_posix())
     return 
 
 @task(retries=3, log_prints=True)
-def pull_from_gcs(filepath_raw:Path, data_dir:Path, filename:str)-> pyspark.sql.dataframe.DataFrame:
-    """Ref: https://prefecthq.github.io/prefect-gcp/examples_catalog/#cloud-storage-module"""
-    path_source = Path(filepath_raw).as_posix()
-    path_target = Path(f'{data_dir}/gcs_raw_{filename}.csv')
-    gcs_block = GcsBucket.load(GCS_BUCKET_BLOCK)
-    gcs_block.download_object_to_path(from_path=path_source, to_path=path_target)
-    return path_target
+def clean_data(source_path:Path, data_dir, clean_part_dir:str) -> Path:
 
-@task(retries=3, log_prints=True)
-def write_as_parquet(raw_data_filepath:Path, data_dir:Path, filename:str, data_state:str)-> pyspark.sql.dataframe.DataFrame:
-    """reads csv data and writes it as parquet"""
+    target_dir = f'{data_dir}/{clean_part_dir}'
     spark = SparkSession.builder \
-    .master("local[*]") \
-    .appName('test') \
-    .getOrCreate()
+                        .master("local[*]") \
+                        .appName('test') \
+                        .getOrCreate()
+    imp_cols = ['eviction_id', 'address', 'city', 'state', 'zip', 'file_date', 'non_payment', 'breach', 'nuisance', 'illegal_use', 'failure_to_sign_renewal', 'access_denial', 'unapproved_subtenant', 'owner_move_in', 'demolition', 'capital_improvement', 'substantial_rehab', 'ellis_act_withdrawal', 'condo_conversion', 'roommate_same_unit', 'other_cause', 'late_payments', 'lead_remediation', 'development', 'good_samaritan_ends', 'constraints_date', 'supervisor_district', 'neighborhood', 'client_location']
+    schema = types.StructType([
+                                types.StructField('eviction_id', types.StringType(), True), 
+                                types.StructField('address', types.StringType(), True), 
+                                types.StructField('city', types.StringType(), True), 
+                                types.StructField('state', types.StringType(), True), 
+                                types.StructField('zip', types.IntegerType(), True), 
+                                types.StructField('file_date', types.DateType(), True), 
+                                types.StructField('non_payment', types.BooleanType(), True), 
+                                types.StructField('breach', types.BooleanType(), True), 
+                                types.StructField('nuisance', types.BooleanType(), True), 
+                                types.StructField('illegal_use', types.BooleanType(), True), 
+                                types.StructField('failure_to_sign_renewal', types.BooleanType(), True), 
+                                types.StructField('access_denial', types.BooleanType(), True), 
+                                types.StructField('unapproved_subtenant', types.BooleanType(), True), 
+                                types.StructField('owner_move_in', types.BooleanType(), True), 
+                                types.StructField('demolition', types.BooleanType(), True), 
+                                types.StructField('capital_improvement', types.BooleanType(), True), 
+                                types.StructField('substantial_rehab', types.BooleanType(), True), 
+                                types.StructField('ellis_act_withdrawal', types.BooleanType(), True), 
+                                types.StructField('condo_conversion', types.BooleanType(), True), 
+                                types.StructField('roommate_same_unit', types.BooleanType(), True), 
+                                types.StructField('other_cause', types.BooleanType(), True), 
+                                types.StructField('late_payments', types.BooleanType(), True), 
+                                types.StructField('lead_remediation', types.BooleanType(), True), 
+                                types.StructField('development', types.BooleanType(), True), 
+                                types.StructField('good_samaritan_ends', types.BooleanType(), True), 
+                                types.StructField('constraints_date', types.StringType(), True), 
+                                types.StructField('supervisor_district', types.IntegerType(), True), 
+                                types.StructField('neighborhood', types.StringType(), True), 
+                                types.StructField('client_location', types.StringType(), True)])
+
+    df = spark.read \
+              .option("header", "true") \
+              .schema(schema) \
+              .csv(str(source_path)) \
+              .select(imp_cols)
     
-    df = spark.read.option("header", "true").csv(str(raw_data_filepath))
-    df = df.repartition(100)
-    # folder to write the partition into
-    data_partition_dir = f'{data_dir}/{data_state}_{filename}_partitioned'
-    # to ALLOW overwriting use this
-    # writing the PySpark DF as a parquet file after changing the schema
-    df.write.parquet(f'{data_partition_dir}/', mode='overwrite')
-
-
+    print(f'Total rows read: {df.count()}')
+    df = df.repartition(2) #TODO: MAybe call the write_to_gcs for each item in the folder? as getting a WARNING | urllib3.connectionpool - Connection pool is full, discarding connection: storage.googleapis.com. Connection pool size: 10
+    df.write.parquet(target_dir, mode='overwrite')
     spark.stop()
-    print('\n\n spark task done! \n\n')
-    return data_partition_dir
+    return target_dir
 
 
 # TODO:
@@ -95,7 +123,7 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     """
     Main flow that calls the tasks
     :param dataset_name: the source dataset name
-    :param filename: the target filename which will be used for storing the data
+    :param filename_o: the target filename which will be used for storing the data
     :return:
     """
     data_url = f"https://data.sfgov.org/resource/{dataset_name}.csv"
@@ -103,8 +131,9 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     year = time.year
     month = time.month
     day = time.day
-    data_state =['raw', 'clean']
+    data_prefix =['raw', 'clean', 'clean_partitioned']
     data_dir = Path(f"data_{filename_o}/{year}/{month}/{day}")
+    # this will later get the prefix raw, clean or clean_partitioned
     filename = f'{filename_o}_{time.strftime("%Y-%m-%d")}'
 
     # 1 - To download raw data to VM -> download_data(data_url, data_dir, filename)
@@ -113,16 +142,20 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     # 4 - To write clean data VM to BQ as external table -> write_to_bq(filepath_clean)
     # 5 - To write clean data VM to GCS (Reuse 2?) -> write_to_gcs(filepath_clean)
     
-    filepath_raw = download_data(data_url, data_dir, filename)
-    write_to_gcs(filepath_raw)
-    gcs_data_path = pull_from_gcs(filepath_raw, data_dir, filename)
+    raw_filename = f'{data_prefix[0]}_{filename}.csv'
+    #clean_data_dir = f'{data_prefix[1]}_{filename}'
+    clean_part_data_dir = f'{data_prefix[2]}_{filename}' # Note: if wanting to partition data 
+
+
+    raw_filepath = download_data(data_url, data_dir, raw_filename)
+    write_to_gcs(raw_filepath)
+    #clean_datapath = clean_data(raw_filepath, data_dir, clean_data_dir)
+    clean_datapath = clean_data(raw_filepath, data_dir, clean_part_data_dir)
+    write_to_gcs(clean_datapath)
     
     # testing
     # gcs_data_path = 'data_eviction/2023/3/22/gcs_raw_eviction_2023-03-22.csv'
     # pq_parti_data_dir = 
-    
-    pq_parti_data_dir = write_as_parquet(gcs_data_path, data_dir, filename, data_state[0])
-    print(pq_parti_data_dir)
 
 
 
