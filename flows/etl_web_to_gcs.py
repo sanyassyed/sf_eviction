@@ -11,7 +11,7 @@ Run the `create_prefect_blocks.py` and register the block as follows
 
 # spark related packages
 import pyspark
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, types
 
 # other utility packages
 from decouple import config, AutoConfig
@@ -19,22 +19,39 @@ import os
 import requests
 from datetime import datetime, timedelta
 from pathlib import Path
+import json
 
 # prefect related packages
 from prefect import flow, task
 from prefect.tasks import task_input_hash
 from prefect_gcp.cloud_storage import GcsBucket
 
-# spark related packages
-import pyspark
-from pyspark.sql import SparkSession, types
-
 # Loading Credentials
 config = AutoConfig(search_path='.env')
 GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
+# SODU API Credentials
+API_TOKEN = config("API_TOKEN")
+API_KEY_ID = config("API_KEY_ID")
+API_KEY_SECRET = config("API_KEY_SECRET")
+
+@task(log_prints=True)
+def get_json(endpoint, headers):
+    """download the json by supplying the api token in the header"""
+    headers['Accept'] = 'application/json' # csv?
+    # pull_date = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%dT%H:%M:%S") # year, month, day, hour, minute, seconds, microseconds
+    combined = []
+    offset, counter = 0, 1
+    error = False
+    params = f"""$query=SELECT:*,* ORDER BY :id LIMIT 200000"""
+    # response has two parts .json() and .headers https://www.w3schools.com/python/ref_requests_response.asp
+    response = requests.get(endpoint, headers=headers, params=params)
+    captured = response.json()
+    combined.extend(captured)
+    print('get_json complete')
+    return combined
 
 @task(retries=3, log_prints=True)
-def download_data(source_url:str, data_dir:Path, filename:str) -> Path:
+def write_to_local(content:list, data_dir:Path, filename:str) -> Path:
     """ Task to pull raw csv data from the web
     :param dataset_url: data source url
     :param data_folder: local target folder for raw data
@@ -44,7 +61,8 @@ def download_data(source_url:str, data_dir:Path, filename:str) -> Path:
     data_dir.mkdir(parents=True, exist_ok=True)
     target_path = Path(f'{data_dir}/{filename}')
     # download the csv
-    os.system(f"wget {source_url} -O {target_path}")
+    data_json = json.dumps(content, indent=4)
+    open(target_path,"w", encoding='utf8').write(data_json)
     return target_path
 
 @task(retries=3, log_prints=True)
@@ -68,7 +86,7 @@ def clean_data(source_path:Path, data_dir, clean_part_dir:str) -> Path:
                         .master("local[*]") \
                         .appName('test') \
                         .getOrCreate()
-    imp_cols = ['eviction_id', 'address', 'city', 'state', 'zip', 'file_date', 'non_payment', 'breach', 'nuisance', 'illegal_use', 'failure_to_sign_renewal', 'access_denial', 'unapproved_subtenant', 'owner_move_in', 'demolition', 'capital_improvement', 'substantial_rehab', 'ellis_act_withdrawal', 'condo_conversion', 'roommate_same_unit', 'other_cause', 'late_payments', 'lead_remediation', 'development', 'good_samaritan_ends', 'constraints_date', 'supervisor_district', 'neighborhood', 'client_location']
+    imp_cols = ['eviction_id', 'address', 'city', 'state', 'zip', 'file_date', 'non_payment', 'breach', 'nuisance', 'illegal_use', 'failure_to_sign_renewal', 'access_denial', 'unapproved_subtenant', 'owner_move_in', 'demolition', 'capital_improvement', 'substantial_rehab', 'ellis_act_withdrawal', 'condo_conversion', 'roommate_same_unit', 'other_cause', 'late_payments', 'lead_remediation', 'development', 'good_samaritan_ends', 'constraints_date', 'supervisor_district', 'neighborhood', 'client_location', ':created_at', ':updated_at']
     schema = types.StructType([
                                 types.StructField('eviction_id', types.StringType(), True), 
                                 types.StructField('address', types.StringType(), True), 
@@ -126,7 +144,12 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     :param filename_o: the target filename which will be used for storing the data
     :return:
     """
-    data_url = f"https://data.sfgov.org/resource/{dataset_name}.csv"
+    SODA_url = f"https://data.sfgov.org/resource/{dataset_name}"
+    SODA_headers = {
+    'keyId': API_KEY_ID,
+    'keySecret': API_KEY_SECRET
+    }
+
     time = datetime.now()
     year = time.year
     month = time.month
@@ -142,12 +165,13 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     # 4 - To write clean data VM to BQ as external table -> write_to_bq(filepath_clean)
     # 5 - To write clean data VM to GCS (Reuse 2?) -> write_to_gcs(filepath_clean)
     
-    raw_filename = f'{data_prefix[0]}_{filename}.csv'
+    raw_filename = f'{data_prefix[0]}_{filename}.json'
     #clean_data_dir = f'{data_prefix[1]}_{filename}'
     clean_part_data_dir = f'{data_prefix[2]}_{filename}' # Note: if wanting to partition data 
 
-
-    raw_filepath = download_data(data_url, data_dir, raw_filename)
+    
+    content = get_json(SODA_url, SODA_headers)
+    raw_filepath = write_to_local(content, data_dir, raw_filename)
     write_to_gcs(raw_filepath)
     #clean_datapath = clean_data(raw_filepath, data_dir, clean_data_dir)
     clean_datapath = clean_data(raw_filepath, data_dir, clean_part_data_dir)
