@@ -256,9 +256,19 @@ sf_eviction/
 
 ## Logging in: During Development
 ```bash
+# local system
+cd sf_eviction
+source env.bashrc # to set the credentials for GCP
+gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_NAME
+# update the external ip in ~/.ssh/config
+ssh $GCP_COMPUTE_ENGINE_NAME
+
+#########################################################################################################
+# on the VM
 cd sf_eviction
 source env_variables.sh # set env variables with prefect api & pyspark path
 screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # start jupyter nb
+screen -ls # check if screen has started
 conda activate .my_env/ # activate virtual env for the project
 # if working with prefect
 prefect cloud login -k $PREFECT_CLOUD_API # login into prefect cloud

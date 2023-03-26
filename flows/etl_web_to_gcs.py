@@ -201,6 +201,7 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     #clean_datapath = clean_data(raw_filepath, data_dir, clean_data_dir)
     clean_datapath = clean_data(raw_filepath, data_dir, clean_part_data_dir)
     write_to_gcs(clean_datapath)
+    write_to_bq(bq_dataset_name, bq_table_name, clean_datapath)
     
     # testing
     # gcs_data_path = 'data_eviction/2023/3/22/gcs_raw_eviction_2023-03-22.csv'
