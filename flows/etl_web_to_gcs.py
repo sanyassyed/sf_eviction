@@ -40,8 +40,6 @@ def get_json(endpoint, headers):
     headers['Accept'] = 'application/json' # csv?
     # pull_date = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%dT%H:%M:%S") # year, month, day, hour, minute, seconds, microseconds
     combined = []
-    offset, counter = 0, 1
-    error = False
     params = f"""$query=SELECT:*,* ORDER BY :id LIMIT 200000"""
     # response has two parts .json() and .headers https://www.w3schools.com/python/ref_requests_response.asp
     response = requests.get(endpoint, headers=headers, params=params)
@@ -72,7 +70,7 @@ def write_to_gcs(path) -> None:
     :return: None
     """
     gcs_block = GcsBucket.load(GCS_BUCKET_BLOCK)
-    if '.csv' in str(path):
+    if '.json' in str(path):
         gcs_block.upload_from_path(from_path=path, to_path=Path(path).as_posix()) # To handle the backslash that is being changed when writing to GCS
     else:
         gcs_block.upload_from_folder(from_folder=path, to_folder=Path(path).as_posix())
@@ -83,48 +81,75 @@ def clean_data(source_path:Path, data_dir, clean_part_dir:str) -> Path:
 
     target_dir = f'{data_dir}/{clean_part_dir}'
     spark = SparkSession.builder \
-                        .master("local[*]") \
-                        .appName('test') \
-                        .getOrCreate()
+                    .master("local[*]") \
+                    .appName('test') \
+                    .getOrCreate()
     imp_cols = ['eviction_id', 'address', 'city', 'state', 'zip', 'file_date', 'non_payment', 'breach', 'nuisance', 'illegal_use', 'failure_to_sign_renewal', 'access_denial', 'unapproved_subtenant', 'owner_move_in', 'demolition', 'capital_improvement', 'substantial_rehab', 'ellis_act_withdrawal', 'condo_conversion', 'roommate_same_unit', 'other_cause', 'late_payments', 'lead_remediation', 'development', 'good_samaritan_ends', 'constraints_date', 'supervisor_district', 'neighborhood', 'client_location', ':created_at', ':updated_at']
     schema = types.StructType([
-                                types.StructField('eviction_id', types.StringType(), True), 
-                                types.StructField('address', types.StringType(), True), 
-                                types.StructField('city', types.StringType(), True), 
-                                types.StructField('state', types.StringType(), True), 
-                                types.StructField('zip', types.IntegerType(), True), 
-                                types.StructField('file_date', types.DateType(), True), 
-                                types.StructField('non_payment', types.BooleanType(), True), 
-                                types.StructField('breach', types.BooleanType(), True), 
-                                types.StructField('nuisance', types.BooleanType(), True), 
-                                types.StructField('illegal_use', types.BooleanType(), True), 
-                                types.StructField('failure_to_sign_renewal', types.BooleanType(), True), 
-                                types.StructField('access_denial', types.BooleanType(), True), 
-                                types.StructField('unapproved_subtenant', types.BooleanType(), True), 
-                                types.StructField('owner_move_in', types.BooleanType(), True), 
-                                types.StructField('demolition', types.BooleanType(), True), 
-                                types.StructField('capital_improvement', types.BooleanType(), True), 
-                                types.StructField('substantial_rehab', types.BooleanType(), True), 
-                                types.StructField('ellis_act_withdrawal', types.BooleanType(), True), 
-                                types.StructField('condo_conversion', types.BooleanType(), True), 
-                                types.StructField('roommate_same_unit', types.BooleanType(), True), 
-                                types.StructField('other_cause', types.BooleanType(), True), 
-                                types.StructField('late_payments', types.BooleanType(), True), 
-                                types.StructField('lead_remediation', types.BooleanType(), True), 
-                                types.StructField('development', types.BooleanType(), True), 
-                                types.StructField('good_samaritan_ends', types.BooleanType(), True), 
-                                types.StructField('constraints_date', types.StringType(), True), 
-                                types.StructField('supervisor_district', types.IntegerType(), True), 
-                                types.StructField('neighborhood', types.StringType(), True), 
-                                types.StructField('client_location', types.StringType(), True)])
+        types.StructField(':@computed_region_26cr_cadq', types.StringType(), True), 
+        types.StructField(':@computed_region_6ezc_tdp2', types.StringType(), True), 
+        types.StructField(':@computed_region_6pnf_4xz7', types.StringType(), True), 
+        types.StructField(':@computed_region_6qbp_sg9q', types.StringType(), True), 
+        types.StructField(':@computed_region_9jxd_iqea', types.StringType(), True), 
+        types.StructField(':@computed_region_ajp5_b2md', types.StringType(), True), 
+        types.StructField(':@computed_region_bh8s_q3mv', types.StringType(), True), 
+        types.StructField(':@computed_region_fyvs_ahh9', types.StringType(), True), 
+        types.StructField(':@computed_region_h4ep_8xdi', types.StringType(), True), 
+        types.StructField(':@computed_region_jwn9_ihcz', types.StringType(), True), 
+        types.StructField(':@computed_region_p5aj_wyqh', types.StringType(), True), 
+        types.StructField(':@computed_region_pigm_ib2e', types.StringType(), True), 
+        types.StructField(':@computed_region_qgnn_b9vv', types.StringType(), True), 
+        types.StructField(':@computed_region_rxqg_mtj9', types.StringType(), True), 
+        types.StructField(':@computed_region_yftq_j783', types.StringType(), True), 
+        types.StructField(':created_at', types.TimestampType(), True), 
+        types.StructField(':id', types.StringType(), True), 
+        types.StructField(':updated_at', types.TimestampType(), True), 
+        types.StructField(':version', types.StringType(), True), 
+        types.StructField('access_denial', types.BooleanType(), True), 
+        types.StructField('address', types.StringType(), True), 
+        types.StructField('breach', types.BooleanType(), True), 
+        types.StructField('capital_improvement', types.BooleanType(), True), 
+        types.StructField('city', types.StringType(), True), 
+        types.StructField('client_location', types.MapType(types.StringType(), types.StringType(), True), True), 
+        types.StructField('condo_conversion', types.BooleanType(), True), 
+        types.StructField('constraints_date', types.StringType(), True), 
+        types.StructField('demolition', types.BooleanType(), True), 
+        types.StructField('development', types.BooleanType(), True), 
+        types.StructField('ellis_act_withdrawal', types.BooleanType(), True), 
+        types.StructField('eviction_id', types.StringType(), True), 
+        types.StructField('failure_to_sign_renewal', types.BooleanType(), True), 
+        types.StructField('file_date', types.DateType(), True), 
+        types.StructField('good_samaritan_ends', types.BooleanType(), True), 
+        types.StructField('illegal_use', types.BooleanType(), True), 
+        types.StructField('late_payments', types.BooleanType(), True), 
+        types.StructField('lead_remediation', types.BooleanType(), True), 
+        types.StructField('neighborhood', types.StringType(), True), 
+        types.StructField('non_payment', types.BooleanType(), True), 
+        types.StructField('nuisance', types.BooleanType(), True), 
+        types.StructField('other_cause', types.BooleanType(), True), 
+        types.StructField('owner_move_in', types.BooleanType(), True), 
+        types.StructField('roommate_same_unit', types.BooleanType(), True), 
+        types.StructField('shape', types.StructType([
+            types.StructField('coordinates', types.ArrayType(types.DoubleType(), True), True), 
+            types.StructField('type', types.StringType(), True)]), True), 
+        types.StructField('state', types.StringType(), True), 
+        types.StructField('substantial_rehab', types.BooleanType(), True), 
+        types.StructField('supervisor_district', types.StringType(), True), 
+        types.StructField('unapproved_subtenant', types.BooleanType(), True), 
+        types.StructField('zip', types.StringType(), True)])
 
     df = spark.read \
-              .option("header", "true") \
-              .schema(schema) \
-              .csv(str(source_path)) \
-              .select(imp_cols)
-    
+            .option("multiline","true") \
+            .schema(schema) \
+            .json(str(source_path)) \
+            .select(imp_cols) \
+            .withColumnRenamed(':updated_at', 'updated_at') \
+            .withColumnRenamed(':created_at', 'created_at') 
     print(f'Total rows read: {df.count()}')
+    df = df.withColumn("latitude", df["client_location"].getItem("latitude").cast("double")) \
+        .withColumn("longitude", df["client_location"].getItem("longitude").cast("double")) \
+        .drop("client_location")
+
     df = df.repartition(2) #TODO: MAybe call the write_to_gcs for each item in the folder? as getting a WARNING | urllib3.connectionpool - Connection pool is full, discarding connection: storage.googleapis.com. Connection pool size: 10
     df.write.parquet(target_dir, mode='overwrite')
     spark.stop()
