@@ -299,8 +299,12 @@ prefect cloud logout
 
 ### TODO:
 * Next day 
-    - Look at postit
+    - Add logging in the flows
+    - Work on terraform
+    - replace the dataset name with dataset credential with the same one used to create it in terraform
+    - work on dbt-core locally
 * Later in the project
-    - Later modify the date to maybe seperate by month yeare etc
+    - Add update instead of create table
+    - Later modify the date to maybe seperate by month years etc
     - Seperate lat and long info from the location column
     - 
