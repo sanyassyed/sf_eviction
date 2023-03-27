@@ -187,7 +187,9 @@ sf_eviction/
     # In a conda environment, install all package dependencies with
     conda activate .my_env/
     pip install -r requirements_prefect.txt
-    pip install "prefect-gcp[cloud_storage]"
+    # add the below to requirements_prefect if not already added
+    pip install "prefect-gcp[cloud_storage]" # Cloud storage apapter for creating GCS Block
+    pip install "prefect-gcp[bigquery]" # for creating BQ Block
     ```
 
 3. Use Prefect Cloud [Option 2: the other option is to use the local prefect orion for which you will use `prefect orion start`]
@@ -207,9 +209,12 @@ sf_eviction/
 
 4. Create Prefect Blocks via code
     * The block creation is done in the file `create_prefect_blocks.py`
-    * In this file we created a GCP Credentials Block - this is to connect to the GCP account
-    * And GCS Bucket Block - To access the Buckets in GCS.
+    * In this file we created 
+        - A GCP Credentials Block - this is to connect to the GCP account
+        - A GCS Bucket Block - To access the Buckets in GCS
+        - A BQ Bucket Block - To connect and access BQ
     * NOTE: Block names must only contain lowercase letters, numbers, and dashes
+    * Run the below to register the blocks created via the .py file. [Ref](https://docs.prefect.io/concepts/blocks/)
     ```bash
     # Run the create_prefect_blocks.py and register the block
     prefect block register --file create_prefect_blocks.py

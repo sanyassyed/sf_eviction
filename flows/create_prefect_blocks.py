@@ -1,5 +1,5 @@
 # creating prefect reusable blocks
-from prefect_gcp import GcpCredentials, GcsBucket
+from prefect_gcp import GcpCredentials, GcsBucket, BigQueryWarehouse
 from decouple import config, AutoConfig
 from pathlib import Path
 
@@ -60,6 +60,20 @@ gcs_bucket_block =config("GCS_BUCKET_BLOCK")
 GcsBucket(gcp_credentials=gcp_credentials,bucket=gcs_bucket).save(gcs_bucket_block, overwrite=True)
 
 
+
+#########################################################################################################
+# BQ BUCKET BLOCK
+
+gcp_credentials = GcpCredentials.load(GCP_CREDENTIALS_BLOCK)
+
+# Creating BQ Bucket Block
+bq_block =config("BQ_BLOCK")
+
+BigQueryWarehouse(gcp_credentials=gcp_credentials).save(bq_block, overwrite=True)
+
+
 # https://docs.prefect.io/concepts/blocks/
 # if a block has been created in a .py file, the block can also be registered with the CLI command:
-# prefect block register --file flows/prefect_gcp_block.py
+# NOTE: Log into prefect cloud before running the below command
+# prefect block register --file flows/create_prefect_blocks.py
+# Then log into prefect cloud and check that the blocks are availble in the UI

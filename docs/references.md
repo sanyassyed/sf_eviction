@@ -8,3 +8,13 @@ Websites and other sources used during this project are listed below. I would li
 * [python-dotenv package](https://pypi.org/project/python-dotenv/) to load evnironment variables
 * [Inspiration Project Repo done by Ilya](https://github.com/ilya-galperin/SF-EvictionTracker)
 * []()
+
+## Prefect
+* [Prefect packages to pip install for creating Blocks](https://prefecthq.github.io/prefect-gcp/#installation)
+* [How to create GCP block via .py file](https://prefecthq.github.io/prefect-gcp/)
+* [How to create GCS block via .py file](https://github.com/discdiver/prefect-zoomcamp/blob/main/blocks/make_gcp_blocks.py)
+* [How to create BQ block via .py - look at source code](https://prefecthq.github.io/prefect-gcp/bigquery/#prefect_gcp.bigquery.BigQueryWarehouse)
+## BQ
+* [DDL to create external tables](https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#external_table_option_list)
+* [Loading externally partitioned data](https://cloud.google.com/bigquery/docs/hive-partitioned-loads-gcs#bq)
+* [Create Dataset in BQ](https://cloud.google.com/bigquery/docs/datasets#terraform)

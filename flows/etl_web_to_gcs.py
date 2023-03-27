@@ -25,10 +25,14 @@ import json
 from prefect import flow, task
 from prefect.tasks import task_input_hash
 from prefect_gcp.cloud_storage import GcsBucket
+from prefect_gcp.bigquery import BigQueryWarehouse
 
 # Loading Credentials
 config = AutoConfig(search_path='.env')
 GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
+BQ_BLOCK = config("BQ_BLOCK")
+GCP_PROJECT_ID = config("GCP_PROJECT_ID")
+GCS_BUCKET = config("GCS_BUCKET")
 # SODU API Credentials
 API_TOKEN = config("API_TOKEN")
 API_KEY_ID = config("API_KEY_ID")
@@ -155,6 +159,28 @@ def clean_data(source_path:Path, data_dir, clean_part_dir:str) -> Path:
     spark.stop()
     return target_dir
 
+@task(log_prints=True, retries=3)
+def write_to_bq(bq_dataset_name:str, bq_table_name_external:str, bq_table_name:str, clean_datapath:str) -> None:
+    external_table = f'{GCP_PROJECT_ID}.{bq_dataset_name}.{bq_table_name_external}'
+    table = f'{GCP_PROJECT_ID}.{bq_dataset_name}.{bq_table_name}'
+    
+    query_external_table = f'''
+    CREATE OR REPLACE EXTERNAL TABLE `{external_table}`
+    OPTIONS (
+    format = 'parquet',
+    uris = ['gs://{GCS_BUCKET}/{clean_datapath}/*.parquet']);
+    '''
+    # not creating partition table as no datetime column available
+
+    query_table = f'''
+    CREATE OR REPLACE TABLE `{table}`
+    AS
+    SELECT * FROM `{external_table}`;
+    '''
+
+    with BigQueryWarehouse.load(BQ_BLOCK) as warehouse:
+        warehouse.execute(query_external_table)
+        warehouse.execute(query_table)
 
 # TODO:
 # Read raw data from GCS into pandas df [Iteration 2 -Pyspark df]
@@ -183,7 +209,8 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     data_dir = Path(f"data_{filename_o}/{year}/{month}/{day}")
     # this will later get the prefix raw, clean or clean_partitioned
     filename = f'{filename_o}_{time.strftime("%Y-%m-%d")}'
-
+    bq_dataset_name = 'sf_eviction'
+    bq_table_name_external = 'external_{filename_o}'
     # 1 - To download raw data to VM -> download_data(data_url, data_dir, filename)
     # 2 - To write raw data VM to GCS -> write_to_gcs(filepath_raw)
     # 3 - To clean raw data and write to VM -> clean_data(filepath_raw)
@@ -191,21 +218,20 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     # 5 - To write clean data VM to GCS (Reuse 2?) -> write_to_gcs(filepath_clean)
     
     raw_filename = f'{data_prefix[0]}_{filename}.json'
-    #clean_data_dir = f'{data_prefix[1]}_{filename}'
-    clean_part_data_dir = f'{data_prefix[2]}_{filename}' # Note: if wanting to partition data 
+    #clean_data_dir = f'{data_prefix[1]}_{filename}' # Note: use this if not wanting to partition data 
+    clean_part_data_dir = f'{data_prefix[2]}_{filename}' 
 
     
     content = get_json(SODA_url, SODA_headers)
     raw_filepath = write_to_local(content, data_dir, raw_filename)
     write_to_gcs(raw_filepath)
-    #clean_datapath = clean_data(raw_filepath, data_dir, clean_data_dir)
     clean_datapath = clean_data(raw_filepath, data_dir, clean_part_data_dir)
     write_to_gcs(clean_datapath)
-    write_to_bq(bq_dataset_name, bq_table_name, clean_datapath)
+    write_to_bq(bq_dataset_name, bq_table_name_external, bq_table_name=filename_o, clean_datapath)
     
     # testing
     # gcs_data_path = 'data_eviction/2023/3/22/gcs_raw_eviction_2023-03-22.csv'
-    # pq_parti_data_dir = 
+    # clean_datapath = 'data_eviction/2023/3/26/clean_partitioned_eviction_2023-03-26' 
 
 
 

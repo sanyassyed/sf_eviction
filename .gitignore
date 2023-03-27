@@ -18,3 +18,4 @@ windows_setup.sh
 
 #### CREDENTIALS
 credentials.txt
+__pycache__
