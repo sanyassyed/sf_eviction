@@ -233,7 +233,7 @@ sf_eviction/
     prefect cloud login -k $PREFECT_CLOUD_API
     # prefect block register --file create_prefect_blocks.py
     # Only for testing
-    python flows/etl_web_to_gcs.py
+    python flows/ingest.py
     ```
     - This will create a new folder called data_eviction in the project root folder with the data
     - This data will then be read and written to GCS
@@ -244,14 +244,14 @@ sf_eviction/
 
     ```bash
     # to deploy the flow with a schedule, it should then be available on prefect cloud under Deployments
-    python flows/deplot_etl_web_gcs.py
+    python flows/deploy_ingest.py
     # inspect the deployment to check the pareameters and schedule
-    prefect deployment inspect ParentFlow/web_to_gcs_etl
+    prefect deployment inspect ParentFlow/etl_web_to_gcp
     # start the agent
     prefect agent start --work-queue "development"
     # in detached mode use `screen -A -m -d -S prefectagent prefect agent start --work-queue "development"`
     # run the deployment
-    prefect deployment run ParentFlow/web_to_gcs_etl
+    prefect deployment run ParentFlow/etl_web_to_gcp
     ```
 7. Iteration 2- Add more tasks
      - To pull raw data from GCS and read into spark session
@@ -299,13 +299,15 @@ prefect cloud logout
 
 ### TODO:
 * Next day 
-    - test the flow with the prefect agent
-    - Add logging in the flows
-    - Work on terraform
-    - replace the dataset name with dataset credential with the same one used to create it in terraform
-    - work on dbt-core locally
+    [ ] test the flow with the prefect agent
+    [ ] Add logging in the flows
+    [ ] Work on terraform
+    [X] replace the dataset name (sf_eviction) with dataset name credential (set this when using terraform to create the dataset)
+    [ ] work on dbt-core locally
 * Later in the project
-    - Add update instead of create table
-    - Later modify the date to maybe seperate by month years etc
-    - Seperate lat and long info from the location column
-    - 
+    [ ] Pull data via API using offset
+    [ ] Add update instead of create table so when new data is pulled it updates the existing table
+    [X] Later modify the date to maybe seperate by month years etc
+    [X] Seperate lat and long info from the location column
+    [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
+    [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 

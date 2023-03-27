@@ -39,26 +39,28 @@ API_KEY_ID = config("API_KEY_ID")
 API_KEY_SECRET = config("API_KEY_SECRET")
 
 @task(log_prints=True)
-def get_json(endpoint, headers):
-    """download the json by supplying the api token in the header"""
-    headers['Accept'] = 'application/json' # csv?
-    # pull_date = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%dT%H:%M:%S") # year, month, day, hour, minute, seconds, microseconds
+def get_json(endpoint, headers) -> list:
+    """Task to download raw data in json format by supplying the api token in the HTTPS header along with parameters
+    param endpoint: url of the source data
+    param headers: dictionary containing the API key and secret
+    return: the data extraced from the source as a list of dictionaries
+    """
+    headers['Accept'] = 'application/json'
     combined = []
     params = f"""$query=SELECT:*,* ORDER BY :id LIMIT 200000"""
-    # response has two parts .json() and .headers https://www.w3schools.com/python/ref_requests_response.asp
     response = requests.get(endpoint, headers=headers, params=params)
     captured = response.json()
     combined.extend(captured)
-    print('get_json complete')
+    print(f'LOGGING: Json data extraction from source COMPLETE')
     return combined
 
 @task(retries=3, log_prints=True)
 def write_to_local(content:list, data_dir:Path, filename:str) -> Path:
-    """ Task to pull raw csv data from the web
-    :param dataset_url: data source url
-    :param data_folder: local target folder for raw data
-    :param raw_filename: raw data filename
-    :return: path to raw data downloaded on local system
+    """ Task to write raw data to VM as json file
+    :param content: data (list of dictionaries) pulled from the source
+    :param data_dir: path to the local data directory where filename will be saved 
+    :param filename: file name for raw data
+    :return: path to the raw data file
     """
     data_dir.mkdir(parents=True, exist_ok=True)
     target_path = Path(f'{data_dir}/{filename}')
@@ -68,12 +70,13 @@ def write_to_local(content:list, data_dir:Path, filename:str) -> Path:
     out_file = open(target_path,"w", encoding='utf8')
     json.dump(content, out_file, indent=4)
     out_file.close()
+    print(f'LOGGING: Raw data written to path {target_path} COMPLETE')
     return target_path
 
 @task(retries=3, log_prints=True)
 def write_to_gcs(path) -> None:
-    """Loads the dataset from local system into GCS
-    :param path: path to raw data on local system & the path to store the data in on GCS also
+    """Task to load the data from local system into GCS
+    :param path: path to raw/clean data on local system & the same path is also used to store the data on GCS
     :return: None
     """
     gcs_block = GcsBucket.load(GCS_BUCKET_BLOCK)
@@ -81,11 +84,17 @@ def write_to_gcs(path) -> None:
         gcs_block.upload_from_path(from_path=path, to_path=Path(path).as_posix()) # To handle the backslash that is being changed when writing to GCS
     else:
         gcs_block.upload_from_folder(from_folder=path, to_folder=Path(path).as_posix())
+    print(f"LOGGING: Write to GSC bucket path: {path} COMPLETE")
     return 
 
-@task(retries=3, log_prints=True)
+@task(log_prints=True)
 def clean_data(source_path:Path, data_dir, clean_part_dir:str) -> Path:
-
+    """ Task to clean raw data and write as partitioned parquet files to the local system(VM)
+    :param source_path: path to raw data on local system
+    :param data_dir: path to the local data directory where clean_part_dir will be saved 
+    :param clean_part_dir: name of the directory where clean partitioned parquet files will be written
+    :return: path to clean data on the local system(VM)
+    """    
     target_dir = f'{data_dir}/{clean_part_dir}'
     spark = SparkSession.builder \
                     .master("local[*]") \
@@ -152,18 +161,28 @@ def clean_data(source_path:Path, data_dir, clean_part_dir:str) -> Path:
             .select(imp_cols) \
             .withColumnRenamed(':updated_at', 'updated_at') \
             .withColumnRenamed(':created_at', 'created_at') 
-    print(f'Total rows read: {df.count()}')
+    print(f'LOGGING: Total rows read: {df.count()}')
     df = df.withColumn("latitude", df["client_location"].getItem("latitude").cast("double")) \
         .withColumn("longitude", df["client_location"].getItem("longitude").cast("double")) \
         .drop("client_location")
 
-    df = df.repartition(2) #TODO: MAybe call the write_to_gcs for each item in the folder? as getting a WARNING | urllib3.connectionpool - Connection pool is full, discarding connection: storage.googleapis.com. Connection pool size: 10
+    df = df.repartition(2) 
     df.write.parquet(target_dir, mode='overwrite')
     spark.stop()
+    print(f'Clean data written to path {target_dir} COMPLETE')
     return target_dir
 
 @task(log_prints=True, retries=3)
 def write_to_bq(bq_dataset_name:str, bq_table_name_external:str, bq_table_name:str, clean_datapath:str) -> None:
+    """ Task to: 
+        1)create external table in BQ with clean data uploaded to GCS & 
+        2)create non-partitioned table from the external table just created
+    :param bq_dataset_name: the name of the dataset on BQ
+    :param bq_table_name_external: name to give the external table being created
+    :param bq_table_name: name to give to the non-partition table being created
+    :param clean_datapath: path to the folder where the clean partitioned data is stored on GCS
+    :return: None
+    """    
     external_table = f'{GCP_PROJECT_ID}.{bq_dataset_name}.{bq_table_name_external}'
     table = f'{GCP_PROJECT_ID}.{bq_dataset_name}.{bq_table_name}'
     
@@ -183,21 +202,28 @@ def write_to_bq(bq_dataset_name:str, bq_table_name_external:str, bq_table_name:s
 
     with BigQueryWarehouse.load(BQ_BLOCK) as warehouse:
         warehouse.execute(query_external_table)
+        print(f'LOGGING: External table {external_table} creation COMPLETE')
         warehouse.execute(query_table)
+        print(f'LOGGING: Non-partition table {table} creation COMPLETE')
 
-# TODO:
-# Read raw data from GCS into pandas df [Iteration 2 -Pyspark df]
-# Clean it write to GCS clean_eviction.parquet
-# Write 1) external table to bq and 2)create partition table from it
+@flow(name='WriteToGCSSubFlow', log_prints=True)
+def write_to_gcs_subflow(path) -> None:
+    """
+    Sub flow that calls the task to write to GCS
+    :param path: path to raw/clean data on local system & the same path is also used to store the data on GCS
+    :return: None
+    """
+    write_to_gcs(path)
 
-@flow(name='ParentFlow')
+@flow(name='ParentFlow', log_prints=True)
 def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     """
     Main flow that calls the tasks
-    :param dataset_name: the source dataset name
-    :param filename_o: the target filename which will be used for storing the data
+    :param dataset_name: the source dataset name being extracted from the sf website
+    :param filename_o: the target filename/and table name in bq which will be used for storing the data
     :return:
     """
+    
     SODA_url = f"https://data.sfgov.org/resource/{dataset_name}"
     SODA_headers = {
     'keyId': API_KEY_ID,
@@ -209,31 +235,24 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     month = time.month
     day = time.day
     data_prefix =['raw', 'clean', 'clean_partitioned']
-    data_dir = Path(f"data_{filename_o}/{year}/{month}/{day}")
-    # this will later get the prefix raw, clean or clean_partitioned
+    data_dir = Path(f"data_{filename_o}/{year}/{month}/{day}") # folder to save raw and clean data locally on the VM
     filename = f'{filename_o}_{time.strftime("%Y-%m-%d")}'
-    bq_dataset_name = 'sf_eviction'
-    bq_table_name_external = 'external_{filename_o}'
-    # 1 - To download raw data to VM -> download_data(data_url, data_dir, filename)
-    # 2 - To write raw data VM to GCS -> write_to_gcs(filepath_raw)
-    # 3 - To clean raw data and write to VM -> clean_data(filepath_raw)
-    # 4 - To write clean data VM to BQ as external table -> write_to_bq(filepath_clean)
-    # 5 - To write clean data VM to GCS (Reuse 2?) -> write_to_gcs(filepath_clean)
-    
     raw_filename = f'{data_prefix[0]}_{filename}.json'
-    #clean_data_dir = f'{data_prefix[1]}_{filename}' # Note: use this if not wanting to partition data 
-    clean_part_data_dir = f'{data_prefix[2]}_{filename}' 
+    clean_part_data_dir = f'{data_prefix[2]}_{filename}'
+
+    bq_dataset_name = 'sf_eviction'
+    bq_table_name_external = f'external_{filename_o}' 
 
     
     content = get_json(SODA_url, SODA_headers)
     raw_filepath = write_to_local(content, data_dir, raw_filename)
-    write_to_gcs(raw_filepath)
+    write_to_gcs_subflow(raw_filepath)
     clean_datapath = clean_data(raw_filepath, data_dir, clean_part_data_dir)
-    write_to_gcs(clean_datapath)
-    write_to_bq(bq_dataset_name, bq_table_name_external, bq_table_name=filename_o, clean_datapath)
+    write_to_gcs_subflow(clean_datapath)
+    write_to_bq(bq_dataset_name, bq_table_name_external, bq_table_name=filename_o, clean_datapath=clean_datapath)
     
     # testing
-    # gcs_data_path = 'data_eviction/2023/3/22/gcs_raw_eviction_2023-03-22.csv'
+    # raw_filepath = 'data_eviction/2023/3/26/raw_eviction_2023-03-26.json'
     # clean_datapath = 'data_eviction/2023/3/26/clean_partitioned_eviction_2023-03-26' 
 
 

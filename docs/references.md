@@ -8,6 +8,7 @@ Websites and other sources used during this project are listed below. I would li
 * [python-dotenv package](https://pypi.org/project/python-dotenv/) to load evnironment variables
 * [Inspiration Project Repo done by Ilya](https://github.com/ilya-galperin/SF-EvictionTracker)
 * [json.dumps() vs json.dump()](https://www.geeksforgeeks.org/python-difference-between-json-dump-and-json-dumps/)
+* [response package](https://www.w3schools.com/python/ref_requests_response.asp)
 * []()
 ## Prefect
 * [Prefect packages to pip install for creating Blocks](https://prefecthq.github.io/prefect-gcp/#installation)
