@@ -62,9 +62,12 @@ def write_to_local(content:list, data_dir:Path, filename:str) -> Path:
     """
     data_dir.mkdir(parents=True, exist_ok=True)
     target_path = Path(f'{data_dir}/{filename}')
-    # download the csv
-    data_json = json.dumps(content, indent=4)
-    open(target_path,"w", encoding='utf8').write(data_json)
+    
+    # write json to local
+    import json
+    out_file = open(target_path,"w", encoding='utf8')
+    json.dump(content, out_file, indent=4)
+    out_file.close()
     return target_path
 
 @task(retries=3, log_prints=True)

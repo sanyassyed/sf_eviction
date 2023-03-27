@@ -299,6 +299,7 @@ prefect cloud logout
 
 ### TODO:
 * Next day 
+    - test the flow with the prefect agent
     - Add logging in the flows
     - Work on terraform
     - replace the dataset name with dataset credential with the same one used to create it in terraform
