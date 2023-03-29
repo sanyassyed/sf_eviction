@@ -284,10 +284,11 @@ sf_eviction/
 >DBT
 ## dbt-core vs cloud
 * Develop the project in dbt cloud and then deploy (Production) it from VM
+* Documentation is easier in the dbt-cloud IDE therefore we are taking this two step approach
 * If using dbt-core with BQ you need to install the dbt-core adapter for BQ
 * Make sure a `staging` and `production` datasets are already created on BQ via Terraform
 
-## Initial setup 
+## Initial setup
 * On the VM(in the project directory)
     * Make a new directory called `dbt` in the project root directory 
     * All dbt related development will be done in this directory
@@ -297,7 +298,13 @@ sf_eviction/
     mkdir dbt
     echo this is a test file > dbt/test.txt # create a test file in this new repo so we can push it to git
     ```
-* Setup the dbt-project:
+
+## DBT-CLOUD (OPTION 1)
+
+We will use dbt-cloud to develop the project and dbt-core to deploy the project as mentioned before
+
+### Setup
+* Setup the dbt-project on `dbt-cloud`:
     * Goto [dbt-cloud](https://www.getdbt.com/signup/) and create an account
     * Select BQ as your DB and select next
         ![Output](images/dbt/1.JPG)
@@ -337,17 +344,21 @@ sf_eviction/
 
 
 
-## DEVELOPMENT - (Transformations)
+### DEVELOPMENT 
+
+Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
+
+* Goto dbt-cloud [Develop](https://cloud.getdbt.com/develop/158847/projects/232754) tab
 * Goto the file dbt_project.yml and edit the following:
     - name: 'sf_eviction_dbt'
     - profile: 'dev'
     - **START HERE**
     - [Related Video](https://www.youtube.com/watch?v=UVI30Vxzd6c&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=35)
 
-## profiles.yml [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
-* This file stays outside your dbt project like at ~/.dbt/profiles.yml
-* Here you define your connection details
-* You can have several targets under the SAME database eg: one for development, one for production. [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
+* `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
+    - This file stays outside your dbt project like at ~/.dbt/profiles.yml
+    - Here you define your connection details
+    - You can have several targets under the SAME database eg: one for development, one for production. [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
 
 >STARUP & SHUTDOWN
 
