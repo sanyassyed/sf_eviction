@@ -349,16 +349,68 @@ We will use dbt-cloud to develop the project and dbt-core to deploy the project 
 Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
 
 * Goto dbt-cloud [Develop](https://cloud.getdbt.com/develop/158847/projects/232754) tab
-* Goto the file dbt_project.yml and edit the following:
-    - name: 'sf_eviction_dbt'
-    - profile: 'dev'
-    - **START HERE**
-    - [Related Video](https://www.youtube.com/watch?v=UVI30Vxzd6c&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=35)
+* In the file dbt_project.yml edit the following: [Ref Video](https://youtu.be/iMxh6s_wL4Q?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=248)
+    
+    ```yml
+    name: 'sf_eviction_dbt'
+    profile: 'dev'
+    .....
+    .....
+    .....
+    models:
+        sf_eviction_dbt:
+            # Applies to all files under models/staging/
+            staging:
+                materialized: view
+            # Applies to all files under models/core/ 
+            core:
+                materialized: table
+    ```
+* In the `dbt/models` folder create the following folders
+    - `staging` folder - where we will be creating models to build views from the raw data perform typecasting, renaming of fields etc on it
+    - `core` folder - where we will be creating models that we will be exposing at the end to the Visualization/BI tool etc. They usually help in creating fact or dimention tables.
+
+### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
-    - This file stays outside your dbt project like at ~/.dbt/profiles.yml
+    - This file stays outside your dbt project usually at ~/.dbt/profiles.yml
     - Here you define your connection details
-    - You can have several targets under the SAME database eg: one for development, one for production. [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
+    - You can have several targets under the SAME database eg: 
+        - one for development (dev), 
+        - one for production. 
+        - [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
+    - Target dev would be used as the default target 
+    - Then during PRODUCTION if you want to build the dbt project on the production dataset you can expicitly specify the target for production using the -t flag along with the build command as follows `dbt build -t prod` 
+
+* `JINJA BLOCKS` :We will be using a lot of jinja blocks (which are within two curly braces) and can contain functions called macros that will turn into full codes during compile. For e.g:
+    ```sql
+    --file dbt/models/staging/stg_eviction.sql
+    {{
+        config(materialized='table')
+
+    }}
+    Select *
+    from raw.eviction
+    ```
+     - The above jija code conatains the macro config (with the parameter `materialized` and the strategy set to `table`) which during compile will convert the parameter `materialized='table'` to a DDL/DML to the model (eg: core/stg_eviction model) we are writing to. TLDR: It creates the `CREATE TABLE` statement with the table name which is same as the .sql file name prefixed with the appropriate dataset name (which changes for dev and production)
+
+     ```sql
+     create table schema.stg_eviction as (
+        Select *
+        from raw.eviction
+     )
+     ```
+     - The strategy could be set to 
+        * table
+        * view
+        * incremental -use this if data does not change very often
+        * ephemeral
+
+* Macros used with jija
+    - config - Automatically create the `CREATE TABLE` statement with the table/view name
+    - source - resolves the table name for us with automatically prefixing the right dataset name based on target
+    - ref - to refer to the tables/views that were created either using the dbt models or dbt seeds
+
 
 >STARUP & SHUTDOWN
 

@@ -4,6 +4,7 @@ Find here links to important files, folders and sites related to this project
 
 >IMPORTANT DIRECTORIES
 * [Project Repo on GitHub](https://github.com/sanyassyed/sf_eviction)
+* [Project Design](https://app.diagrams.net/?src=about#Hsanyassyed%2Fdiagrams%2Fmain%2Feviction_project.drawio)
 
 >DATA & API INFO
 * [Project Data Source Page](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5)
@@ -12,3 +13,6 @@ Find here links to important files, folders and sites related to this project
 * API Documentation Pages used for this project & info on how to create API Key can be found in [this](info_api.md) document
 
 
+>TOOLS & TECHNOLOGIES
+* [Diagrams.net](https://app.diagrams.net/) -> to draw the project design
+* 
