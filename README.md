@@ -84,6 +84,7 @@ Below are the required API's, Applications needed for this project and the instr
 
 ### API's
 * TODO:
+* API Keys (`API_KEY_ID` & `API_KEY_SECRET`) are needed for extracting Eviction data for this project; find the instructions [here](docs/info_api.md) to get your key.
 
 ### conda 
 * TODO:
