@@ -1,77 +1,89 @@
 # Project Setup 
+NOTE: Steps mentioned in this documentation are used to indicate the flow.
 
-## Start the VM on GCP via CLI - **Step 1**
-```bash
-# Command to import environment variables in the windows os
-source env.bashrc
-gcloud compute instances start ${GCP_COMPUTE_ENGINE_NAME} --zone ${GCP_ZONE} --project ${GCP_PROJECT_ID}
-# Copy paste the Instance External IP in the ~/.ssh/config file
-ssh ${GCP_COMPUTE_ENGINE_NAME}
-```
+Here I have documented the entire project creation which will be helpful to recreate the project
+Instructions for running the project will be created later.
 
-## Instructions to create a project folder and setup version control using GIT 
+>INITINAL SETUP
+
+* Start the VM on GCP via CLI from the personal system- **Step 1**
+    ```bash
+    # Command to import environment variables in the windows os
+    source env.bashrc
+    gcloud compute instances start ${GCP_COMPUTE_ENGINE_NAME} --zone ${GCP_ZONE} --project ${GCP_PROJECT_ID}
+    # Copy paste the Instance External IP in the ~/.ssh/config file
+    ssh ${GCP_COMPUTE_ENGINE_NAME}
+    ```
+>GIT SETUP
+
+Instructions to create a project folder and setup version control using GIT 
+
 TODO: Edit and only keep instructions to clone repo using http - **Step 2**
-### Creating a repo on the local system and pushing to git
-* Create a new folder for the project - sf_eviction
-* cd into sf_eviction
-* `git init`
-* `nano .gitignore` -> add files to be ignored
-* `git add .`
-* `git commit -m "CICD: Initial Commit"`
-* `git remote add origin https://github.com/sanyassyed/sf_eviction.git`
-* `git push -u origin master`
-* `username: sanyassyed`
-* `password <paste_the_personal_access_token_here>` -> you need to create this on the website of github and save the token securely for future use
 
-## Instructions to clone the project repo on a VM and enable pushing and pulling to and from repo respectively
+## PERSONAL SYSTEM
+* Creating a repo on the local system and pushing to git
+    * Create a new folder for the project - sf_eviction
+    * cd into sf_eviction
+    * `git init`
+    * `nano .gitignore` -> add files to be ignored
+    * `git add .`
+    * `git commit -m "CICD: Initial Commit"`
+    * `git remote add origin https://github.com/sanyassyed/sf_eviction.git`
+    * `git push -u origin master`
+    * `username: sanyassyed`
+    * `password <paste_the_personal_access_token_here>` -> you need to create this on the website of github and save the token securely for future use
 
-### Connect remote VM to remote git repo via SSH
-```bash
-   # generate a ssh key pair 
-   ssh-keygen -t rsa
-   # if you want to give a different name enter the below else press enter
-   /home/sanyashireen/.ssh/vm_rsa 
-   # add this key to ssh-agent
-   # start ssh agent 
-   eval `ssh-agent -s`	
-   # check if keys are already identified
-   ssh-add -l -E sha256
-    > The agent has no identities.
-   # guide the ssh agent where the keys are stored
-   ssh-add /home/sanyashireen/.ssh/vm_rsa
-    > Identity added: /home/sanyashireen/.ssh/vm_rsa (sanyashireen@de-zoomcamp)
-   # create a `config` file in .ssh folder
-   nano config 
-   # and write the below to file [Ctrl + O + Enter to save, Ctrl+X to exit]
-   # write the path to the key from the root ~ and not /home
-    Host github.com
-        User git
-        IdentityFile ~/.ssh/vm_rsa
-   # add the public key to the git account on github.com
-   # clone repo as follows using SSH
-   git clone git@github.com:sanyassyed/sf_eviction.git
-   # check the remote origin is set with ssh
-   git remote -v
-   # Check the SSH connection with repo from VM using
-   ssh -T git@github.com
-   # set the global variables
-   git config --global user.email "sanya.shireen@gmail.com"
-   git config --global user.name "sanya googlevm"
-   # make changes in repo
-   git add .
-   git commit -m "CICD: Initial commit from VM"
-   git push -u origin master
-   ```
+## VM
+Instructions to clone the project repo on a VM and enable pushing and pulling to and from repo respectively
 
-### Goto Project Directory - **Step 3**
+* Connect remote VM to remote git repo via SSH
+    ```bash
+    # generate a ssh key pair 
+    ssh-keygen -t rsa
+    # if you want to give a different name enter the below else press enter
+    /home/sanyashireen/.ssh/vm_rsa 
+    # add this key to ssh-agent
+    # start ssh agent 
+    eval `ssh-agent -s`	
+    # check if keys are already identified
+    ssh-add -l -E sha256
+        > The agent has no identities.
+    # guide the ssh agent where the keys are stored
+    ssh-add /home/sanyashireen/.ssh/vm_rsa
+        > Identity added: /home/sanyashireen/.ssh/vm_rsa (sanyashireen@de-zoomcamp)
+    # create a `config` file in .ssh folder
+    nano config 
+    # and write the below to file [Ctrl + O + Enter to save, Ctrl+X to exit]
+    # write the path to the key from the root ~ and not /home
+        Host github.com
+            User git
+            IdentityFile ~/.ssh/vm_rsa
+    # add the public key to the git account on github.com
+    # clone repo as follows using SSH
+    git clone git@github.com:sanyassyed/sf_eviction.git
+    # check the remote origin is set with ssh
+    git remote -v
+    # Check the SSH connection with repo from VM using
+    ssh -T git@github.com
+    # set the global variables
+    git config --global user.email "sanya.shireen@gmail.com"
+    git config --global user.name "sanya googlevm"
+    # make changes in repo
+    git add .
+    git commit -m "CICD: Initial commit from VM"
+    git push -u origin master
+    ```
+
+>PACKAGES & CREDENTIALS
+* Goto Project Directory - **Step 3**
 ```bash
 cd sf_eviction
 ```
 ## Requirements 
-### API
-* TODO:
+Below are the required API's, Applications needed for this project and the instructions to install them on the VM
 
-Instructions to install required applications and packages on the VM
+### API's
+* TODO:
 
 ### conda 
 * TODO:
@@ -84,14 +96,15 @@ Instructions to install required applications and packages on the VM
 
 ### Jupyter notebook
 * TODO: Check if conda comes with jupyter notebook installed?
+Maybe not required to run the project
 
-## Project environment setup
-### Set the virtual conda env
+>PROJECT VIRTUAL ENVIRONMENT & PACKAGES 
+## Virtual conda env
 * ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with python 3.10 and pip
 *  `conda activate .my_env` - to activate the virtual env - **Step 4 Option a**
 * `conda activate` -> don't use deactivate just use `activate` to go to base
 
-### Jupyter Notebook with different kernal 
+## Jupyter Notebook with different kernal 
 
 Using jupyter installed on the system and  the kernel from conda virtual env [Ref](https://stackoverflow.com/questions/58068818/how-to-use-jupyter-notebooks-in-a-conda-environment) 
 
@@ -139,6 +152,7 @@ conda activate .my_env/
 * `python-decouple` -> used for setting up and using environment variable within the python code
 * `ipykernel` -> to add the virtual conda kernal to the list of kernals available on Jupyter notebook
 
+>ENVIRONMENT VARIABLES
 ### Environment Variables for the project
 
 Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.)
@@ -156,6 +170,7 @@ Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and
         ```
     * To specify a different path for .env refer [here](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
 
+>GENERAL DOCUMENTATION
 ## Project Structure
 TODO: later use tree command to copy paste updated structure 
 ```bash
@@ -181,8 +196,14 @@ sf_eviction/
 └── setup.py
 ```
 ## Project Creation
-### Prefect
-2. Install prefect in the virtual env
+>TERRAFORM
+* Have the dataset names as and create these with terraform in the same region
+    - raw (Data from BQ will be pushed here) **Currently its `sf_eviction` and need to change that
+    - staging (Data from dbt after transformations will be pushed here in Dev)
+    - production (Data from dbt after transformations will be pushed here in Production)
+
+>PREFECT
+1. Install prefect in the virtual env
     ```bash
     # In a conda environment, install all package dependencies with
     conda activate .my_env/
@@ -192,7 +213,7 @@ sf_eviction/
     pip install "prefect-gcp[bigquery]" # for creating BQ Block
     ```
 
-3. Use Prefect Cloud [Option 2: the other option is to use the local prefect orion for which you will use `prefect orion start`]
+2. Use Prefect Cloud [Option 2: the other option is to use the local prefect orion for which you will use `prefect orion start`]
 * You must do this step first as the blocks will be created on Prefect Cloud once you log into it using API
     * First Create a Prefect Cloud account
     * Get the API as follows:   
@@ -221,7 +242,7 @@ sf_eviction/
     ```
     Now for this project we will always connect to the Prefect orion cloud, pull the blocks from there and use it for running our flows.
 
-5. Create flows in etl_web_gcs.py to
+5. Create flows in ingest.py to
     - Pull raw data from the web
     - Store on VM locally
     - Write Raw data to GCS
@@ -259,6 +280,63 @@ sf_eviction/
      - Clean it
      - Push it to GCS and create external table in BQ
 
+>DBT
+## dbt-core vs cloud
+* Develop the project in dbt cloud and then deploy (Production) it from VM
+* If using dbt-core with BQ you need to install the dbt-core adapter for BQ
+* Make sure a `staging` and `production` datasets are already created on BQ via Terraform
+
+## Initial setup 
+* On the VM(in the project directory)
+    * Make a new directory called `dbt` in the project root directory 
+    * All dbt related development will be done in this directory
+    * Push this to the remote repo
+    ```bash
+    cd sf_eviction
+    mkdir dbt
+    ```
+* Goto [dbt-cloud](https://www.getdbt.com/signup/) and create an account
+* Select BQ as your DB and select next
+    ![Output](images/dbt/1.JPG)
+* Then upload the json credentials
+    ![Output](images/dbt/2.JPG)
+* All details will be automatically populated
+    ![Output](images/dbt/3.JPG)
+* Then enter the details for the Development Credentials as follows and Test the connection and select next:
+    - Name (of the project) - dbt (you have to edit this later if you don't see this option now/ workaround is to delete the dbt project and start again)
+    - Connection - BigQueryEviction
+    - Dataset - statging
+    - Target Name - dev
+    - Threads - 4
+    - ![Output](images/dbt/4.JPG)
+* Setup a Repository
+    - Select GitHub
+    - Connect a GitHub account
+    - Log into GitHub and connect the accounts
+    - Once it's linked it shows as below in the settings
+        ![Output](images/dbt/5.JPG)
+    - Select the down arrow and select the button to choose the repo to import
+        ![Output](images/dbt/6.JPG)
+    - This will take you to GitHub where you can select the repo to give access to
+    - Select the Develop button the top left and select Environments
+        ![Output](images/dbt/7.JPG)
+    - Here you can select the repo to import to your dbt project
+    - Then Select the `Start Developing your ide` option; this will import your project repo sf_eviction to the IDE
+    - In the IDE select the `Change Branch` button on the top right
+         ![Output](images/dbt/8.JPG)
+* Initialize the directory for dbt with `dbt init`
+
+
+## DEVELOPMENT - (Transformations)
+* 
+
+## profiles.yml [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
+* This file stays outside your dbt project like at ~/.dbt/profiles.yml
+* Here you define your connection details
+* You can have several targets under the SAME database eg: one for development, one for production. [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
+
+>STARUP & SHUTDOWN
+
 ## Logging in: During Development
 ```bash
 # local system
@@ -268,7 +346,6 @@ gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --proje
 # update the external ip in ~/.ssh/config
 ssh $GCP_COMPUTE_ENGINE_NAME
 
-#########################################################################################################
 # on the VM
 cd sf_eviction
 source env_variables.sh # set env variables with prefect api & pyspark path
@@ -297,10 +374,12 @@ Ctrl + C
 prefect cloud logout
 ```
 
+>JOURNALING
 ### TODO:
 * Next day 
-    [ ] test the flow with the prefect agent
-    [ ] Add logging in the flows
+    [ ] consolidate commands/instructions to run the etl part (Prefect part)
+    [X] test the flow with the prefect agent
+    [X] Add logging in the flows
     [ ] Work on terraform
     [X] replace the dataset name (sf_eviction) with dataset name credential (set this when using terraform to create the dataset)
     [ ] work on dbt-core locally
