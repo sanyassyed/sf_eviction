@@ -290,45 +290,58 @@ sf_eviction/
 * On the VM(in the project directory)
     * Make a new directory called `dbt` in the project root directory 
     * All dbt related development will be done in this directory
-    * Push this to the remote repo
+    * Push this to the remote repo so it's available to dbt-Cloud when it clones the repo
     ```bash
     cd sf_eviction
     mkdir dbt
+    echo this is a test file > dbt/test.txt # create a test file in this new repo so we can push it to git
     ```
-* Goto [dbt-cloud](https://www.getdbt.com/signup/) and create an account
-* Select BQ as your DB and select next
-    ![Output](images/dbt/1.JPG)
-* Then upload the json credentials
-    ![Output](images/dbt/2.JPG)
-* All details will be automatically populated
-    ![Output](images/dbt/3.JPG)
-* Then enter the details for the Development Credentials as follows and Test the connection and select next:
-    - Name (of the project) - dbt (you have to edit this later if you don't see this option now/ workaround is to delete the dbt project and start again)
-    - Connection - BigQueryEviction
-    - Dataset - statging
-    - Target Name - dev
-    - Threads - 4
-    - ![Output](images/dbt/4.JPG)
-* Setup a Repository
-    - Select GitHub
-    - Connect a GitHub account
-    - Log into GitHub and connect the accounts
-    - Once it's linked it shows as below in the settings
-        ![Output](images/dbt/5.JPG)
-    - Select the down arrow and select the button to choose the repo to import
-        ![Output](images/dbt/6.JPG)
-    - This will take you to GitHub where you can select the repo to give access to
-    - Select the Develop button the top left and select Environments
-        ![Output](images/dbt/7.JPG)
-    - Here you can select the repo to import to your dbt project
-    - Then Select the `Start Developing your ide` option; this will import your project repo sf_eviction to the IDE
-    - In the IDE select the `Change Branch` button on the top right
-         ![Output](images/dbt/8.JPG)
-* Initialize the directory for dbt with `dbt init`
+* Setup the dbt-project:
+    * Goto [dbt-cloud](https://www.getdbt.com/signup/) and create an account
+    * Select BQ as your DB and select next
+        ![Output](images/dbt/1.JPG)
+    * Then upload the json credentials
+        ![Output](images/dbt/2.JPG)
+    * All details will be automatically populated
+        ![Output](images/dbt/3.JPG)
+    * Then enter the details for the Development Credentials as follows and Test the connection and select next:
+        - Name (of the project) - sf_eviction_dbt (you have to edit this later if you don't see this option now at `Project Details -> Name & Project Subdirectory` NOTE: workaround is to delete the dbt project and start again and you will see the options to set these right at the beginning)
+        - Subfolder - dbt 
+        - Connection - BigQueryEviction
+        - Dataset - statging
+        - Target Name - dev
+        - Threads - 4
+        - ![Output](images/dbt/4.JPG)
+    * Setup a connection to the a Repository
+        - Select GitHub
+        - Connect a GitHub account
+        - Log into GitHub and connect the accounts
+        - Once it's linked it shows as below in the settings
+        - ![Output](images/dbt/5.JPG)
+        - Select the down arrow and select the button to choose the repo to import
+        - ![Output](images/dbt/6.JPG)
+        - This will take you to GitHub where you can select the repo to give access to
+        - Select the `Develop` button on the top left and from the drop down select `Environments`
+        - ![Output](images/dbt/7.JPG)
+        - Here you can select the repo to import to your dbt project
+        - Then Select the `Start Developing in the IDE` option; this will import your project repo sf_eviction to the IDE
+* Setup the IDE:
+    1. Make sure the dbt project home directory is set to the `dbt` folder
+        ![Output](images/dbt/8.JPG)
+    2. Then select the `Create Branch` from the drop down button as shown in the above image and name the branch `develop_dbt`
+    3. Then initialize the poject by selecting the `Initialize dbt project button`
+    4. This should create the dbt project folders under the dbt folder as follows
+        ![Output](images/dbt/9.JPG)
+    5. Now you can start developing your dbt project
+
 
 
 ## DEVELOPMENT - (Transformations)
-* 
+* Goto the file dbt_project.yml and edit the following:
+    - name: 'sf_eviction_dbt'
+    - profile: 'dev'
+    - **START HERE**
+    - [Related Video](https://www.youtube.com/watch?v=UVI30Vxzd6c&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=35)
 
 ## profiles.yml [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
 * This file stays outside your dbt project like at ~/.dbt/profiles.yml
