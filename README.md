@@ -392,7 +392,7 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
     - Going to add a location column
     - Add a unique id column called case_id which would be a concatenation of the eviction_id and updated date
     - Used a util for generating the surrogate key by hashing the case_id
-    - Added documentation
+    - Added documentation to models/staging/schema.yml
     - Now build the project as follows:
         ```bash
         # testing
@@ -489,7 +489,10 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
-    [ ] consolidate commands/instructions to run the etl part (Prefect part)
+    [ ] dbt - test the code for production and set scheduling and look at the documentation in the UI
+    [ ] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
+    [ ] Look into how data will be added to DB; about update options
+    [ ] consolidate commands/instructions to run the ETL part (Prefect part)
     [X] test the flow with the prefect agent
     [X] Add logging in the flows
     [ ] Work on terraform
@@ -498,7 +501,7 @@ prefect cloud logout
 * Later in the project
     [ ] use the point column for location
     [ ] Pull data via API using offset
-    [ ] Add update instead of create table so when new data is pulled it updates the existing table
+    [ ] Add update/append instead of create table so when new data is pulled it updates the existing table
     [X] Later modify the date to maybe seperate by month years etc
     [X] Seperate lat and long info from the location column
     [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
