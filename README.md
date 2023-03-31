@@ -316,7 +316,7 @@ We will use dbt-cloud to develop the project and dbt-core to deploy the project 
         - Name (of the project) - sf_eviction_dbt (you have to edit this later if you don't see this option now at `Project Details -> Name & Project Subdirectory` NOTE: workaround is to delete the dbt project and start again and you will see the options to set these right at the beginning)
         - Subfolder - dbt 
         - Connection - BigQueryEviction
-        - Dataset - statging
+        - Dataset - staging
         - Target Name - dev
         - Threads - 4
         - ![Output](images/dbt/4.JPG)
@@ -361,15 +361,50 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
         sf_eviction_dbt:
             # Applies to all files under models/staging/
             staging:
-                materialized: view
-            # Applies to all files under models/core/ 
-            core:
                 materialized: table
+            # Applies to all files under models/core/ 
+            #core:
+                #materialized: table
     ```
-* In the `dbt/models` folder create the following folders
+* In the `dbt/models` folder create the following 
     - `staging` folder - where we will be creating models to build views from the raw data perform typecasting, renaming of fields etc on it
-    - `core` folder - where we will be creating models that we will be exposing at the end to the Visualization/BI tool etc. They usually help in creating fact or dimention tables.
+        - `schema.yml` file in the staging folder where we will mention the source project, dataset and table(s) name
+        - `stg_eviction.sql` file in the staging folder where we will define the data to be imported to create the stg_eviction table in the target(dev/prod) dataset
+    - ~~`core` folder - where we will be creating models that we will be exposing at the end to the Visualization/BI tool etc. They usually help in creating fact or dimention tables.~~
 
+* Install PACKAGES
+    - Create a new file in the dbt project folder called  `packages.yml`
+    - To download the packages written in this file to the packages folder; use the command `dbt deps`
+    - After running this command check the packages folder to see if the package has been downloaded
+* Run the dbt project using the command
+    ```bash
+    # testing
+    dbt deps
+    dbt run 
+    # to load the entire dataset
+    # dbt run --var 'is_test_run: false'
+    ```
+    - This will create and populate the stg_evaluation table in the DW in the target(dev = staging dataset/prod = production dataset) dataset
+
+* ITERATION 2
+    - Going to transform the eviction data now
+    - I was unable to partition the table when loading from external table in BQ (via the ingest.py code) as the file_date column resulted in too many partitions.
+    - Going to add a location column
+    - Add a unique id column called case_id which would be a concatenation of the eviction_id and updated date
+    - Used a util for generating the surrogate key by hashing the case_id
+    - Added documentation
+    - Now build the project as follows:
+        ```bash
+        # testing
+        dbt deps
+        dbt build
+        # to load the entire dataset
+        # dbt build --var 'is_test_run: false'
+        ```
+* COMMIT-SYNC & MERGING
+    - Use this button for version control.
+    - This will commit and push the code to the `develop_dbt` branch
+    - For it to be merged with the `MAIN/MASTER` branch you will have to use the `Create a Pull request on Git`
 ### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
@@ -458,9 +493,10 @@ prefect cloud logout
     [X] test the flow with the prefect agent
     [X] Add logging in the flows
     [ ] Work on terraform
-    [X] replace the dataset name (sf_eviction) with dataset name credential (set this when using terraform to create the dataset)
+    [X] replace the dataset name (sf_eviction also set this to raw) with dataset name credential (set this when using terraform to create the dataset)
     [ ] work on dbt-core locally
 * Later in the project
+    [ ] use the point column for location
     [ ] Pull data via API using offset
     [ ] Add update instead of create table so when new data is pulled it updates the existing table
     [X] Later modify the date to maybe seperate by month years etc

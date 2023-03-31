@@ -1,0 +1,114 @@
+      - name: case_id
+        description: >
+          A join of the eviction notice ID and the created_at.
+        tests:
+          - unique:
+              severity: warn
+          - not_null:
+              severity: warn
+
+
+- name: eviction_id
+  description: >
+    The eviction notice ID is the internal case record primarily used for administrative purposes.
+  tests:
+    -unique:
+        severity: warn
+    - not_null:
+        severity: warn
+- name: address
+  description: >
+    The address where the eviction notice was issued. The addresses are represented at the block level.
+- name: city
+  description: >
+    The city where the eviction notice was issued. In this dataset, always San Francisco.
+- name: state
+  description: >
+    The state where the eviction notice was issued. In this dataset, always CA.
+- name: zip
+  description: >
+    The zip code where the eviction notice was issued.
+- name: file_date
+  description: >
+    The date on which the eviction notice was filed with the Rent Board of Arbitration.
+- name: non_payment
+  description: >
+    This field is checked (true) if the landlord indicated non-payment of rent as a grounds for eviction.
+- name: breach
+  description: >
+    This field is checked (true) if the landlord indicated breach of lease as a grounds for eviction.
+- name: nuisance
+  description: >
+    This field is checked (true) if the landlord indicated nuisance as a grounds for eviction.
+- name: illegal_use
+  description: >
+    This field is checked (true) if the landlord indicated an illegal use of the rental unit as a grounds for eviction.
+- name: failure_to_sign_renewal
+  description: >
+    This field is checked (true) if the landlord indicated failure to sign lease renewal as a grounds for eviction.
+- name: access_denial
+  description: >
+    This field is checked (true) if the landlord indicated unlawful denial of access to unit as a grounds for eviction.
+- name: unapproved_subtenant
+  description: >
+    This field is checked (true) if the landlord indicated the tenant had an unapproved subtenant as a grounds for eviction.
+- name: owner_move_in
+  description: >
+    This field is checked (true) if the landlord indicated an owner move in as a grounds for eviction.
+- name: demolition
+  description: >
+    This field is checked (true) if the landlord indicated demolition of property as a grounds for eviction.
+- name: capital_improvement
+  description: >
+    This field is checked (true) if the landlord indicated a capital improvement as a grounds for eviction.
+- name: substantial_rehab
+  description: >
+    This field is checked (true) if the landlord indicated substantial rehabilitation as a grounds for eviction.
+- name: ellis_act_withdrawal
+  description: >
+    This field is checked (true) if the landlord indicated an Ellis Act withdrawal (going out of business) as a grounds for eviction.
+- name: condo_conversion
+  description: >
+    This field is checked (true) if the landlord indicated a condo conversion as a grounds for eviction.
+- name: roommate_same_unit
+  description: >
+    This field is checked (true) if the landlord indicated if they were evicting a roommate in their unit as a grounds for eviction.
+- name: other_cause
+  description: >
+    This field is checked (true) if some other cause not covered by the admin code was indicated by the landlord. These are not enforceable grounds, but are indicated here for record keeping.
+- name: late_payments
+  description: >
+    This field is checked (true) if the landlord indicated habitual late payment of rent as a grounds for eviction.
+- name: lead_remediation
+  description: >
+    This field is checked (true) if the landlord indicated lead remediation as a grounds for eviction.
+- name: development
+  description: >
+    This field is checked (true) if the landlord indicated a development agreement as a grounds for eviction.
+- name: good_samaritan_ends
+  description: >
+    This field is checked (true) if the landlord indicated the period of good samaritan laws coming to an end as a grounds for eviction.
+- name: constraints_date
+  description: >
+    In the case of certain just cause evictions like Ellis and Owner Move In, constraints are placed on the property and recorded by the the City Recorder. This date represents the date through which the relevant constraints apply. 
+- name: supervisor_district
+  description: >
+    District Number - San Francisco Board of Supervisors (1 to 11). Please note these are automatically assigned based on the latitude and longitude. These will be blank if the automated geocoding was unsuccessful.
+- name: neighborhood
+  description: >
+    Analysis neighborhoods corresponding to census boundaries. You can see these boundaries here: https://data.sfgov.org/d/p5b7-5n3h Please note these are automatically assigned based on the latitude and longitude. These will be blank if the automated geocoding was unsuccessful.
+- name: created_at
+  description: >
+    Indicates when the record was created
+- name: updated_at
+  description: >
+    Indicates when the record was updated
+- name: latitude
+  description: >
+    The latitude of the location
+- name: longitude
+  description: >
+    The longitude of the location
+- name: location
+  description: >
+    The location of the record is at the mid block level and is represented by it's latitude and longitude. Some addresses are not well formed and do not get geocoded. These will be blank. Geocoders produce a confidence match rate. Since this field is automated, we set the match at 90% or greater. Please note, that even this rate could result in false positives however more unlikely than at lower confidence levels.
