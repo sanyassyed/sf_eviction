@@ -19,7 +19,7 @@ models:
     columns:
       - name: case_id
         description: >
-          A join of the eviction notice ID and the created_at.
+          A join of the eviction notice ID and the updated_at.
         tests:
           - unique:
               severity: warn

@@ -1,7 +1,18 @@
 {{config(materialized='table')}}
+--handling deduplication
+with evicdata as
+(
+select *,
+row_number() over(partition by eviction_id, updated_at) as rn
+from {{ source('staging', var("BQ_TABLE_NAME_EVICTION")) }}
+)
 
 select 
-cast( {{dbt_utils.surrogate_key(['eviction_id',cast('updated_at' as string)])}} as string) as case_id,
+--here we are using the date_trunc function from dbt_uils hence the syntax is different
+cast( ({{dbt_utils.surrogate_key(['eviction_id', date_trunc('day', 'updated_at')])}}) as string) as case_id,
+--here we are using the date_truc function from BQ hence the syntax is different
+--Not using this as I've alreasy eliminated duplicates of these by using de-duplication above
+--concat(eviction_id, '_', date_trunc(updated_at, day)) as case_id,
 cast(eviction_id as string) as eviction_id, 
 cast(address as string) as address, 
 cast(city as string) as city, 
@@ -36,10 +47,10 @@ cast(longitude as FLOAT64) as longitude,
 cast(latitude as FLOAT64) as latitude,
 cast(ST_GEOGPOINT(longitude, latitude) as geography) as location
 
-from {{ source('staging', var("BQ_TABLE_NAME_EVICTION")) }}
+from evicdata
+where rn = 1
 
-
-
+-- dbt build --m <model.sql> --var 'is_test_run: false'
 {% if var('is_test_run', default=true) %}
 
     limit 100
