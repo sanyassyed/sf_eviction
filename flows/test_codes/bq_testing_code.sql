@@ -19,6 +19,15 @@ AS
 SELECT * FROM `blissful-flames-375219.sf_eviction.external_eviction`;
 -- ERROR: Too many partitions produced by query, allowed 4000, query produces at least 6389 partitions
 
+-- Create partions on updated_at column and cluster by eviction_id
+CREATE OR REPLACE TABLE `blissful-flames-375219.sf_eviction.eviction_partition`
+PARTITION BY
+DATE(updated_at)  
+CLUSTER BY 
+  eviction_id AS
+SELECT * FROM `blissful-flames-375219.sf_eviction.external_eviction`
+;
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 -- TEST QUERIES
 --SELECT COUNT(*) FROM `blissful-flames-375219.sf_eviction.external_eviction`;
@@ -37,3 +46,12 @@ SELECT COUNT(DISTINCT(file_date)) FROM `blissful-flames-375219.sf_eviction.exter
 
 SELECT file_date, COUNT(1) FROM `blissful-flames-375219.sf_eviction.external_eviction`
 GROUP BY file_date;
+
+SELECT DATE(created_at), COUNT(1)
+FROM `blissful-flames-375219.staging.stg_eviction` 
+GROUP BY 1
+ORDER BY 1
+;
+
+
+
