@@ -52,19 +52,4 @@ FROM `blissful-flames-375219.staging.stg_eviction`
 GROUP BY 1
 ORDER BY 1
 ;
-
-
-
--- Test Difference
-{{ config(materialized='table') }}
--- we use defaultDataset as orb_tab is not a qualified dataset
--- using this to encounter the 'Table "ord_dat" must be qualified with a dataset (e.g. dataset.table).' error
-WITH ord_tab AS
-(
-   SELECT *,
-   row_number() over(partition by eviction_id order by updated_at) as rn
-   FROM {{ ref('stg_eviction') }}
-)
-SELECT *
-FROM ord_dat
-WHERE rn = 1
+    [ ] Remove `rn` column from 'fact_eviction` table
