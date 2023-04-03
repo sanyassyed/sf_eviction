@@ -35,9 +35,9 @@ models:
   sf_eviction_dbt:
     # Applies to all files under models/example/
     staging:
+      materialized: view
+    core:
       materialized: table
-    #core:
-      #materialized: table
 
 # variables used across the project are defined here
 # varibles used in the models/staging/schema.yml file
@@ -45,3 +45,4 @@ vars:
   GCP_PROJECT_ID: 'blissful-flames-375219'
   BQ_DATASET_NAME: sf_eviction # need to change this to raw
   BQ_TABLE_NAME_EVICTION: eviction
+

@@ -1,4 +1,4 @@
-{{config(materialized='table')}}
+{{config(materialized='view')}}
 --handling deduplication
 with evicdata as
 (
