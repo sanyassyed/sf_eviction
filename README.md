@@ -84,6 +84,7 @@ Below are the required API's, Applications needed for this project and the instr
 
 ### API's
 * TODO:
+* API Keys (`API_KEY_ID` & `API_KEY_SECRET`) are needed for extracting Eviction data for this project; find the instructions [here](docs/info_api.md) to get your key.
 
 ### conda 
 * TODO:
@@ -283,57 +284,172 @@ sf_eviction/
 >DBT
 ## dbt-core vs cloud
 * Develop the project in dbt cloud and then deploy (Production) it from VM
+* Documentation is easier in the dbt-cloud IDE therefore we are taking this two step approach
 * If using dbt-core with BQ you need to install the dbt-core adapter for BQ
 * Make sure a `staging` and `production` datasets are already created on BQ via Terraform
 
-## Initial setup 
+## Initial setup
 * On the VM(in the project directory)
     * Make a new directory called `dbt` in the project root directory 
     * All dbt related development will be done in this directory
-    * Push this to the remote repo
+    * Push this to the remote repo so it's available to dbt-Cloud when it clones the repo
     ```bash
     cd sf_eviction
     mkdir dbt
+    echo this is a test file > dbt/test.txt # create a test file in this new repo so we can push it to git
     ```
-* Goto [dbt-cloud](https://www.getdbt.com/signup/) and create an account
-* Select BQ as your DB and select next
-    ![Output](images/dbt/1.JPG)
-* Then upload the json credentials
-    ![Output](images/dbt/2.JPG)
-* All details will be automatically populated
-    ![Output](images/dbt/3.JPG)
-* Then enter the details for the Development Credentials as follows and Test the connection and select next:
-    - Name (of the project) - dbt (you have to edit this later if you don't see this option now/ workaround is to delete the dbt project and start again)
-    - Connection - BigQueryEviction
-    - Dataset - statging
-    - Target Name - dev
-    - Threads - 4
-    - ![Output](images/dbt/4.JPG)
-* Setup a Repository
-    - Select GitHub
-    - Connect a GitHub account
-    - Log into GitHub and connect the accounts
-    - Once it's linked it shows as below in the settings
-        ![Output](images/dbt/5.JPG)
-    - Select the down arrow and select the button to choose the repo to import
-        ![Output](images/dbt/6.JPG)
-    - This will take you to GitHub where you can select the repo to give access to
-    - Select the Develop button the top left and select Environments
-        ![Output](images/dbt/7.JPG)
-    - Here you can select the repo to import to your dbt project
-    - Then Select the `Start Developing your ide` option; this will import your project repo sf_eviction to the IDE
-    - In the IDE select the `Change Branch` button on the top right
-         ![Output](images/dbt/8.JPG)
-* Initialize the directory for dbt with `dbt init`
+
+## DBT-CLOUD (OPTION 1)
+
+We will use dbt-cloud to develop the project and dbt-core to deploy the project as mentioned before
+
+### Setup
+* Setup the dbt-project on `dbt-cloud`:
+    * Goto [dbt-cloud](https://www.getdbt.com/signup/) and create an account
+    * Select BQ as your DB and select next
+        ![Output](images/dbt/1.JPG)
+    * Then upload the json credentials
+        ![Output](images/dbt/2.JPG)
+    * All details will be automatically populated
+        ![Output](images/dbt/3.JPG)
+    * Then enter the details for the Development Credentials as follows and Test the connection and select next:
+        - Name (of the project) - sf_eviction_dbt (you have to edit this later if you don't see this option now at `Project Details -> Name & Project Subdirectory` NOTE: workaround is to delete the dbt project and start again and you will see the options to set these right at the beginning)
+        - Subfolder - dbt 
+        - Connection - BigQueryEviction
+        - Dataset - staging
+        - Target Name - dev
+        - Threads - 4
+        - ![Output](images/dbt/4.JPG)
+    * Setup a connection to the a Repository
+        - Select GitHub
+        - Connect a GitHub account
+        - Log into GitHub and connect the accounts
+        - Once it's linked it shows as below in the settings
+        - ![Output](images/dbt/5.JPG)
+        - Select the down arrow and select the button to choose the repo to import
+        - ![Output](images/dbt/6.JPG)
+        - This will take you to GitHub where you can select the repo to give access to
+        - Select the `Develop` button on the top left and from the drop down select `Environments`
+        - ![Output](images/dbt/7.JPG)
+        - Here you can select the repo to import to your dbt project
+        - Then Select the `Start Developing in the IDE` option; this will import your project repo sf_eviction to the IDE
+* Setup the IDE:
+    1. Make sure the dbt project home directory is set to the `dbt` folder
+        ![Output](images/dbt/8.JPG)
+    2. Then select the `Create Branch` from the drop down button as shown in the above image and name the branch `develop_dbt`
+    3. Then initialize the poject by selecting the `Initialize dbt project button`
+    4. This should create the dbt project folders under the dbt folder as follows
+        ![Output](images/dbt/9.JPG)
+    5. Now you can start developing your dbt project
 
 
-## DEVELOPMENT - (Transformations)
-* 
 
-## profiles.yml [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
-* This file stays outside your dbt project like at ~/.dbt/profiles.yml
-* Here you define your connection details
-* You can have several targets under the SAME database eg: one for development, one for production. [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
+### DEVELOPMENT 
+
+Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
+
+* Goto dbt-cloud [Develop](https://cloud.getdbt.com/develop/158847/projects/232754) tab
+* In the file dbt_project.yml edit the following: [Ref Video](https://youtu.be/iMxh6s_wL4Q?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=248)
+    
+    ```yml
+    name: 'sf_eviction_dbt'
+    profile: 'dev'
+    .....
+    .....
+    .....
+    models:
+        sf_eviction_dbt:
+            # Applies to all files under models/staging/
+            staging:
+                materialized: view
+            # Applies to all files under models/core/ 
+            core:
+                materialized: table
+    ```
+* In the `dbt/models` folder create the following 
+    - `staging` folder - where we will be creating models to build views from the raw data perform typecasting, renaming of fields etc on it
+        - `schema.yml` file in the staging folder where we will mention the source project, dataset and table(s) name
+        - `stg_eviction.sql` file in the staging folder where we will define the data to be imported to create the stg_eviction ~~table~~ view in the target(dev/prod) dataset
+    - `core` folder - where we will be creating models that we will be exposing at the end to the Visualization/BI tool etc. They usually help in creating fact or dimention tables.
+    - `fact_eviction.sql` file in the core folder that will create a fact table called `fact_eviction` which will only have records of eviction_id's with the latest update date. i.e only one record per id
+
+* Install PACKAGES
+    - Create a new file in the dbt project folder called  `packages.yml`
+    - To download the packages written in this file to the packages folder; use the command `dbt deps`
+    - After running this command check the packages folder to see if the package has been downloaded
+* Run the dbt project using the command
+    ```bash
+    # testing
+    dbt deps
+    dbt run 
+    # to only run the stg_eviction model  on the entire dataset
+    # dbt run --select stg_eviction --var "is_test_run: false"
+    ```
+    - This will create and populate the stg_evaluation table in the DW in the target(dev = staging dataset/prod = production dataset) dataset
+
+* ITERATION 2 & RUNNING THE DEV
+    - Going to transform the eviction data now
+    - I was unable to partition the table when loading from external table in BQ (via the ingest.py code) as the file_date column resulted in too many partitions.
+    - Going to add a location column
+    - Add a unique id column called case_id which would be a concatenation of the eviction_id and updated date
+    - Used a util for generating the surrogate key by hashing the case_id
+    - Added documentation to models/staging/schema.yml
+    - Now build the project as follows:
+        ```bash
+        # testing
+        dbt deps
+        dbt build
+        # to load the entire dataset
+        # dbt build --var 'is_test_run: false'
+        ```
+* COMMIT-SYNC & MERGING
+    - Use the  `commit & sync` button for version control.
+    - This will commit and push the code to the `develop_dbt` branch
+    - To merge the `develop_dbt` branch with the `MAIN/MASTER` branch you will have to use the `Create a Pull request on Git`
+
+* PRODUCTION
+    - 
+### EXTRA INFO
+
+* `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
+    - This file stays outside your dbt project usually at ~/.dbt/profiles.yml
+    - Here you define your connection details
+    - You can have several targets under the SAME database eg: 
+        - one for development (dev), 
+        - one for production. 
+        - [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
+    - Target dev would be used as the default target 
+    - Then during PRODUCTION if you want to build the dbt project on the production dataset you can expicitly specify the target for production using the -t flag along with the build command as follows `dbt build -t prod` 
+
+* `JINJA BLOCKS` :We will be using a lot of jinja blocks (which are within two curly braces) and can contain functions called macros that will turn into full codes during compile. For e.g:
+    ```sql
+    --file dbt/models/staging/stg_eviction.sql
+    {{
+        config(materialized='table')
+
+    }}
+    Select *
+    from raw.eviction
+    ```
+     - The above jija code conatains the macro config (with the parameter `materialized` and the strategy set to `table`) which during compile will convert the parameter `materialized='table'` to a DDL/DML to the model (eg: core/stg_eviction model) we are writing to. TLDR: It creates the `CREATE TABLE` statement with the table name which is same as the .sql file name prefixed with the appropriate dataset name (which changes for dev and production)
+
+     ```sql
+     create table schema.stg_eviction as (
+        Select *
+        from raw.eviction
+     )
+     ```
+     - The strategy could be set to 
+        * table
+        * view
+        * incremental -use this if data does not change very often
+        * ephemeral
+
+* Macros used with jija
+    - config - Automatically create the `CREATE TABLE` statement with the table/view name
+    - source - resolves the table name for us with automatically prefixing the right dataset name based on target
+    - ref - to refer to the tables/views that were created either using the dbt models or dbt seeds
+
 
 >STARUP & SHUTDOWN
 
@@ -377,16 +493,22 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
-    [ ] consolidate commands/instructions to run the etl part (Prefect part)
-    [X] test the flow with the prefect agent
-    [X] Add logging in the flows
-    [ ] Work on terraform
-    [X] replace the dataset name (sf_eviction) with dataset name credential (set this when using terraform to create the dataset)
-    [ ] work on dbt-core locally
+    - [ ] dbt - test the code for production and set scheduling and look at the documentation in the UI
+    - [ ] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
+    - [ ] Look into how data will be added to DB; about update options
+    - [ ] consolidate commands/instructions to run the ETL part (Prefect part)
+    - [X] test the flow with the prefect agent
+    - [X] Add logging in the flows
+    - [ ] Work on terraform
+    - [X] replace the dataset name (sf_eviction also set this to raw) with dataset name credential (set this when using terraform to create the dataset)
+    - [ ] work on dbt-core locally
 * Later in the project
-    [ ] Pull data via API using offset
-    [ ] Add update instead of create table so when new data is pulled it updates the existing table
-    [X] Later modify the date to maybe seperate by month years etc
-    [X] Seperate lat and long info from the location column
-    [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
-    [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 
+    - [ ] use the point column for location
+    - [ ] Pull data via API using offset
+    - [ ] Add update/append instead of create table so when new data is pulled it updates the existing table
+    - [X] Later modify the date to maybe seperate by month years etc
+    - [X] Seperate lat and long info from the location column
+    - [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
+    - [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 
+    - [ ] Add more tables like neighbourhood table, district table etc [ref:](https://catalog.data.gov/dataset/?q=&sort=metadata_modified+desc&groups=local&res_format=CSV&tags=planning&tags=zoning&organization=city-of-san-francisco&ext_location=&ext_bbox=&ext_prev_extent=-164.53125%2C-80.17871349622823%2C164.53125%2C80.17871349622823) Try searching for San Francisco Neighbourhood, District Demographics
+    - [ ] Remove `rn` column from 'fact_eviction` table

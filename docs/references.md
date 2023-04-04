@@ -20,4 +20,5 @@ Websites and other sources used during this project are listed below. I would li
 * [Loading externally partitioned data](https://cloud.google.com/bigquery/docs/hive-partitioned-loads-gcs#bq)
 * [Create Dataset in BQ](https://cloud.google.com/bigquery/docs/datasets#terraform)
 * [Create Partition Table](https://cloud.google.com/bigquery/docs/creating-partitioned-tables#sql)
- 
+ ## DBT
+ * [datetime function date_trunc in BQ](https://docs.getdbt.com/blog/date-trunc-sql)

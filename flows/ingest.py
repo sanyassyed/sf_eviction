@@ -33,8 +33,8 @@ GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
 BQ_BLOCK = config("BQ_BLOCK")
 GCP_PROJECT_ID = config("GCP_PROJECT_ID")
 GCS_BUCKET = config("GCS_BUCKET")
+
 # SODU API Credentials
-API_TOKEN = config("API_TOKEN")
 API_KEY_ID = config("API_KEY_ID")
 API_KEY_SECRET = config("API_KEY_SECRET")
 
