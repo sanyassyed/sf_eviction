@@ -455,8 +455,11 @@ In this step we will deploy the project. This deployment will be run against a d
 
 ## DBT-CORE (OPTION 2)
 
-We have developed (documented and tested) and deployed the dbt models on dbt-cloud. Now we will try to develop & deploy it from dbt-core so it can be used from the VM also if we prefer that. [Reference Video](https://www.youtube.com/watch?v=Cs9Od1pcrzM&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=38)
-
+We have developed (documented and tested) and deployed the dbt models on dbt-cloud. Now we will try to develop & deploy it from dbt-core so it can be used from the VM also if we prefer that. 
+* [Reference Video](https://www.youtube.com/watch?v=Cs9Od1pcrzM&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=38)
+* [Reference Instructions by me](https://github.com/sanyassyed/data-engineering-zoomcamp-project/tree/main/homework/workshop_piperider)
+* Remember to do development change to the dev branch
+* 
 
 
 ### EXTRA INFO
@@ -466,7 +469,7 @@ We have developed (documented and tested) and deployed the dbt models on dbt-clo
     - Here you define your connection details
     - You can have several targets under the SAME database eg: 
         - one for development (dev), 
-        - one for production. 
+        - one for production (prod). 
         - [How to create it-tutorial](https://youtu.be/Cs9Od1pcrzM?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=359)
     - Target dev would be used as the default target 
     - Then during PRODUCTION if you want to build the dbt project on the production dataset you can expicitly specify the target for production using the -t flag along with the build command as follows `dbt build -t prod` 
