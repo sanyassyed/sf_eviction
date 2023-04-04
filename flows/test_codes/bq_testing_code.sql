@@ -52,4 +52,3 @@ FROM `blissful-flames-375219.staging.stg_eviction`
 GROUP BY 1
 ORDER BY 1
 ;
-    [ ] Remove `rn` column from 'fact_eviction` table

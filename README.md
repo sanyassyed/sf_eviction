@@ -361,16 +361,17 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
         sf_eviction_dbt:
             # Applies to all files under models/staging/
             staging:
-                materialized: table
+                materialized: view
             # Applies to all files under models/core/ 
-            #core:
-                #materialized: table
+            core:
+                materialized: table
     ```
 * In the `dbt/models` folder create the following 
     - `staging` folder - where we will be creating models to build views from the raw data perform typecasting, renaming of fields etc on it
         - `schema.yml` file in the staging folder where we will mention the source project, dataset and table(s) name
-        - `stg_eviction.sql` file in the staging folder where we will define the data to be imported to create the stg_eviction table in the target(dev/prod) dataset
-    - ~~`core` folder - where we will be creating models that we will be exposing at the end to the Visualization/BI tool etc. They usually help in creating fact or dimention tables.~~
+        - `stg_eviction.sql` file in the staging folder where we will define the data to be imported to create the stg_eviction ~~table~~ view in the target(dev/prod) dataset
+    - `core` folder - where we will be creating models that we will be exposing at the end to the Visualization/BI tool etc. They usually help in creating fact or dimention tables.
+    - `fact_eviction.sql` file in the core folder that will create a fact table called `fact_eviction` which will only have records of eviction_id's with the latest update date. i.e only one record per id
 
 * Install PACKAGES
     - Create a new file in the dbt project folder called  `packages.yml`
@@ -381,8 +382,8 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
     # testing
     dbt deps
     dbt run 
-    # to load the entire dataset
-    # dbt run --var 'is_test_run: false'
+    # to only run the stg_eviction model  on the entire dataset
+    # dbt run --select stg_eviction --var "is_test_run: false"
     ```
     - This will create and populate the stg_evaluation table in the DW in the target(dev = staging dataset/prod = production dataset) dataset
 
@@ -402,9 +403,9 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
         # dbt build --var 'is_test_run: false'
         ```
 * COMMIT-SYNC & MERGING
-    - Use this button for version control.
+    - Use the  `commit & sync` button for version control.
     - This will commit and push the code to the `develop_dbt` branch
-    - For it to be merged with the `MAIN/MASTER` branch you will have to use the `Create a Pull request on Git`
+    - To merge the `develop_dbt` branch with the `MAIN/MASTER` branch you will have to use the `Create a Pull request on Git`
 
 * PRODUCTION
     - 
@@ -510,3 +511,4 @@ prefect cloud logout
     - [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
     - [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 
     - [ ] Add more tables like neighbourhood table, district table etc [ref:](https://catalog.data.gov/dataset/?q=&sort=metadata_modified+desc&groups=local&res_format=CSV&tags=planning&tags=zoning&organization=city-of-san-francisco&ext_location=&ext_bbox=&ext_prev_extent=-164.53125%2C-80.17871349622823%2C164.53125%2C80.17871349622823) Try searching for San Francisco Neighbourhood, District Demographics
+    - [ ] Remove `rn` column from 'fact_eviction` table
