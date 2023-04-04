@@ -386,7 +386,7 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
     ```
     - This will create and populate the stg_evaluation table in the DW in the target(dev = staging dataset/prod = production dataset) dataset
 
-* ITERATION 2
+* ITERATION 2 & RUNNING THE DEV
     - Going to transform the eviction data now
     - I was unable to partition the table when loading from external table in BQ (via the ingest.py code) as the file_date column resulted in too many partitions.
     - Going to add a location column
@@ -405,6 +405,9 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
     - Use this button for version control.
     - This will commit and push the code to the `develop_dbt` branch
     - For it to be merged with the `MAIN/MASTER` branch you will have to use the `Create a Pull request on Git`
+
+* PRODUCTION
+    - 
 ### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
@@ -489,20 +492,21 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
-    [ ] dbt - test the code for production and set scheduling and look at the documentation in the UI
-    [ ] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
-    [ ] Look into how data will be added to DB; about update options
-    [ ] consolidate commands/instructions to run the ETL part (Prefect part)
-    [X] test the flow with the prefect agent
-    [X] Add logging in the flows
-    [ ] Work on terraform
-    [X] replace the dataset name (sf_eviction also set this to raw) with dataset name credential (set this when using terraform to create the dataset)
-    [ ] work on dbt-core locally
+    - [ ] dbt - test the code for production and set scheduling and look at the documentation in the UI
+    - [ ] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
+    - [ ] Look into how data will be added to DB; about update options
+    - [ ] consolidate commands/instructions to run the ETL part (Prefect part)
+    - [X] test the flow with the prefect agent
+    - [X] Add logging in the flows
+    - [ ] Work on terraform
+    - [X] replace the dataset name (sf_eviction also set this to raw) with dataset name credential (set this when using terraform to create the dataset)
+    - [ ] work on dbt-core locally
 * Later in the project
-    [ ] use the point column for location
-    [ ] Pull data via API using offset
-    [ ] Add update/append instead of create table so when new data is pulled it updates the existing table
-    [X] Later modify the date to maybe seperate by month years etc
-    [X] Seperate lat and long info from the location column
-    [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
-    [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 
+    - [ ] use the point column for location
+    - [ ] Pull data via API using offset
+    - [ ] Add update/append instead of create table so when new data is pulled it updates the existing table
+    - [X] Later modify the date to maybe seperate by month years etc
+    - [X] Seperate lat and long info from the location column
+    - [ ] Read json data directly into the pyspark df rather than write locally [find failed tests to do this in 05_api_json_data_write.ipynb]
+    - [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 
+    - [ ] Add more tables like neighbourhood table, district table etc [ref:](https://catalog.data.gov/dataset/?q=&sort=metadata_modified+desc&groups=local&res_format=CSV&tags=planning&tags=zoning&organization=city-of-san-francisco&ext_location=&ext_bbox=&ext_prev_extent=-164.53125%2C-80.17871349622823%2C164.53125%2C80.17871349622823) Try searching for San Francisco Neighbourhood, District Demographics
