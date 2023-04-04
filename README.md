@@ -301,7 +301,7 @@ sf_eviction/
 
 ## DBT-CLOUD (OPTION 1)
 
-We will use dbt-cloud to develop the project and dbt-core to deploy the project as mentioned before
+We will use dbt-cloud to DEVELOP (TEST & DOCUMENT) the project and dbt-core to deploy the project as mentioned before
 
 ### Setup
 * Setup the dbt-project on `dbt-cloud`:
@@ -407,8 +407,58 @@ Now we perform Transformations on the data **[the `T` part of ETL or ELT]**
     - This will commit and push the code to the `develop_dbt` branch
     - To merge the `develop_dbt` branch with the `MAIN/MASTER` branch you will have to use the `Create a Pull request on Git`
 
-* PRODUCTION
-    - 
+### PRODUCTION
+In this step we will deploy the project. This deployment will be run against a different schema - i.e qill write to a different dataset like `production` dataset in the DW [Reference Video](https://www.youtube.com/watch?v=rjf6yZNGX8I&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=37)
+* PR
+    - Here we will deploy the project by making a PR (Pull Request) to merge into the main branch
+    - Finish all the development and documentation and testing and then commit & sync
+    - Select `Pull from 'master'` if required before making a PR.
+    - Then select `Create a pull request on GitHub`
+    - This will take you to GitHub, there select `Create pull request` button
+    - Commit and create the request
+    - Then confirm the merge request with a comment
+    - You will find all the dbt related folders in the dbt folder
+* Creating Production Environment
+    - Goto dbt-cloud
+    - Select the `Pull from 'master'` if required
+    - Goto the `Deploy` tab and select `Environments` from the drop down
+    - Select the `Create Environment` button
+    - Fill the details as follows:
+        - Name: Production
+        - Environment Type: Deployment
+        - dbt Version: Latest 1.4
+        - Dataset: production
+        - Select `SAVE`
+* Creating Jobs in Production Environment
+    - Select `Create One`
+    - Fill the details as follows:
+        - Job Name: eviction_deploy
+        - Environment: Production
+        - dbt Version: Latest 1.4
+        - Target Name: prod
+        - Threads: 4
+        - Generate docs on run: Check
+        - Commands: dbt build --var 'is_test_run: false' (this command = dbt seed + dbt run + dbt test)
+        - Schedule: 5 7 1 * * (The dbt will run two hours after the ingest model runs i.e at 2:05 am on the 1st of every month; dbt accepts only UTC timezone; hence its 7 am in the cron schedule)
+        - Select `SAVE`
+    - Select `Run Now` to test if it works and populated the production table in the DW
+        - Click on the job to view the details of the job as it runs
+        - ![Output of build](images/dbt/10.JPG)
+        - Select `View documentation` to view the documentation
+    - Make the documentation available for the project `sf_eviction_dbt` (we set this in the `dbt_profiles.yml` file)
+        - Goto the `Account Settings`
+        - Select the project and select `Edit`
+        - Under Artifacts in `Documentation` select the job name `eviction_deploy`
+        - Select `SAVE`
+        - This will activate the documentation under the `DOCUMENTATION` tab next to `Develop` & `Deploy` on top of dbt-Cloud
+* Now the models will run on schedule by pulling data from the dbt folder from the main branch
+
+## DBT-CORE (OPTION 2)
+
+We have developed (documented and tested) and deployed the dbt models on dbt-cloud. Now we will try to develop & deploy it from dbt-core so it can be used from the VM also if we prefer that. [Reference Video](https://www.youtube.com/watch?v=Cs9Od1pcrzM&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=38)
+
+
+
 ### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
@@ -512,3 +562,4 @@ prefect cloud logout
     - [ ] Write the data from pyspark df directly to BQ and GCS - do this using Dataproc? 
     - [ ] Add more tables like neighbourhood table, district table etc [ref:](https://catalog.data.gov/dataset/?q=&sort=metadata_modified+desc&groups=local&res_format=CSV&tags=planning&tags=zoning&organization=city-of-san-francisco&ext_location=&ext_bbox=&ext_prev_extent=-164.53125%2C-80.17871349622823%2C164.53125%2C80.17871349622823) Try searching for San Francisco Neighbourhood, District Demographics
     - [ ] Remove `rn` column from 'fact_eviction` table
+    - [ ] Add documentation for the fact_eviction model as well
