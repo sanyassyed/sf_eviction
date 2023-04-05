@@ -572,6 +572,7 @@ dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
     ```bash
     git checkout develop_dbt
     git pull -origin master
+    dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
     ```
 2. PRODUCTION
     * After running the ingestion code via Prefect
