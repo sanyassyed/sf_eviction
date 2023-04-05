@@ -505,12 +505,21 @@ We have developed (documented and tested) and deployed the dbt models on dbt-clo
     # build models on staging dataset in BQ
     dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
     ``` 
-* Once working well create a pull request to the main branch
+* Once working well push the code to the dev branch (develop_dbt) & create a pull request to the main branch on GitHub
     ```bash
-    git 
+    git add .
+    git commit -m "CICD: dbt dev working from VM"
+    git push -u origin develop_dbt
     ``` 
 
 ### BUILD in PRODUCTION
+* Once the develop_dbt branch is merged with the main move to the main   branch
+    ```bash
+    git checkout
+    git commit -m "CICD: dbt dev working from VM"
+    git push -u origin develop_dbt
+    ``` 
+
 * The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
 ```bash
 # Set the env variables using 
