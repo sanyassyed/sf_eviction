@@ -4,7 +4,7 @@ with evicdata as
 (
 select *,
 row_number() over(partition by eviction_id, updated_at) as rn
-from {{ source('staging', var("BQ_TABLE_NAME_EVICTION")) }}
+from {{ source('source_raw', env_var("DBT_ENV_BQ_TABLE_RAW")) }}
 )
 
 select 

@@ -1,14 +1,11 @@
 version: 2
 
 sources:
-  # just any name we like to name source
-  - name: staging
-  # refers to a project in BQ
-    database: '{{ var("GCP_PROJECT_ID") }}'
-    schema: '{{ var("BQ_DATASET_NAME") }}'
-
+  - name: source_raw
+    database: "{{ env_var('DBT_ENV_GCP_PROJECT_ID') }}"
+    schema: "{{ env_var('DBT_ENV_BQ_DS_RAW') }}"
     tables:
-      - name: '{{ var("BQ_TABLE_NAME_EVICTION") }}'
+      - name: "{{ env_var('DBT_ENV_BQ_TABLE_RAW') }}"
 
 models:
   - name: stg_eviction

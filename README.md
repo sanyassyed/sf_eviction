@@ -9,7 +9,7 @@ Instructions for running the project will be created later.
 * Start the VM on GCP via CLI from the personal system- **Step 1**
     ```bash
     # Command to import environment variables in the windows os
-    source env.bashrc
+    source env_local.bashrc
     gcloud compute instances start ${GCP_COMPUTE_ENGINE_NAME} --zone ${GCP_ZONE} --project ${GCP_PROJECT_ID}
     # Copy paste the Instance External IP in the ~/.ssh/config file
     ssh ${GCP_COMPUTE_ENGINE_NAME}
@@ -478,14 +478,14 @@ We have developed (documented and tested) and deployed the dbt models on dbt-clo
     # set the env variables such that they are available to all child processes
     source .env
     export $(cut -d= -f1 .env)
-    # This command uses cut to extract the variable names from .env and passes them as arguments to the `export` command 
-    # For eg: `export $GCP_PROJECT_ID`; does this for all variables
+    # This command uses cut to extract the variable names from .env and passes them as arguments to the `export` command and exports those variables which have already been set by source .env
+    # For eg: `export $DBT_ENV_PROJECT_DIR`; does this for all variables
     
     # Install dbt deps and build dbt models by specifying the project directory
-    dbt deps --project-dir $DBT_PROJECT_DIR # downloads the dependencies for current dbt version
+    dbt deps --project-dir $DBT_ENV_PROJECT_DIR # downloads the dependencies for current dbt version
     
     # test dbt-core and big-query connection
-    dbt debug --project-dir $DBT_PROJECT_DIR
+    dbt debug --project-dir $DBT_ENV_PROJECT_DIR
     # use --profile profiles.yml if the profiles.yml is in the ~/.dbt/profiles.yml folder
     ```
 * NOTE: Here is what each part of the command means:
@@ -494,17 +494,31 @@ We have developed (documented and tested) and deployed the dbt models on dbt-clo
     - cut is a command that is used to extract sections from each line of a file.
     - -d= specifies that the delimiter used to separate fields in the file is the equals sign (=).
     - -f1 specifies that only the first field should be returned. In this case, the first field is the environment variable name.
-    envvars.txt is the file containing the environment variable names.
+    - .env is the file containing the environment variable names.
 
 ### BUILD in DEV
+* The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
+    ```bash
+    # Set the env variables using 
+    source .env
+    export $(cut -d= -f1 .env)
+    # build models on staging dataset in BQ
+    dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
+    ``` 
+* Once working well create a pull request to the main branch
+    ```bash
+    git 
+    ``` 
+
+### BUILD in PRODUCTION
+* The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
 ```bash
 # Set the env variables using 
 source .env
 export $(cut -d= -f1 .env)
 # build models on staging dataset in BQ
-dbt build --var 'is_test_run: false' --project-dir $DBT_PROJECT_DIR
+dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
 ``` 
-
 ### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)

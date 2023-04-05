@@ -38,11 +38,3 @@ models:
       materialized: view
     core:
       materialized: table
-
-# variables used across the project are defined here
-# varibles used in the models/staging/schema.yml file
-vars:
-  GCP_PROJECT_ID: "{{ env_var('GCP_PROJECT_ID') }}"
-  BQ_DATASET_NAME: "{{ env_var('BQ_DATASET_NAME_RAW') }}" # need to change this to raw
-  BQ_TABLE_NAME_EVICTION: "{{ env_var('BQ_TABLE_NAME_RAW') }}"
-
