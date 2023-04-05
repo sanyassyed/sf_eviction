@@ -1,9 +1,14 @@
 from prefect.deployments import Deployment
 from ingest import etl_parent_flow
 from prefect.orion.schemas.schedules import CronSchedule
+from decouple import config, AutoConfig
+config = AutoConfig(search_path='.env')
+
+filename_o = config("DBT_ENV_BQ_TABLE_RAW")
+dataset_name = config("DATASET_NAME")
 
 # Deployment for Loading data to GCS from the web
-local_dep = Deployment.build_from_flow(flow = etl_parent_flow, name='etl_web_to_gcp', work_queue_name="development", entrypoint="flows/ingest.py:etl_parent_flow", schedule =(CronSchedule(cron="5 0 1 * *", timezone="America/Chicago")), parameters={"dataset_name":'5cei-gny5', "filename_o":"eviction"})
+local_dep = Deployment.build_from_flow(flow = etl_parent_flow, name='etl_web_to_gcp', work_queue_name="development", entrypoint="flows/ingest.py:etl_parent_flow", schedule =(CronSchedule(cron="5 0 1 * *", timezone="America/Chicago")), parameters={"dataset_name":dataset_name, "filename_o":filename_o})
 
 
 if __name__=="__main__":

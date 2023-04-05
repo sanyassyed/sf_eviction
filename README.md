@@ -267,7 +267,7 @@ sf_eviction/
     ```bash
     # to deploy the flow with a schedule, it should then be available on prefect cloud under Deployments
     python flows/deploy_ingest.py
-    # inspect the deployment to check the pareameters and schedule
+    # inspect the deployment to check the parameters and schedule
     prefect deployment inspect ParentFlow/etl_web_to_gcp
     # start the agent
     prefect agent start --work-queue "development"
@@ -280,6 +280,39 @@ sf_eviction/
      - Transform it
      - Clean it
      - Push it to GCS and create external table in BQ
+
+### SIMPLIFIED:
+* NOTE:
+    - The datset (`raw`) where the data needs to be pushed to should be created already in BQ
+```bash
+cd sf_eviction
+conda activate .my_env
+# open flows/ingest.py to modify the code to ingest
+# open flows/deploy_ingest.py to modify the deployment file
+source .env
+export $(cut -d= -f1 .env)
+prefect cloud login -k $PREFECT_CLOUD_API
+prefect block register --file flows/create_prefect_blocks.py
+python flows/deploy_ingest.py
+# goto prefect cloud using login s***08@gmail.com and check if the deployment is set there
+# on VM-start the agent
+# in detached mode use 
+screen -A -m -d -S prefectagent prefect agent start --work-queue "development"
+# force run the deployment for testing or you can let it run on schedule
+prefect deployment run ParentFlow/etl_web_to_gcp
+# Goto the agent screen or prefect-Cloud to view the execution
+# screen -r prefectagent
+# Stop the prefect agent 
+screen -r prefectagent # whatever screen name you gave
+Ctrl + C
+prefect cloud logout
+# stop the scedule on Prefect-Cloud UI if required
+```
+* Now there should be 
+    1. raw and clean data available on GCS and 
+    2. clean data available in the tables `eviction_external` & `eviction` in the dataset `raw` on BQ.
+
+* Next run the dbt models on the data in the table `raw.eviction`
 
 >DBT
 ## dbt-core vs cloud
@@ -498,29 +531,6 @@ We have developed (documented and tested) and deployed the dbt models on dbt-clo
 
 ### BUILD in DEV
 * The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
-    ```bash
-    # Set the env variables using 
-    source .env
-    export $(cut -d= -f1 .env)
-    # build models on staging dataset in BQ
-    dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
-    ``` 
-* Once working well push the code to the dev branch (develop_dbt) & create a pull request to the main branch on GitHub
-    ```bash
-    git add .
-    git commit -m "CICD: dbt dev working from VM"
-    git push -u origin develop_dbt
-    ``` 
-
-### BUILD in PRODUCTION
-* Once the develop_dbt branch is merged with the main move to the main   branch
-    ```bash
-    git checkout
-    git commit -m "CICD: dbt dev working from VM"
-    git push -u origin develop_dbt
-    ``` 
-
-* The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
 ```bash
 # Set the env variables using 
 source .env
@@ -528,6 +538,41 @@ export $(cut -d= -f1 .env)
 # build models on staging dataset in BQ
 dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
 ``` 
+* Once working well push the code to the dev branch (develop_dbt) 
+```bash
+git add .
+git commit -m "CICD: dbt dev working from VM"
+git push -u origin develop_dbt
+``` 
+* Then create a pull request to the main branch on GitHub
+    - Goto the dev branch on GitHub
+    - Select the Pull requests tab
+    - Create a pull request to merge to main there
+
+### BUILD in PRODUCTION
+* Once the dev branch `develop_dbt` is merged with the main move to the main branch
+```bash
+git checkout master
+git pull
+# make sure you have activated the virtual env
+# Set the env variables using 
+source .env
+export $(cut -d= -f1 .env)
+# test the connction to production dataset
+dbt debug --project-dir $DBT_ENV_PROJECT_DIR -t prod
+# build models on production dataset in BQ by specifying the target as prod which will point to the production dataset on BQ
+dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
+``` 
+* The above should make a view called `stg_eviction` and a fact table called `fact_evition` in the `production` dataset.
+
+
+### SIMPLIFIED
+* After running the ingestion code via Prefect
+* NOTE: Need to add steps to install dbt
+```bash
+dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
+```
+
 ### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)
@@ -612,15 +657,16 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
-    - [ ] dbt - test the code for production and set scheduling and look at the documentation in the UI
-    - [ ] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
-    - [ ] Look into how data will be added to DB; about update options
+    - [ ]set scheduling for dbt-core
+    - [X] dbt - test the code for production and set scheduling and look at the documentation in the UI
+    - [X] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
     - [ ] consolidate commands/instructions to run the ETL part (Prefect part)
+    - [X] Look into how data will be added to DB; about update options    Ans: look at the image on the phone
     - [X] test the flow with the prefect agent
     - [X] Add logging in the flows
     - [ ] Work on terraform
     - [X] replace the dataset name (sf_eviction also set this to raw) with dataset name credential (set this when using terraform to create the dataset)
-    - [ ] work on dbt-core locally
+    - [X] work on dbt-core locally
 * Later in the project
     - [ ] use the point column for location
     - [ ] Pull data via API using offset

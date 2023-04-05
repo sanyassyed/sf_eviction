@@ -33,7 +33,7 @@ GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
 BQ_BLOCK = config("BQ_BLOCK")
 GCP_PROJECT_ID = config("GCP_PROJECT_ID")
 GCS_BUCKET = config("GCS_BUCKET")
-
+BQ_DATASET_RAW = config("DBT_ENV_BQ_DS_RAW")
 # SODU API Credentials
 API_KEY_ID = config("API_KEY_ID")
 API_KEY_SECRET = config("API_KEY_SECRET")
@@ -240,7 +240,7 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     raw_filename = f'{data_prefix[0]}_{filename}.json'
     clean_part_data_dir = f'{data_prefix[2]}_{filename}'
 
-    bq_dataset_name = 'sf_eviction'
+    bq_dataset_name = BQ_DATASET_RAW
     bq_table_name_external = f'external_{filename_o}' 
 
     
