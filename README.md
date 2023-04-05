@@ -565,7 +565,8 @@ dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
 ``` 
 * The above should make a view called `stg_eviction` and a fact table called `fact_evition` in the `production` dataset.
 
-
+NOTE: For the dbt project to run in dbt-cloud with the env variables set them here in dbt-cloud:
+![Output_env_var](images/dbt/12.JPG)
 ### SIMPLIFIED
 1. DEVELOPMENT
     if your master is uptodate or ahead with the prev development
@@ -665,11 +666,12 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
+    - [X] Test the dbt-core code with env_var on dbt-cloud
     - [ ] Transfer project to another GCP account
-    - [ ]set scheduling for dbt-core
+    - [ ] set scheduling for dbt-core
     - [X] dbt - test the code for production and set scheduling and look at the documentation in the UI
     - [X] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
-    - [ ] consolidate commands/instructions to run the ETL part (Prefect part)
+    - [X] consolidate commands/instructions to run the ETL part (Prefect part)
     - [X] Look into how data will be added to DB; about update options    Ans: look at the image on the phone
     - [X] test the flow with the prefect agent
     - [X] Add logging in the flows
