@@ -7,7 +7,7 @@ version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'dev'
+profile: 'sf_eviction_dbt'
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
@@ -38,11 +38,3 @@ models:
       materialized: view
     core:
       materialized: table
-
-# variables used across the project are defined here
-# varibles used in the models/staging/schema.yml file
-vars:
-  GCP_PROJECT_ID: 'blissful-flames-375219'
-  BQ_DATASET_NAME: sf_eviction # need to change this to raw
-  BQ_TABLE_NAME_EVICTION: eviction
-

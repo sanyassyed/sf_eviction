@@ -1,0 +1,226 @@
+
+
+============================== 2023-04-04 19:41:30.946995 | 1dfc8210-3047-4552-84bf-9d9cb9bf97b7 ==============================
+[0m19:41:30.946995 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:41:30.948768 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:41:30.948987 [debug] [MainThread]: Tracking: tracking
+[0m19:41:30.950355 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f732e0066e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f732e004190>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f732e0065f0>]}
+[0m19:41:30.956764 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f732e007550>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f732e0072b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f732e007160>]}
+[0m19:41:30.957233 [debug] [MainThread]: Flushing usage events
+[0m19:41:31.145593 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'BQ_DATASET_NAME_DEV'
+
+
+============================== 2023-04-04 19:47:46.168261 | 33cd2505-54fc-4839-b78f-42062db0314f ==============================
+[0m19:47:46.168261 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:47:46.170595 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:47:46.170894 [debug] [MainThread]: Tracking: tracking
+[0m19:47:46.172725 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8b54cfe620>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8b54cfd1e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8b54cfd690>]}
+[0m19:47:46.179278 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8b54cff430>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8b54cff2b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8b54cffd00>]}
+[0m19:47:46.179813 [debug] [MainThread]: Flushing usage events
+[0m19:47:46.375849 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'DBT_GCP_PROJECT_ID'
+
+
+============================== 2023-04-04 19:51:48.878692 | 519da3c0-f2a7-4e04-b597-69adb4eab28c ==============================
+[0m19:51:48.878692 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:51:48.880388 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:51:48.880575 [debug] [MainThread]: Tracking: tracking
+[0m19:51:48.882253 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f925a47e560>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f925a47c5b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f925a47e5c0>]}
+[0m19:51:48.888204 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f925a47f2e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f925a49d660>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f925a49e020>]}
+[0m19:51:48.888695 [debug] [MainThread]: Flushing usage events
+[0m19:51:49.064608 [error] [MainThread]: Encountered an error:
+str expected, not Undefined
+[0m19:51:49.072921 [error] [MainThread]: Traceback (most recent call last):
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/main.py", line 136, in main
+    results, succeeded = handle_and_check(args)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/main.py", line 206, in handle_and_check
+    task, res = run_from_args(parsed)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/main.py", line 253, in run_from_args
+    results = task.run()
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/task/debug.py", line 109, in run
+    self.test_configuration()
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/task/debug.py", line 281, in test_configuration
+    profile_status = self._load_profile()
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/task/debug.py", line 252, in _load_profile
+    profile: Profile = Profile.render_from_args(self.args, renderer, profile_name)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/profile.py", line 428, in render_from_args
+    return cls.from_raw_profiles(
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/profile.py", line 394, in from_raw_profiles
+    return cls.from_raw_profile_info(
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/profile.py", line 338, in from_raw_profile_info
+    target_name, profile_data = cls.render_profile(
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/profile.py", line 301, in render_profile
+    profile_data = renderer.render_data(raw_profile_data)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/renderer.py", line 49, in render_data
+    return deep_map_render(self.render_entry, data)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/utils.py", line 228, in deep_map_render
+    return _deep_map_render(func, value, ())
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/utils.py", line 194, in _deep_map_render
+    ret = {k: _deep_map_render(func, v, (keypath + (str(k),))) for k, v in value.items()}
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/utils.py", line 194, in <dictcomp>
+    ret = {k: _deep_map_render(func, v, (keypath + (str(k),))) for k, v in value.items()}
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/utils.py", line 196, in _deep_map_render
+    ret = func(value, keypath)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/renderer.py", line 33, in render_entry
+    return self.render_value(value, keypath)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/renderer.py", line 185, in render_value
+    rendered = super().render_value(value, keypath)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/config/renderer.py", line 42, in render_value
+    return get_rendered(value, self.context, native=True)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/clients/jinja.py", line 590, in get_rendered
+    return render_template(template, ctx, node)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/clients/jinja.py", line 545, in render_template
+    return template.render(ctx)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/clients/jinja.py", line 186, in render
+    return self.environment.handle_exception()
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/jinja2/environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/clients/jinja.py", line 143, in quoted_native_concat
+    head = list(islice(nodes, 2))
+  File "<template>", line 1, in top-level template code
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/jinja2/sandbox.py", line 393, in call
+    return __context.call(__obj, *args, **kwargs)
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/site-packages/dbt/context/secret.py", line 33, in env_var
+    if var in os.environ and var.startswith(SECRET_ENV_PREFIX):
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/_collections_abc.py", line 830, in __contains__
+    self[key]
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/os.py", line 677, in __getitem__
+    value = self._data[self.encodekey(key)]
+  File "/home/sanyashireen/sf_eviction/.my_env/lib/python3.10/os.py", line 757, in encode
+    raise TypeError("str expected, not %s" % type(value).__name__)
+TypeError: str expected, not Undefined
+
+
+
+============================== 2023-04-04 19:52:30.439733 | d36c1a5b-8f14-403c-bc61-b95f46656db5 ==============================
+[0m19:52:30.439733 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:52:30.441288 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:52:30.441495 [debug] [MainThread]: Tracking: tracking
+[0m19:52:30.443207 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6b4ed5e8f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6b4ed5e0b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6b4ed5c9d0>]}
+[0m19:52:30.447298 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6b4ed5fe20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6b4ed5f130>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6b4ed5e1a0>]}
+[0m19:52:30.447696 [debug] [MainThread]: Flushing usage events
+[0m19:52:30.596718 [error] [MainThread]: Encountered an error:
+Runtime Error
+  
+  dbt encountered an error while trying to read your profiles.yml file.
+  
+  Runtime Error
+    Syntax error near line 7
+    ------------------------------
+    4  |     dev:
+    5  |       type: bigquery
+    6  |       method: service-account
+    7  |       project: "{{ env_var("GCP_PROJECT_ID") }}"
+    8  |       dataset: "{{ env_var('BQ_DATASET_NAME_DEV') }}"
+    9  |       threads: 4
+    10 |       priority: interactive
+    
+    Raw Error:
+    ------------------------------
+    while parsing a block mapping
+      in "<unicode string>", line 5, column 7
+    did not find expected key
+      in "<unicode string>", line 7, column 29
+  
+
+
+============================== 2023-04-04 19:53:59.240158 | 5710bed5-bd39-48f5-8b04-65a5a573219a ==============================
+[0m19:53:59.240158 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:53:59.241844 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:53:59.242020 [debug] [MainThread]: Tracking: tracking
+[0m19:53:59.243379 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fa202cee6b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fa202cec610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fa202cec6d0>]}
+[0m19:53:59.249580 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fa202cef310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fa202cef610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fa202cefc40>]}
+[0m19:53:59.249989 [debug] [MainThread]: Flushing usage events
+[0m19:53:59.444676 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'GCP_PROJECT_ID'
+
+
+============================== 2023-04-04 19:55:50.548668 | a2b990f5-8f6a-4738-bab4-e5a7ab67d033 ==============================
+[0m19:55:50.548668 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:55:50.550249 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:55:50.550443 [debug] [MainThread]: Tracking: tracking
+[0m19:55:50.552116 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fc3af046620>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fc3af0451e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fc3af045690>]}
+[0m19:55:50.558493 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fc3af047430>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fc3af0472b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fc3af047d00>]}
+[0m19:55:50.560570 [debug] [MainThread]: Flushing usage events
+[0m19:55:50.756466 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'GCP_PROJECT_ID_Q'
+
+
+============================== 2023-04-04 19:57:51.730932 | 3606d65c-9ae3-4c9f-ac2c-ada414998aca ==============================
+[0m19:57:51.730932 [info ] [MainThread]: Running with dbt=1.4.5
+[0m19:57:51.732483 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m19:57:51.732669 [debug] [MainThread]: Tracking: tracking
+[0m19:57:51.734343 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7faddfc1e6b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7faddfc1c610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7faddfc1c6d0>]}
+[0m19:57:51.741174 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7faddfc1f310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7faddfc1ee90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7faddfc1fee0>]}
+[0m19:57:51.741699 [debug] [MainThread]: Flushing usage events
+[0m19:57:51.927136 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'BQ_DATASET_NAME_DEV'
+
+
+============================== 2023-04-04 20:00:43.401588 | 058ea74d-abcd-4b6f-a972-c50eca932f3b ==============================
+[0m20:00:43.401588 [info ] [MainThread]: Running with dbt=1.4.5
+[0m20:00:43.403214 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m20:00:43.403436 [debug] [MainThread]: Tracking: tracking
+[0m20:00:43.405194 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1af8402770>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1af8401660>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1af8402b30>]}
+[0m20:00:45.421523 [debug] [MainThread]: Executing "git --help"
+[0m20:00:45.423472 [debug] [MainThread]: STDOUT: "b"usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone             Clone a repository into a new directory\n   init              Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add               Add file contents to the index\n   mv                Move or rename a file, a directory, or a symlink\n   restore           Restore working tree files\n   rm                Remove files from the working tree and from the index\n   sparse-checkout   Initialize and modify the sparse-checkout\n\nexamine the history and state (see also: git help revisions)\n   bisect            Use binary search to find the commit that introduced a bug\n   diff              Show changes between commits, commit and working tree, etc\n   grep              Print lines matching a pattern\n   log               Show commit logs\n   show              Show various types of objects\n   status            Show the working tree status\n\ngrow, mark and tweak your common history\n   branch            List, create, or delete branches\n   commit            Record changes to the repository\n   merge             Join two or more development histories together\n   rebase            Reapply commits on top of another base tip\n   reset             Reset current HEAD to the specified state\n   switch            Switch branches\n   tag               Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch             Download objects and refs from another repository\n   pull              Fetch from and integrate with another repository or a local branch\n   push              Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m20:00:45.423837 [debug] [MainThread]: STDERR: "b''"
+[0m20:00:45.429392 [debug] [MainThread]: Acquiring new bigquery connection 'debug'
+[0m20:00:45.429790 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m20:00:45.491571 [debug] [MainThread]: On debug: select 1 as id
+[0m20:00:46.454621 [debug] [MainThread]: BigQuery adapter: https://console.cloud.google.com/bigquery?project=blissful-flames-375219&j=bq:US:599cecda-0552-446f-8753-0170b95fca8a&page=queryresults
+[0m20:00:46.455393 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1adeea1d50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1adeec94e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1adeec85e0>]}
+[0m20:00:46.455821 [debug] [MainThread]: Flushing usage events
+[0m20:00:46.649062 [debug] [MainThread]: Connection 'debug' was properly closed.
+
+
+============================== 2023-04-04 20:15:40.899062 | 3ee854cb-6b76-423c-bce5-42015c5a6390 ==============================
+[0m20:15:40.899062 [info ] [MainThread]: Running with dbt=1.4.5
+[0m20:15:40.900728 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m20:15:40.900915 [debug] [MainThread]: Tracking: tracking
+[0m20:15:40.902741 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f17815fa590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f17815f8610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f17815fa5f0>]}
+[0m20:15:40.910014 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f17815fb310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f17815fb610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f17815fbc40>]}
+[0m20:15:40.910606 [debug] [MainThread]: Flushing usage events
+[0m20:15:41.089757 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'GCP_PROJECT_ID'
+
+
+============================== 2023-04-04 20:21:17.281813 | d381f25a-abfb-4333-9291-73fbaa648680 ==============================
+[0m20:21:17.281813 [info ] [MainThread]: Running with dbt=1.4.5
+[0m20:21:17.283472 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m20:21:17.283690 [debug] [MainThread]: Tracking: tracking
+[0m20:21:17.285327 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb3021a9330>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb3021a8640>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb3021aaad0>]}
+[0m20:21:17.878069 [debug] [MainThread]: Executing "git --help"
+[0m20:21:17.880586 [debug] [MainThread]: STDOUT: "b"usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone             Clone a repository into a new directory\n   init              Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add               Add file contents to the index\n   mv                Move or rename a file, a directory, or a symlink\n   restore           Restore working tree files\n   rm                Remove files from the working tree and from the index\n   sparse-checkout   Initialize and modify the sparse-checkout\n\nexamine the history and state (see also: git help revisions)\n   bisect            Use binary search to find the commit that introduced a bug\n   diff              Show changes between commits, commit and working tree, etc\n   grep              Print lines matching a pattern\n   log               Show commit logs\n   show              Show various types of objects\n   status            Show the working tree status\n\ngrow, mark and tweak your common history\n   branch            List, create, or delete branches\n   commit            Record changes to the repository\n   merge             Join two or more development histories together\n   rebase            Reapply commits on top of another base tip\n   reset             Reset current HEAD to the specified state\n   switch            Switch branches\n   tag               Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch             Download objects and refs from another repository\n   pull              Fetch from and integrate with another repository or a local branch\n   push              Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m20:21:17.881035 [debug] [MainThread]: STDERR: "b''"
+[0m20:21:17.884579 [debug] [MainThread]: Acquiring new bigquery connection 'debug'
+[0m20:21:17.885180 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m20:21:17.929888 [debug] [MainThread]: On debug: select 1 as id
+[0m20:21:18.808925 [debug] [MainThread]: BigQuery adapter: https://console.cloud.google.com/bigquery?project=blissful-flames-375219&j=bq:US:1a93f0cd-c3da-4ee5-9f57-d9a903fefac2&page=queryresults
+[0m20:21:18.809614 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb2e8c02e60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb2e8c012a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb2e8c03580>]}
+[0m20:21:18.810096 [debug] [MainThread]: Flushing usage events
+[0m20:21:18.996805 [debug] [MainThread]: Connection 'debug' was properly closed.
+
+
+============================== 2023-04-05 17:02:14.730500 | 0b8a254f-692c-4761-89c0-9ec3878956c4 ==============================
+[0m17:02:14.730500 [info ] [MainThread]: Running with dbt=1.4.5
+[0m17:02:14.733875 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/sanyashireen/sf_eviction', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'project_dir': '/home/sanyashireen/sf_eviction/dbt', 'config_dir': False, 'which': 'debug', 'indirect_selection': 'eager'}
+[0m17:02:14.734407 [debug] [MainThread]: Tracking: tracking
+[0m17:02:14.736226 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fe781a7ea10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fe781a7c550>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fe781a7cb20>]}
+[0m17:02:15.301730 [debug] [MainThread]: Executing "git --help"
+[0m17:02:15.303696 [debug] [MainThread]: STDOUT: "b"usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone             Clone a repository into a new directory\n   init              Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add               Add file contents to the index\n   mv                Move or rename a file, a directory, or a symlink\n   restore           Restore working tree files\n   rm                Remove files from the working tree and from the index\n   sparse-checkout   Initialize and modify the sparse-checkout\n\nexamine the history and state (see also: git help revisions)\n   bisect            Use binary search to find the commit that introduced a bug\n   diff              Show changes between commits, commit and working tree, etc\n   grep              Print lines matching a pattern\n   log               Show commit logs\n   show              Show various types of objects\n   status            Show the working tree status\n\ngrow, mark and tweak your common history\n   branch            List, create, or delete branches\n   commit            Record changes to the repository\n   merge             Join two or more development histories together\n   rebase            Reapply commits on top of another base tip\n   reset             Reset current HEAD to the specified state\n   switch            Switch branches\n   tag               Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch             Download objects and refs from another repository\n   pull              Fetch from and integrate with another repository or a local branch\n   push              Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m17:02:15.303944 [debug] [MainThread]: STDERR: "b''"
+[0m17:02:15.306517 [debug] [MainThread]: Acquiring new bigquery connection 'debug'
+[0m17:02:15.306798 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m17:02:15.350704 [debug] [MainThread]: On debug: select 1 as id
+[0m17:02:16.324235 [debug] [MainThread]: BigQuery adapter: https://console.cloud.google.com/bigquery?project=blissful-flames-375219&j=bq:US:8ba0d462-e55c-440e-aed5-a51f0c403ce2&page=queryresults
+[0m17:02:16.324938 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fe76ab8f520>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fe76ab8e950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fe76ab8d6c0>]}
+[0m17:02:16.325349 [debug] [MainThread]: Flushing usage events
+[0m17:02:16.447833 [debug] [MainThread]: Connection 'debug' was properly closed.

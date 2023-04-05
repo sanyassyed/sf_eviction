@@ -1,0 +1,19 @@
+sf_eviction_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('DBT_ENV_GCP_PROJECT_ID') }}"
+      dataset: "{{ env_var('DBT_ENV_BQ_DS_DEV') }}"
+      threads: 4
+      priority: interactive
+      keyfile: /home/sanyashireen/.google/credentials/google_credentials.json
+    prod:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('DBT_ENV_GCP_PROJECT_ID') }}"
+      dataset: "{{ env_var('DBT_ENV_BQ_DS_PROD') }}"
+      threads: 4
+      priority: interactive
+      keyfile: /home/sanyashireen/.google/credentials/google_credentials.json

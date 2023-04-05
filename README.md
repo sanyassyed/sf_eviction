@@ -9,7 +9,7 @@ Instructions for running the project will be created later.
 * Start the VM on GCP via CLI from the personal system- **Step 1**
     ```bash
     # Command to import environment variables in the windows os
-    source env.bashrc
+    source env_local.bashrc
     gcloud compute instances start ${GCP_COMPUTE_ENGINE_NAME} --zone ${GCP_ZONE} --project ${GCP_PROJECT_ID}
     # Copy paste the Instance External IP in the ~/.ssh/config file
     ssh ${GCP_COMPUTE_ENGINE_NAME}
@@ -317,7 +317,7 @@ We will use dbt-cloud to DEVELOP (TEST & DOCUMENT) the project and dbt-core to d
         - Subfolder - dbt 
         - Connection - BigQueryEviction
         - Dataset - staging
-        - Target Name - dev
+        - Target Name - sf_eviction_dbt
         - Threads - 4
         - ![Output](images/dbt/4.JPG)
     * Setup a connection to the a Repository
@@ -458,10 +458,67 @@ In this step we will deploy the project. This deployment will be run against a d
 We have developed (documented and tested) and deployed the dbt models on dbt-cloud. Now we will try to develop & deploy it from dbt-core so it can be used from the VM also if we prefer that. 
 * [Reference Video](https://www.youtube.com/watch?v=Cs9Od1pcrzM&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=38)
 * [Reference Instructions by me](https://github.com/sanyassyed/data-engineering-zoomcamp-project/tree/main/homework/workshop_piperider)
-* Remember to do development change to the dev branch
-* 
+* Remember to do development in the `develop_dbt` branch
+* We will now do all the setup for dbt-core in this branch, so move to this and first make sure it is same as main branch by doing pull
+    ```bash
+    # Checkout to the develop_dbt branch
+    git checkout dbt_develop
+    # pull the changes from main branch
+    git pull origin master
+    ```
+* Edit the dbt_project.yml
+    - Change the profile from dev to `profile: 'sf_eviction_dbt'` 
+* Create a profiles.yml file in the project root folder and specify the values for the two targets(dev and prod) and use environment variables
+* Activate the virtual conda env & install dbt-core with BQ adapter
+    ```bash
+    conda activate .my_env
+    # install dbt-core and dbt with bigquery adapter and piperider with bigquery adapter
+    pip install dbt-core dbt-bigquery 'piperider[bigquery]'
+    
+    # set the env variables such that they are available to all child processes
+    source .env
+    export $(cut -d= -f1 .env)
+    # This command uses cut to extract the variable names from .env and passes them as arguments to the `export` command and exports those variables which have already been set by source .env
+    # For eg: `export $DBT_ENV_PROJECT_DIR`; does this for all variables
+    
+    # Install dbt deps and build dbt models by specifying the project directory
+    dbt deps --project-dir $DBT_ENV_PROJECT_DIR # downloads the dependencies for current dbt version
+    
+    # test dbt-core and big-query connection
+    dbt debug --project-dir $DBT_ENV_PROJECT_DIR
+    # use --profile profiles.yml if the profiles.yml is in the ~/.dbt/profiles.yml folder
+    ```
+* NOTE: Here is what each part of the command means:
+    - export is a shell command that sets an environment variable.
+    - $() is a command substitution that runs the command inside the parentheses and replaces it with the output of that command.
+    - cut is a command that is used to extract sections from each line of a file.
+    - -d= specifies that the delimiter used to separate fields in the file is the equals sign (=).
+    - -f1 specifies that only the first field should be returned. In this case, the first field is the environment variable name.
+    - .env is the file containing the environment variable names.
 
+### BUILD in DEV
+* The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
+    ```bash
+    # Set the env variables using 
+    source .env
+    export $(cut -d= -f1 .env)
+    # build models on staging dataset in BQ
+    dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
+    ``` 
+* Once working well create a pull request to the main branch
+    ```bash
+    git 
+    ``` 
 
+### BUILD in PRODUCTION
+* The below should make a view called `stg_eviction` and a fact table called `fact_evition` in the `staging` dataset.
+```bash
+# Set the env variables using 
+source .env
+export $(cut -d= -f1 .env)
+# build models on staging dataset in BQ
+dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR
+``` 
 ### EXTRA INFO
 
 * `profiles.yml` [Ref video:](https://youtu.be/1HmL63e-vRs?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&t=230)

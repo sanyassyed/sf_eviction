@@ -13,4 +13,6 @@ Error messages that are related to this project:
 
 * `Too many partitions produced by query, allowed 4000, query produces at least 6389 partitions`
     - Error in BQ when trying to create a partition table based on file_date
-    - 
+* Unable to assign environment variable to local variables in dbt_profile.yml 
+    - They can only be used elsewhere in yml files but not to assign values via `vars`
+    - Hence I've assigned the values in the schema.yml & stg_eviction.sql directly from the env variables using `env_var()` function instead of `var()` function
