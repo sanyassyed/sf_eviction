@@ -567,11 +567,18 @@ dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
 
 
 ### SIMPLIFIED
-* After running the ingestion code via Prefect
-* NOTE: Need to add steps to install dbt
-```bash
-dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
-```
+1. DEVELOPMENT
+    if your master is uptodate or ahead with the prev development
+    ```bash
+    git checkout develop_dbt
+    git pull -origin master
+    ```
+2. PRODUCTION
+    * After running the ingestion code via Prefect
+    * NOTE: Need to add steps to install dbt
+    ```bash
+    dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
+    ```
 
 ### EXTRA INFO
 
@@ -657,6 +664,7 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
+    - [ ] Transfer project to another GCP account
     - [ ]set scheduling for dbt-core
     - [X] dbt - test the code for production and set scheduling and look at the documentation in the UI
     - [X] Set the scheduling in the VM for dbt (Move the running of the code from dbt-cloud to dbt-core)
