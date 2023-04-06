@@ -26,6 +26,7 @@ from prefect import flow, task
 from prefect.tasks import task_input_hash
 from prefect_gcp.cloud_storage import GcsBucket
 from prefect_gcp.bigquery import BigQueryWarehouse
+from prefect_dbt.cli import DbtCoreOperation
 
 # Loading Credentials
 config = AutoConfig(search_path='.env')
@@ -37,6 +38,10 @@ BQ_DATASET_RAW = config("DBT_ENV_BQ_DS_RAW")
 # SODU API Credentials
 API_KEY_ID = config("API_KEY_ID")
 API_KEY_SECRET = config("API_KEY_SECRET")
+# DBT-CLI command block
+DBT_DEV_BLOCK = config("DBT_CLI_COMMAND_DEV_BLOCK")
+DBT_PROD_BLOCK = config("DBT_CLI_COMMAND_PROD_BLOCK")
+
 
 @task(log_prints=True)
 def get_json(endpoint, headers) -> list:
@@ -206,6 +211,17 @@ def write_to_bq(bq_dataset_name:str, bq_table_name_external:str, bq_table_name:s
         warehouse.execute(query_table)
         print(f'LOGGING: Non-partition table {table} creation COMPLETE')
 
+
+@task(log_prints=True, retries=3)
+def dbt_transform(target_dbt='dev') -> None:
+    """Run dbt transformations on data in BQ by building dbt models """
+    if target_dbt == 'dev':
+        dbt_op = DbtCoreOperation.load(DBT_DEV_BLOCK)
+    else:
+        dbt_op = DbtCoreOperation.load(DBT_PROD_BLOCK)
+    dbt_op.run()
+    print('LOGGING: dbt TRANSFORMAIONS COMPLETE')
+
 @flow(name='WriteToGCSSubFlow', log_prints=True)
 def write_to_gcs_subflow(path) -> None:
     """
@@ -216,7 +232,7 @@ def write_to_gcs_subflow(path) -> None:
     write_to_gcs(path)
 
 @flow(name='ParentFlow', log_prints=True)
-def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
+def etl_parent_flow(dataset_name:str, filename_o:str, target_dbt='dev') -> None:
     """
     Main flow that calls the tasks
     :param dataset_name: the source dataset name being extracted from the sf website
@@ -250,6 +266,7 @@ def etl_parent_flow(dataset_name:str, filename_o:str) -> None:
     clean_datapath = clean_data(raw_filepath, data_dir, clean_part_data_dir)
     write_to_gcs_subflow(clean_datapath)
     write_to_bq(bq_dataset_name, bq_table_name_external, bq_table_name=filename_o, clean_datapath=clean_datapath)
+    dbt_transform(target_dbt) 
     
     # testing
     # raw_filepath = 'data_eviction/2023/3/26/raw_eviction_2023-03-26.json'
@@ -263,7 +280,8 @@ if __name__=="__main__":
     """
     dataset_name = '5cei-gny5'
     filename ='eviction'
-    etl_parent_flow(dataset_name, filename)
+    target_dbt = 'dev'
+    etl_parent_flow(dataset_name, filename, target_dbt)
 
 # Run as follows:
 # conda activate .my_env/

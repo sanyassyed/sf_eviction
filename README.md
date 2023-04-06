@@ -581,6 +581,44 @@ NOTE: For the dbt project to run in dbt-cloud with the env variables set them he
     ```bash
     dbt build --var 'is_test_run: false' --project-dir $DBT_ENV_PROJECT_DIR -t prod
     ```
+## DBT-Core X Prefect
+### Option 1 
+Use BLOCKS instead of using `profiles.yml`
+We will use Prefect to schedule the running of the dbt models via dbt-core [Reference](https://prefecthq.github.io/prefect-dbt/#saving-credentials-to-block)
+
+1. **Install the prefect plugin for dbt-core** which is the `dbt Core-cli` as follows
+```bash
+conda activate .my_env
+pip install "prefect-dbt[cli]"
+```
+2. **Create Prefect Blocks** in the flows/create_prefect_blocks.py file for ONE EACH FOR DEV & PRODUCTION. Once you create these Blocks you don't need the profiles.yml file. But if you don't want to use the blocks for dbt then look at ![extra info](EXTRA INFO) below for the alternative method
+    1. dbt CLI BigQuery Target Configs Block for TARGET Dataset 'staging/prod'
+    2. dbt CLI Profile Block for PROFILE 
+    3. dbt Core Operation for defining the dbt COMMANDS to run 
+3. Check on Prefect Cloud UI if the new 6 Blocks have been created
+4. Create a task in flows/ingest.py to run the dbt models
+5. Then run the flows via Deployment
+
+### Option 2
+dbt-core X Prefect without Blocks
+ 
+```python
+from prefect_dbt import DbtCoreOperation
+@task
+def dbt_transform() -> None:
+    """Run dbt transformations on data in BQ by building dbt models """
+
+    dbt_path = f"{os.getcwd()}/dbt"
+
+    dbt_op = DbtCoreOperation(
+        commands=["dbt build --var 'is_test_run: false' -t prod"],
+        working_dir=dbt_path,
+        project_dir=dbt_path,
+        profiles_dir=os.getcwd(),
+    )
+
+    dbt_op.run()
+```
 
 ### EXTRA INFO
 
@@ -666,6 +704,8 @@ prefect cloud logout
 >JOURNALING
 ### TODO:
 * Next day 
+    - [ ] Change the GCP_Credentials block to accept file and not dict
+    - [ ] Move all credentials to the project root folder
     - [X] Test the dbt-core code with env_var on dbt-cloud
     - [ ] Transfer project to another GCP account
     - [ ] set scheduling for dbt-core
