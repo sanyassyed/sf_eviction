@@ -26,3 +26,6 @@ terraform/terraform*
 
 ##### dbt
 .user*
+
+##### logs
+logs/*
