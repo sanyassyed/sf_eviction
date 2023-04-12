@@ -675,8 +675,8 @@ def dbt_transform() -> None:
 _([Video source](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=6))_
 
 During this course we will use [Google Cloud Platform](https://cloud.google.com/) (GCP) as our cloud services provider.
-
-### GCP initial setup
+### Option -1 via Console
+#### GCP initial setup
 
 _([Video source](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=6))_
 
@@ -722,7 +722,7 @@ Please follow these steps:
 
 You should now be ready to work with GCP from you local machine.
 
-## GCP setup for access
+#### GCP setup for access
 
 _([Video source](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=6))_
 
@@ -761,27 +761,70 @@ This is done as follows:
 1. Make sure that the `GOOGLE_APPLICATION_CREDENTIALS` environment variable is set.
 1. NOTE: Ideally in production or in real world a company would create a service account for each type of user. For example: service account for Admin users with admin level IAM roles, service account for developers which would be assigned developer level IAM roles etc.
 
-### Alternet via CLI
-* `gcloud init --console-only, --no-launch-browser` -> follow instructions to setup your project and do the intial GCP setup
-* `gcloud info` -> to check that all is configured correctly, you should see that your CLI is configured to use your created project
+### Option 2 - Via CLI
+- [Documentation](https://cloud.google.com/sdk/docs)
+1. Create the Project - GCP Initial setup
 
-```bash
-# 1 Create Service Account
-gcloud iam service-accounts create $(GCP_SERVICE_ACCOUNT_NAME) --display-name="Terraform Service Account"
-# 2 Setup IAM Roles for the Service Account
-# We create a single IAM role of editor to manage everything
-gcloud projects add-iam-policy-binding $(GCP_PROJECT_ID) --member='serviceAccount:$(GCP_SERVICE_ACCOUNT_NAME)@$(GCP_PROJECT_ID).iam.gserviceaccount.com' --role='roles/editor'
-# 3 Download the json credential file
-gcloud iam service-accounts keys create $(LOCAL_SERVICE_ACCOUNT_FILE_PATH) --iam-account=$(GCP_SERVICE_ACCOUNT_NAME)@$(GCP_PROJECT_ID).iam.gserviceaccount.com
-# 4 Enable API's for the project
-gcloud services enable iam.googleapis.com \
-		compute.googleapis.com \
-		bigquery.googleapis.com \
-		run.googleapis.com \
-		artifactregistry.googleapis.com
-```
+        ```bash
+        # Follow instructions to setup your project and do the intial GCP setup
+        gcloud init --no-browser
+        # Select Option 2 - Create a new configuration
+        # Enter configuration name (enter the project name here): sf-eviction
+        # Choose the account you would like to use to perform operations for this configuration: 1 your gmail account
+        # Pick cloud project to use: 5 Create new project
+        # Please enter project id: sf*******3
+
+        #check that all is configured correctly -you should see that your CLI is configured to use your created project
+        gcloud info
+        ```
+    - Add the following values to the .env file 
+        * GCP_PROJECT_ID - the one you entered above
+        * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
+        * GCP_ZONE - the region for your project
+        * LOCAL_SERVICE_ACCOUNT_FILE_PATH=credentials/gcp-credentials.json - this is where your credentials will be downloaded
+    - Create a `credentials` folder where your .json file will be saved
+1. [Enable billing](https://support.google.com/googleapi/answer/6158867?hl=en) for the project on the GCP Console
+1. Enable API's, create Service Account, setup Access via IAM Roles & Download Credentials
+    - To find the name of the API to be enabled, goto the the API in the [API Library](https://console.cloud.google.com/apis/library) and in the url find the format to be used to refer to that API; it usually contains `apiname.googleapis.com`
+    - [Documentation for Roles](https://cloud.google.com/iam/docs/understanding-roles)
+    - [Documentation for API's](https://cloud.google.com/sdk/gcloud/reference/services/enable)
+    - [List API's via CLI for a Project](https://cloud.google.com/service-usage/docs/list-services#gcloud)
+    
+        ```bash
+        # set the environment variables from the .env file
+        set -o allexport && source .env && set +o allexport
+        # 1 Enable API's for the project
+        gcloud services enable iam.googleapis.com \
+                compute.googleapis.com \
+                bigquery.googleapis.com 
+        # 2 Create Service Account
+        gcloud iam service-accounts create $GCP_SERVICE_ACCOUNT_NAME --display-name="Master Service Account"
+        # 3 Add access for the Service Account via IAM Roles
+        # We create IAM roles for the service account
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.admin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.objectAdmin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/bigquery.admin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/viewer'
+        # 4 Download the json credential file
+        gcloud iam service-accounts keys create $LOCAL_SERVICE_ACCOUNT_FILE_PATH --iam-account=$GCP_SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
+        # view all the IAM Roles added to the project
+        gcloud projects get-iam-policy $GCP_PROJECT_ID
+        ```
 ## Terraform 
+1. Create the configuration files
+    - main.tf
+    - storage.tf
+    -
+```bash
+# goto the terraform folder
+cd terraform
+# initialize the folder
+terraform init
 
+```
+
+
+NOTES:
 [Terraform](https://www.terraform.io/) is an [infrastructure as code](https://www.wikiwand.com/en/Infrastructure_as_code) tool that allows us to provision infrastructure resources as code, thus making it possible to handle infrastructure as an additional software component and take advantage of tools such as version control. It also allows us to bypass the cloud vendor GUIs.
 
 There are 2 important components to Terraform: the code files and Terraform commands.

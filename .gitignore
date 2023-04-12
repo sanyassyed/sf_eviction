@@ -13,6 +13,7 @@ test/
 *.env*
 .my_env/*
 env_local.bashrc
+env_main*
 
 
 #### CREDENTIALS
