@@ -11,7 +11,7 @@ resource "google_compute_instance" "agent-vm" {
   }
 
   service_account {
-    email = var.SERVICE_ACCOUNT_EMAIL
+    email = "${var.SERVICE_ACCOUNT_NAME}@${var.PROJECT_ID}.iam.gserviceaccount.com"
     scopes = [
       "cloud-platform",
     ]
@@ -21,7 +21,6 @@ resource "google_compute_instance" "agent-vm" {
     network = "default"
     access_config {
         network_tier = "PREMIUM"
-        subnet = "default"
     }
   }
 

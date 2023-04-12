@@ -754,6 +754,7 @@ This is done as follows:
         * `Storage Admin`: gives full control of GCS resources, so will be used for for creating and managing _buckets_.
         * `Storage Object Admin`: gives full control of GCS objects, so will be used for creating and managing _objects_ within the buckets like create, update, read, write etc.
         * `BigQuery Admin`: gives control to administer all BQ resources and data, so will be used for managing BigQuery resources and data.
+        * `Compute Instance Admin`: to control VM creation
         * `Viewer`: should already be present as a role as this was assigned when we created the Service Account itself.
 1. Enable APIs for the project (these are needed so that Terraform can interact with GCP):
    * https://console.cloud.google.com/apis/library/iam.googleapis.com
@@ -801,10 +802,13 @@ This is done as follows:
         gcloud iam service-accounts create $GCP_SERVICE_ACCOUNT_NAME --display-name="Master Service Account"
         # 3 Add access for the Service Account via IAM Roles
         # We create IAM roles for the service account
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_EMAIL" --role='roles/storage.admin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_EMAIL" --role='roles/storage.objectAdmin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_EMAIL" --role='roles/bigquery.admin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_EMAIL" --role='roles/viewer'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.admin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.objectAdmin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/bigquery.admin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.instanceAdmin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/viewer'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/iam.serviceAccountUser'
+        # gcloud projects remove-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.admin'
         # 4 Download the json credential file
         gcloud iam service-accounts keys create $LOCAL_SERVICE_ACCOUNT_FILE_PATH --iam-account=$GCP_SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
         # view all the IAM Roles added to the project
@@ -819,11 +823,16 @@ This is done as follows:
     - variables.tf
     - .terraform-version
 ```bash
-# goto the terraform folder
-cd terraform
+# set the env variables
+set -o allexport && source .env && set +o allexport
+# run terrafrom from parent directory
 # initialize the folder
-terraform init
+terraform -chdir=terraform init
+terraform -chdir=terraform plan
+terraform -chdir=terraform apply
 
+# if any errors the destroyall that you created as follows
+terraform -chdir=terraform destroy
 ```
 
 

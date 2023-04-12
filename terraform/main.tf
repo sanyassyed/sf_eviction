@@ -11,6 +11,6 @@ terraform {
 provider "google" {
   project = var.PROJECT_ID
   region = var.REGION
-  credentials = file(var.SERVICE_ACCOUNT_CREDENTIAL_PATH)  # Use this if you do not want to set env-var GOOGLE_APPLICATION_CREDENTIALS
+  credentials = file("../${var.SERVICE_ACCOUNT_CREDENTIAL_PATH}")  # to access the credentials from parent folder
 }
 

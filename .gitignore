@@ -19,3 +19,7 @@ env_main*
 #### CREDENTIALS
 credentials.txt
 __pycache__
+
+#### Terraform
+terraform/.terraform*
+terraform/terraform*
