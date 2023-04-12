@@ -115,7 +115,7 @@ dbt_core_operation_dev = DbtCoreOperation(
 dbt_core_operation_dev.save(dbt_cli_command_dev_block, overwrite=True)
 
 
-# DEVELOPMENT BLOCKS
+# PRODUCTION BLOCKS
 # 1.TARGET 
 target_configs_prod = BigQueryTargetConfigs(
     schema=bq_dataset_prod,  # also known as dataset
