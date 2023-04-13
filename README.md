@@ -1,6 +1,10 @@
 ## Project Creation
->Do the following on your local machine
 
+>PACKAGES - Local Systems
+1. Google Cloud CLI
+1. Terraform
+
+>CLONE PROJECT ON LOCAL MACHINE
 1. Clone the project 
 ```bash
 git clone https://github.com/sanyassyed/sf_eviction.git
@@ -10,7 +14,7 @@ cd sf_eviction
 
 >GCP & TERRAFORM
 
-### GCP Setup Via CLI
+## GCP Setup Via CLI
 - [Documentation](https://cloud.google.com/sdk/docs)
 1. Create the GCP Project
 
@@ -115,33 +119,48 @@ ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
 gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_ID
 ```
 1. Make a note of the External IP
-1. open the ~/.ssh/config and append the following
-    ```
-    Host <GCP_COMPUTE_ENGINE_NAME>
-        HostName <External IP>
-        User project_user
-        IdentityFile ~\.ssh\id_eviction
-        ServerAliveInterval 600
-        TCPKeepAlive no
-    ```
-1. SSH into the VM as follows:
+1. SSH into VM Option A 
+    - `ssh -i ~/.ssh/id_eviction@<external_ip>`
+1. SSH into VM Option B 
+    - open the ~/.ssh/config and append the following
+        ```
+        Host <GCP_COMPUTE_ENGINE_NAME>
+            HostName <External IP>
+            User project_user
+            IdentityFile ~\.ssh\id_eviction
+            ServerAliveInterval 600
+            TCPKeepAlive no
+        ```
+    - SSH into the VM as follows:
     ```bash
     ssh $GCP_COMPUTE_ENGINE_NAME
     ```
 
->CLONE THE REPO
+>ON THE VM
 ## Clone Project Repo on VM
 ```bash
 git clone https://github.com/sanyassyed/sf_eviction.git
 ```
->PACKAGES & CREDENTIALS
-1. google cloud cli
-1. Terraform
-# VM
+>PACKAGES & CREDENTIALS - VM
+1. Anaconda
+    - Download and install Anaconda 64-Bit (x86) Installer from [here](https://www.anaconda.com/products/distribution#Downloads)
+    ```bash
+        wget https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh
+        bash Anaconda3-2023.03-Linux-x86_64.sh
+        # Accept yes
+        rm Anaconda3-2023.03-Linux-x86_64.sh
+        TODO: ********************************
+    ```
 1. Make
     - `sudo apt install make`
 1. Java & Spark
-    - Copy the Makefile to system root `cp sf_eviction/Makefile .`
+    ```bash
+        # Copy the Makefile to system root
+        cp sf_eviction/Makefile .
+        # install java & spark as follows
+        make install-java
+        make install-spark
+    ```
 1. conda
 1. virtual conda env with pip 
 1. pip install all the packages in requirements.txt
