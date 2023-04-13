@@ -87,7 +87,7 @@ Instructions to clone the project repo on a VM and enable pushing and pulling to
         cd sf_eviction
         conda activate .my_env
         pip install pipreqs
-        
+
         ```
 1. Prefect
 1. dbt-core
@@ -837,7 +837,7 @@ This is done as follows:
     - main.tf
     - gstorage.tf
     - bigquery.tf
-    - compute.tf
+    - compute.tf [Code Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#nested_boot_disk)
     - variables.tf  
 ```bash
 # set the env variables
