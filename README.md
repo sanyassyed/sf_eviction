@@ -847,7 +847,6 @@ set -o allexport && source .env && set +o allexport
 terraform -chdir=terraform init
 terraform -chdir=terraform plan
 terraform -chdir=terraform apply
-
 # if any errors the destroyall that you created as follows
 terraform -chdir=terraform destroy
 ```
