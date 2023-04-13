@@ -7,7 +7,7 @@ install-java:
 	rm ~/spark/openjdk-11.0.2_linux-x64_bin.tar.gz
 install-spark:
 	wget https://dlcdn.apache.org/spark/spark-3.3.2/spark-3.3.2-bin-hadoop3.tgz -P ~/spark
-	tar xzfv spark-3.3.2-bin-hadoop3.tgz -C ~/spark/
+	tar xzfv ~/spark/spark-3.3.2-bin-hadoop3.tgz -C ~/spark/
 	rm ~/spark/spark-3.3.2-bin-hadoop3.tgz
 	export SPARK_HOME="${HOME}/spark/spark-3.3.2-bin-hadoop3"
 	export PATH="${SPARK_HOME}/bin:${PATH}"

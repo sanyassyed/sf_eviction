@@ -138,8 +138,10 @@ git clone https://github.com/sanyassyed/sf_eviction.git
 1. google cloud cli
 1. Terraform
 # VM
+1. Make
+    - `sudo apt install make`
 1. Java & Spark
-    
+    - Copy the Makefile to system root `cp sf_eviction/Makefile .`
 1. conda
 1. virtual conda env with pip 
 1. pip install all the packages in requirements.txt
