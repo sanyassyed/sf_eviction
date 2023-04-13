@@ -1,5 +1,78 @@
->CLONE THE REPO
-## Clone Project Repo on VM
+# Project Setup 
+NOTE: Steps mentioned in this documentation are used to indicate the flow.
+
+Here I have documented the entire project creation which will be helpful to recreate the project
+Instructions for running the project will be created later.
+
+>INITINAL SETUP
+
+* Start the VM on GCP via CLI from the personal system- **Step 1**
+    ```bash
+    # Command to import environment variables in the windows os
+    source env_local.bashrc
+    gcloud compute instances start ${GCP_COMPUTE_ENGINE_NAME} --zone ${GCP_ZONE} --project ${GCP_PROJECT_ID}
+    # Copy paste the Instance External IP in the ~/.ssh/config file
+    ssh ${GCP_COMPUTE_ENGINE_NAME}
+    ```
+>GIT SETUP
+
+Instructions to create a project folder and setup version control using GIT 
+
+TODO: Edit and only keep instructions to clone repo using http - **Step 2**
+
+## PERSONAL SYSTEM
+* Creating a repo on the local system and pushing to git
+    * Create a new folder for the project - sf_eviction
+    * cd into sf_eviction
+    * `git init`
+    * `nano .gitignore` -> add files to be ignored
+    * `git add .`
+    * `git commit -m "CICD: Initial Commit"`
+    * `git remote add origin https://github.com/sanyassyed/sf_eviction.git`
+    * `git push -u origin master`
+    * `username: sanyassyed`
+    * `password <paste_the_personal_access_token_here>` -> you need to create this on the website of github and save the token securely for future use
+
+## VM
+Instructions to clone the project repo on a VM and enable pushing and pulling to and from repo respectively
+
+* Connect remote VM to remote git repo via SSH
+    ```bash
+    # generate a ssh key pair 
+    ssh-keygen -t rsa
+    # if you want to give a different name enter the below else press enter
+    /home/sanyashireen/.ssh/vm_rsa 
+    # add this key to ssh-agent
+    # start ssh agent 
+    eval `ssh-agent -s`	
+    # check if keys are already identified
+    ssh-add -l -E sha256
+        > The agent has no identities.
+    # guide the ssh agent where the keys are stored
+    ssh-add /home/sanyashireen/.ssh/vm_rsa
+        > Identity added: /home/sanyashireen/.ssh/vm_rsa (sanyashireen@de-zoomcamp)
+    # create a `config` file in .ssh folder
+    nano config 
+    # and write the below to file [Ctrl + O + Enter to save, Ctrl+X to exit]
+    # write the path to the key from the root ~ and not /home
+        Host github.com
+            User git
+            IdentityFile ~/.ssh/vm_rsa
+    # add the public key to the git account on github.com
+    # clone repo as follows using SSH
+    git clone git@github.com:sanyassyed/sf_eviction.git
+    # check the remote origin is set with ssh
+    git remote -v
+    # Check the SSH connection with repo from VM using
+    ssh -T git@github.com
+    # set the global variables
+    git config --global user.email "sanya.shireen@gmail.com"
+    git config --global user.name "sanya googlevm"
+    # make changes in repo
+    git add .
+    git commit -m "CICD: Initial commit from VM"
+    git push -u origin master
+    ```
 
 >PACKAGES & CREDENTIALS
 # Local
@@ -160,8 +233,99 @@ sf_eviction/
 >Do the following on the local machine
 
 >GCP & TERRAFORM
+## Google Cloud Platform
 
-### GCP Setup Via CLI
+_([Video source](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=6))_
+
+During this course we will use [Google Cloud Platform](https://cloud.google.com/) (GCP) as our cloud services provider.
+### GCP Setup Via Console (Option A)
+#### GCP initial setup
+
+_([Video source](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=6))_
+
+- GCP _Project_:
+    GCP is organized around _projects_. You may create a project and access all available GCP resources and services from the project dashboard.
+
+- _Service Accounts_:
+    A _service account_ is like a user account but for apps (or service you are creating which could be Data Pipeline service, Web service - basically a project you are working on to create the app/service) and workloads; you may authorize or limit what resources are available to your apps with service accounts. i.e Whatever resources (BQ, VM, DataProc etc) this app or service needs access to; will be granted via this service account. A Key/Credential is created for this purpose which will belong to the serve and then the server has access to the things it needs from GCP. 
+
+
+We will now create a project and a _service account_, and we will download the authentication keys to our computer. 
+
+>You can jump to the [next section](README.md#gcp-setup-for-access) if you already know how to do this.
+
+Please follow these steps:
+
+1. Create an account on GCP. You should receive $300 in credit when signing up on GCP for the first time with an account.
+1. Setup a new project as follows:
+    1. From the GCP Dashboard, click on the drop down menu next to the _Google Cloud Platform_ title to show the project list and click on _New project_.
+    1. Give the project a name. We will use `dtc-de` in this example. You can use the autogenerated Project ID (this ID must be unique to all of GCP, not just your account). Leave the organization as _No organization_. Click on _Create_.
+    1. Back on the dashboard, make sure that your project is selected. Click on the previous drop down menu to select it otherwise.
+1. Setup a service account for this project and download the JSON authentication key files as follows
+    1. _IAM & Admin_ > _Service accounts_ > _Create service account_
+    1. Provide a service account name. We will use `dtc-de-user`. Leave all other fields with the default values. Click on _Create and continue_.
+    1. Grant the Viewer IAM role (_Basic_ > _Viewer_) to the service account and click on _Continue_
+    1. There is no need to grant users access to this service account at the moment. Click on _Done_.
+    1. With the service account created, click on the 3 dots below _Actions_ and select _Manage keys_.
+    1. _Add key_ > _Create new key_. Select _JSON_ and click _Create_. The files will be downloaded to your computer. Save them to a folder and write down the path.
+1. Download the [GCP SDK](https://cloud.google.com/sdk/docs/quickstart) for local setup. Follow the instructions to install and connect to your account and project.
+1. Set the environment variable to point to the auth keys as follows
+    1. The environment variable name is `GOOGLE_APPLICATION_CREDENTIALS`
+    1. The value for the variable is the path to the json authentication file you downloaded previously.
+    1. Check how to assign environment variables in your system and shell. In bash, the command should be:
+        ```bash
+        export GOOGLE_APPLICATION_CREDENTIALS="<path/to/authkeys>.json"
+        PROJECT_ID="bliss***"
+        GOOGLE_ACCOUNT="sa***@gmail.com"
+        gcloud auth activate-service-account $GOOGLE_ACCOUNT --key-file=$GOOGLE_APPLICATION_CREDENTIALS --project=$PROJECT_ID
+
+        #gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+        ```
+    1. NOTE: To allow gcloud (and other tools in Google Cloud CLI) to use service account credentials to make requests, use this command to import these credentials from a file that contains a private authorization key, and activate them for use in gcloud. `gcloud auth activate-service-account` serves the same function as `gcloud auth login` but uses a service account rather than Google user credentials.
+
+You should now be ready to work with GCP from you local machine.
+
+#### GCP setup for access
+
+_([Video source](https://www.youtube.com/watch?v=Hajwnmj0xfQ&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=6))_
+
+Here  we are going to set up permissions for the service account via IAM Roles
+
+- _IAM Roles_:
+    Identity and Access Management Roles for the service account 
+
+- Below we will setup access or permissions for
+    - a _Data Lake_ on Google Cloud Storage. Data Lake is where we would usually store data
+    - a _Data Warehouse_ in BigQuery which provides a more structured way to access this data.
+
+- We need to 
+    1. Setup permissions for Service Account to access the the Data Lake & DataWarehouse by assigning it the following Roles
+        - Storage Admin 
+        - Storage Object Admin
+        - BigQuery Admin
+        - Viewer 
+    1. Then enable the following API's for _our project_
+        - `iam` API
+        - `iamcredentials` API
+
+This is done as follows:
+
+1. Assign the following IAM Roles to the Service Account: Storage Admin, Storage Object Admin, BigQuery Admin and Viewer.
+    1. On the GCP Project dashboard, go to _IAM & Admin_ > _IAM_
+    1. Select the previously created Service Account and edit the permissions by clicking on the pencil shaped icon on the left.
+    1. Add the following roles and click on _Save_ afterwards:
+        * `Storage Admin`: gives full control of GCS resources, so will be used for for creating and managing _buckets_.
+        * `Storage Object Admin`: gives full control of GCS objects, so will be used for creating and managing _objects_ within the buckets like create, update, read, write etc.
+        * `BigQuery Admin`: gives control to administer all BQ resources and data, so will be used for managing BigQuery resources and data.
+        * `Compute Instance Admin`: to control VM creation
+        * `Viewer`: should already be present as a role as this was assigned when we created the Service Account itself.
+1. Enable APIs for the project (these are needed so that Terraform can interact with GCP):
+   * https://console.cloud.google.com/apis/library/iam.googleapis.com
+   * https://console.cloud.google.com/apis/library/iamcredentials.googleapis.com
+1. Make sure that the `GOOGLE_APPLICATION_CREDENTIALS` environment variable is set.
+1. NOTE: Ideally in production or in real world a company would create a service account for each type of user. For example: service account for Admin users with admin level IAM roles, service account for developers which would be assigned developer level IAM roles etc.
+
+### GCP Setup Via CLI (Option B)
 - [Documentation](https://cloud.google.com/sdk/docs)
 1. Create the Project - GCP Initial setup
 
@@ -216,6 +380,114 @@ sf_eviction/
         gcloud projects get-iam-policy $GCP_PROJECT_ID
         ```
 ## Terraform 
+[Terraform](https://www.terraform.io/) is an [infrastructure as code](https://www.wikiwand.com/en/Infrastructure_as_code) tool that allows us to provision infrastructure resources as code, thus making it possible to handle infrastructure as an additional software component and take advantage of tools such as version control. It also allows us to bypass the cloud vendor GUIs.
+
+There are 2 important components to Terraform: the code files and Terraform commands.
+
+### Terraform Files
+
+* `main.tf`
+* `variables.tf`
+* Optional: `resources.tf`, `output.tf`
+* `.tfstate`
+
+#### main.tf
+
+Here's a basic main.tf file written in Terraform language with all of the necesary info to describe basic infrastructure:
+
+```java
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+      version = "3.5.0"
+    }
+  }
+}
+
+provider "google" {
+  credentials = file("<NAME>.json")
+
+  project = "<PROJECT_ID>"
+  region  = "us-central1"
+  zone    = "us-central1-c"
+}
+
+resource "google_compute_network" "vpc_network" {
+  name = "terraform-network"
+}
+```
+* Terraform divides information into ***blocks***, which are defined within braces (`{}`), similar to Java or C++. However, unlike these languages, statements are not required to end with a semicolon `;` but use linebreaks instead.
+* By convention, arguments with single-line values in the same nesting level have their equal signs (`=`) aligned for easier reading.
+* There are 3 main blocks: `terraform`, `provider` and `resource`. There must only be a single `terraform` block but there may be multiple `provider` and `resource` blocks.
+* The `terraform` block contains settings:
+    * The `required_providers` sub-block specifies the providers required by the configuration. In this example there's only a single provider which we've called `google`.
+        * A _provider_ is a plugin that Terraform uses to create and manage resources.
+        * Each provider needs a `source` in order to install the right plugin. By default the Hashicorp repository is used, in a similar way to Docker images.
+            * `hashicorp/google` is short for `registry.terraform.io/hashicorp/google` .
+        * Optionally, a provider can have an enforced `version`. If this is not specified the latest version will be used by default, which could introduce breaking changes in some rare cases.
+    * We'll see other settings to use in this block later.
+* The `provider` block configures a specific provider. Since we only have a single provider, there's only a single `provider` block for the `google` provider.
+    * The contents of a provider block are provider-specific. The contents in this example are meant for GCP but may be different for AWS or Azure.
+    * Some of the variables seen in this example, such as `credentials` or `zone`, can be provided by other means which we'll cover later.
+* The `resource` blocks define the actual components of our infrastructure. In this example we have a single resource.
+    * `resource` blocks have 2 strings before the block: the resource ***type*** and the resource ***name***. Together they create the _resource ID_ in the shape of `type.name`.
+    * About resource types:
+        * The first prefix of the resource type maps to the name of the provider. For example, the resource type `google_compute_network` has the prefix `google` and thus maps to the provider `google`.
+        * The resource types are defined in the Terraform documentation and refer to resources that cloud providers offer. In our example [`google_compute_network` (Terraform documentation link)](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network) refers to GCP's [Virtual Private Cloud service](https://cloud.google.com/vpc).
+    * Resource names are the internal names that we use in our Terraform configurations to refer to each resource and have no impact on the actual infrastructure.
+    * The contents of a resource block are specific to the resource type. [Check the Terraform docs](https://registry.terraform.io/browse/providers) to see a list of resource types by provider.
+        * In this example, the `google_compute_network` resource type has a single mandatory argument called `name`, which is the name that the resource will have within GCP's infrastructure.
+            * Do not confuse the _resource name_ with the _`name`_ argument!
+
+Besides these 3 blocks, there are additional available blocks:
+
+* ***Input variables*** block types are useful for customizing aspects of other blocks without altering the other blocks' source code. They are often referred to as simply _variables_. They are passed at runtime.
+    ```java
+    variable "region" {
+        description = "Region for GCP resources. Choose as per your location: https://cloud.google.com/about/locations"
+        default = "europe-west6"
+        type = string
+    }
+    ```
+    * Description:
+        * An input variable block starts with the type `variable` followed by a name of our choosing.
+        * The block may contain a number of fields. In this example we use the fields `description`, `type` and `default`.
+        * `description` contains a simple description for documentation purposes.
+        * `type` specifies the accepted value types for the variable
+        * If the `default` field is defined, the variable becomes optional because a default value is already provided by this field. Otherwise, a value must be provided when running the Terraform configuration.
+        * For additional fields, check the [Terraform docs](https://www.terraform.io/language/values/variables).
+    * Variables must be accessed with the keyword `var.` and then the name of the variable.
+    * In our `main.tf` file above, we could access this variable inside the `google` provider block with this line:
+        ```java
+        region = var.region
+        ```
+* ***Local values*** block types behave more like constants.
+    ```java
+    locals{
+        region  = "us-central1"
+        zone    = "us-central1-c"
+    }
+    ```
+    * Description:
+        * Local values may be grouped in one or more blocks of type `locals`. Local values are often grouped according to usage.
+        * Local values are simpler to declare than input variables because they are only a key-value pair.
+    * Local values must be accessed with the word `local` (_mind the lack of `s` at the end!_).
+        ```java
+        region = local.region
+        zone = local.zone
+        ```
+
+### Terraform Commands
+
+With a configuration ready, you are now ready to create your infrastructure. There are a number of commands that must be followed:
+
+* `terraform init` : initialize your work directory by downloading the necessary providers/plugins.
+* `terraform fmt` (optional): formats your configuration files so that the format is consistent.
+* `terraform validate` (optional): returns a success message if the configuration is valid and no errors are apparent.
+* `terraform plan` :  creates a preview of the changes to be applied against a remote state, allowing you to review the changes before applying them.
+* `terraform apply` : applies the changes to the infrastructure.
+* `terraform destroy` : removes your stack from the infrastructure.
 1. Create the following configuration files in the terraform folder
     - .terraform-version
     - main.tf
