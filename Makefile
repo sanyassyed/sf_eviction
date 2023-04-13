@@ -1,5 +1,3 @@
-include .env
-
 install-java:
 	mkdir spark
 	wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz -P ~/spark
@@ -13,4 +11,3 @@ install-spark:
 	rm ~/spark/spark-3.3.2-bin-hadoop3.tgz
 	export SPARK_HOME="${HOME}/spark/spark-3.3.2-bin-hadoop3"
 	export PATH="${SPARK_HOME}/bin:${PATH}"
-	

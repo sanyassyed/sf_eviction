@@ -1,13 +1,145 @@
+## Project Creation
+>Do the following on your local machine
+
+1. Clone the project 
+```bash
+git clone https://github.com/sanyassyed/sf_eviction.git
+cd sf_eviction
+```
+2. Change the name of the `env_boilerplate` file to .env
+
+>GCP & TERRAFORM
+
+### GCP Setup Via CLI
+- [Documentation](https://cloud.google.com/sdk/docs)
+1. Create the GCP Project
+
+        ```bash
+        # Follow instructions to setup your project and do the intial project setup
+        gcloud init --no-browser
+        # Select Option 2 - Create a new configuration
+        # Enter configuration name (enter the project name here): sf-eviction
+        # Choose the account you would like to use to perform operations for this configuration: 1 (your gmail account)
+        # Pick cloud project to use: 5 (Create new project)
+        # Please enter project id: sf*******3
+
+        # To check that all is configured correctly and that your CLI is configured to use your created project use the command
+        gcloud info
+        ```
+    - Add the following values to your .env file
+        * GCP_PROJECT_ID - the one you entered above
+        * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
+        * GCP_ZONE - the region for your project
+        * LOCAL_SERVICE_ACCOUNT_FILE_PATH=credentials/gcp-credentials.json - this is where your credentials will be downloaded
+    - Create a `credentials` folder where your .json file will be saved
+
+1. [Enable billing](https://support.google.com/googleapi/answer/6158867?hl=en) for the project on the GCP Console
+1. Enable API's, create Service Account, setup Access via IAM Roles & Download Credentials
+    - To find the name of the API to be enabled, goto the the API in the [API Library](https://console.cloud.google.com/apis/library) and in the url find the format to be used to refer to that API; it usually contains `apiname.googleapis.com`
+    - [Documentation for Roles](https://cloud.google.com/iam/docs/understanding-roles)
+    - [Documentation for API's](https://cloud.google.com/sdk/gcloud/reference/services/enable)
+    - [List API's via CLI for a Project](https://cloud.google.com/service-usage/docs/list-services#gcloud)
+    
+        ```bash
+        # set the environment variables from the .env file
+        set -o allexport && source .env && set +o allexport
+        # 1 Enable API's for the project
+        gcloud services enable iam.googleapis.com \
+                compute.googleapis.com \
+                bigquery.googleapis.com 
+        # 2 Create Service Account
+        gcloud iam service-accounts create $GCP_SERVICE_ACCOUNT_NAME --display-name="Master Service Account"
+        # 3 Add access for the Service Account via IAM Roles
+        # We create IAM roles for the service account
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.admin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.objectAdmin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/bigquery.admin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.instanceAdmin'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/viewer'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/iam.serviceAccountUser'
+        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.osLoginExternalUser' # to add ssh keys to VM via CLI
+        
+        # gcloud projects remove-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.admin'
+        # 4 Download the json credential file
+        gcloud iam service-accounts keys create $LOCAL_SERVICE_ACCOUNT_FILE_PATH --iam-account=$GCP_SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
+        # view all the IAM Roles added to the project
+        gcloud projects get-iam-policy $GCP_PROJECT_ID
+        ```
+## Terraform 
+1. Create the following configuration files in the terraform folder
+    - .terraform-version
+    - main.tf
+    - gstorage.tf
+    - bigquery.tf
+    - compute.tf [Code Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#nested_boot_disk)
+    - variables.tf  
+```bash
+# set the env variables
+set -o allexport && source .env && set +o allexport
+# run terrafrom from parent directory
+# initialize the folder
+terraform -chdir=terraform init
+terraform -chdir=terraform plan
+terraform -chdir=terraform apply
+# if any errors the destroyall that you created as follows
+terraform -chdir=terraform destroy
+```
+1. Now check the GCP Console to make sure all resources are created
+
+## SSH Keys for VM
+1. Generate ssh keys to connect to the VM [Documentation](https://cloud.google.com/compute/docs/connect/create-ssh-keys)
+```bash
+cd ~/.ssh
+ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
+# Remember the passphrase as you need it when sshing into the machine
+```
+1. Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
+1. Option A (via Console)
+    - Goto Metadata > SSH Keys tab > Click Edit > Click Add item > Add the public key here
+1. Option B (via CLI) [Source Documentation](https://cloud.google.com/compute/docs/connect/add-ssh-keys#gcloud_1)
+    - create a new file and add contents of the id_eviction.pub file as username:key_value
+    - name the file as id_eviction_gcp.pub and save and close
+    - Now add the SSH public key to the VM via CLI; make sure you replace the path to the ssh key accourdingly
+    ```bash
+        touch id_eviction_gcp.pub
+        nano id_eviction_gcp.pub
+        # add the username and key_value to the file as
+        # project_user:ssh-rsa ******
+        # Ctrl+o Enter : to save
+        # Ctrl+x Enter : to exit
+        gcloud compute project-info add-metadata --metadata-from-file=ssh-keys=/c/Users/SANYA/.ssh/id_eviction_gcp.pub
+    ```
+## Start the VM & SSH into it
+1. Start the VM and get the External IP
+```bash
+gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_ID
+```
+1. Make a note of the External IP
+1. open the ~/.ssh/config and append the following
+    ```
+    Host <GCP_COMPUTE_ENGINE_NAME>
+        HostName <External IP>
+        User project_user
+        IdentityFile ~\.ssh\id_eviction
+        ServerAliveInterval 600
+        TCPKeepAlive no
+    ```
+1. SSH into the VM as follows:
+    ```bash
+    ssh $GCP_COMPUTE_ENGINE_NAME
+    ```
+
 >CLONE THE REPO
 ## Clone Project Repo on VM
-
+```bash
+git clone https://github.com/sanyassyed/sf_eviction.git
+```
 >PACKAGES & CREDENTIALS
-# Local
 1. google cloud cli
 1. Terraform
 # VM
-1. Java
-1. Spark
+1. Java & Spark
+    
 1. conda
 1. virtual conda env with pip 
 1. pip install all the packages in requirements.txt
@@ -156,128 +288,6 @@ sf_eviction/
 ├── README.md
 └── setup.py
 ```
-## Project Creation
->Do the following on the local machine
-
->GCP & TERRAFORM
-
-### GCP Setup Via CLI
-- [Documentation](https://cloud.google.com/sdk/docs)
-1. Create the Project - GCP Initial setup
-
-        ```bash
-        # Follow instructions to setup your project and do the intial GCP setup
-        gcloud init --no-browser
-        # Select Option 2 - Create a new configuration
-        # Enter configuration name (enter the project name here): sf-eviction
-        # Choose the account you would like to use to perform operations for this configuration: 1 your gmail account
-        # Pick cloud project to use: 5 Create new project
-        # Please enter project id: sf*******3
-
-        #check that all is configured correctly -you should see that your CLI is configured to use your created project
-        gcloud info
-        ```
-    - Add the following values to the .env file 
-        * GCP_PROJECT_ID - the one you entered above
-        * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
-        * GCP_ZONE - the region for your project
-        * LOCAL_SERVICE_ACCOUNT_FILE_PATH=credentials/gcp-credentials.json - this is where your credentials will be downloaded
-    - Create a `credentials` folder where your .json file will be saved
-1. [Enable billing](https://support.google.com/googleapi/answer/6158867?hl=en) for the project on the GCP Console
-1. Enable API's, create Service Account, setup Access via IAM Roles & Download Credentials
-    - To find the name of the API to be enabled, goto the the API in the [API Library](https://console.cloud.google.com/apis/library) and in the url find the format to be used to refer to that API; it usually contains `apiname.googleapis.com`
-    - [Documentation for Roles](https://cloud.google.com/iam/docs/understanding-roles)
-    - [Documentation for API's](https://cloud.google.com/sdk/gcloud/reference/services/enable)
-    - [List API's via CLI for a Project](https://cloud.google.com/service-usage/docs/list-services#gcloud)
-    
-        ```bash
-        # set the environment variables from the .env file
-        set -o allexport && source .env && set +o allexport
-        # 1 Enable API's for the project
-        gcloud services enable iam.googleapis.com \
-                compute.googleapis.com \
-                bigquery.googleapis.com 
-        # 2 Create Service Account
-        gcloud iam service-accounts create $GCP_SERVICE_ACCOUNT_NAME --display-name="Master Service Account"
-        # 3 Add access for the Service Account via IAM Roles
-        # We create IAM roles for the service account
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.admin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.objectAdmin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/bigquery.admin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.instanceAdmin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/viewer'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/iam.serviceAccountUser'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.osLoginExternalUser' # to add ssh keys to VM via CLI
-        
-        # gcloud projects remove-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.admin'
-        # 4 Download the json credential file
-        gcloud iam service-accounts keys create $LOCAL_SERVICE_ACCOUNT_FILE_PATH --iam-account=$GCP_SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
-        # view all the IAM Roles added to the project
-        gcloud projects get-iam-policy $GCP_PROJECT_ID
-        ```
-## Terraform 
-1. Create the following configuration files in the terraform folder
-    - .terraform-version
-    - main.tf
-    - gstorage.tf
-    - bigquery.tf
-    - compute.tf [Code Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#nested_boot_disk)
-    - variables.tf  
-```bash
-# set the env variables
-set -o allexport && source .env && set +o allexport
-# run terrafrom from parent directory
-# initialize the folder
-terraform -chdir=terraform init
-terraform -chdir=terraform plan
-terraform -chdir=terraform apply
-# if any errors the destroyall that you created as follows
-terraform -chdir=terraform destroy
-```
-1. Now check the GCP Console to make sure all resources are created
-
-## SSH Keys for VM
-1. Generate ssh keys to connect to the VM [Documentation](https://cloud.google.com/compute/docs/connect/create-ssh-keys)
-```bash
-cd ~/.ssh
-ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
-# Remember the passphrase as you need it when sshing into the machine
-```
-1. Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
-1. Option A (via Console)
-    - Goto Metadata > SSH Keys tab > Click Edit > Click Add item > Add the public key here
-1. Option B (via CLI) [Source Documentation](https://cloud.google.com/compute/docs/connect/add-ssh-keys#gcloud_1)
-    - create a new file and add contents of the id_eviction.pub file as username:key_value
-    - name the file as id_eviction_gcp.pub and save and close
-    - Now add the SSH public key to the VM via CLI; make sure you replace the path to the ssh key accourdingly
-    ```bash
-        touch id_eviction_gcp.pub
-        nano id_eviction_gcp.pub
-        # add the username and key_value to the file as
-        # project_user:ssh-rsa ******
-        # Ctrl+o Enter : to save
-        # Ctrl+x Enter : to exit
-        gcloud compute project-info add-metadata --metadata-from-file=ssh-keys=/c/Users/SANYA/.ssh/id_eviction_gcp.pub
-    ```
-## Start the VM & SSH into it
-1. Start the VM and get the External IP
-```bash
-gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_ID
-```
-1. Make a note of the External IP
-1. open the ~/.ssh/config and append the following
-    ```
-    Host <GCP_COMPUTE_ENGINE_NAME>
-        HostName <External IP>
-        User project_user
-        IdentityFile ~\.ssh\id_eviction
-        ServerAliveInterval 600
-        TCPKeepAlive no
-    ```
-1. SSH into the VM as follows:
-    ```bash
-    ssh $GCP_COMPUTE_ENGINE_NAME
-    ```
 
 >Do the following on the VM
 >PREFECT
