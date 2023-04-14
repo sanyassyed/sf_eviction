@@ -11,5 +11,10 @@ install-spark:
 	rm ~/spark/spark-3.3.2-bin-hadoop3.tgz
 	export SPARK_HOME="${HOME}/spark/spark-3.3.2-bin-hadoop3"
 	export PATH="${SPARK_HOME}/bin:${PATH}"
-
-
+install-miniconda:
+	wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+    eval "$(~/miniconda/bin/conda shell.bash hook)"
+    conda init
+	rm Miniconda3-latest-Linux-x86_64.sh
+    source ~/.bashrc

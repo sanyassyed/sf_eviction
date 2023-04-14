@@ -120,8 +120,15 @@ Below are the required API's, Applications needed for this project and the instr
 * API Keys (`API_KEY_ID` & `API_KEY_SECRET`) are needed for extracting Eviction data for this project; find the instructions [here](docs/info_api.md) to get your key.
 
 ### conda 
-* TODO:
-
+* Anaconda
+    - Download and install Anaconda 64-Bit (x86) Installer from [here](https://www.anaconda.com/products/distribution#Downloads)
+    ```bash
+        wget https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh
+        bash Anaconda3-2023.03-Linux-x86_64.sh
+        # Accept yes
+        rm Anaconda3-2023.03-Linux-x86_64.sh
+    ```
+~~echo 'export PATH="${HOME}/miniconda/bin:${PATH}"' >> ~/.bashrc~~
 ### Java
 * TODO: refer to week 5 de-zoomcamp
 

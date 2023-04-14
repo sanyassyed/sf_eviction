@@ -142,15 +142,17 @@ gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --proje
 git clone https://github.com/sanyassyed/sf_eviction.git
 ```
 >PACKAGES & CREDENTIALS - VM
-1. Anaconda
-    - Download and install Anaconda 64-Bit (x86) Installer from [here](https://www.anaconda.com/products/distribution#Downloads)
+1. Miniconda- Download and install miniconda 64-Bit Installer from [here](https://docs.conda.io/en/latest/miniconda.html)
     ```bash
-        wget https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh
-        bash Anaconda3-2023.03-Linux-x86_64.sh
-        # Accept yes
-        rm Anaconda3-2023.03-Linux-x86_64.sh
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+        rm Miniconda3-latest-Linux-x86_64.sh
+        eval "$(~/miniconda/bin/conda shell.bash hook)"
+        conda init
+        source ~/.bashrc
         TODO: ********************************
     ```
+    
 1. Make
     - `sudo apt install make`
 1. Java & Spark
