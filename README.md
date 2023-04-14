@@ -1,10 +1,20 @@
-## Project Creation
+# Project Creation
 
->PACKAGES - Local Systems
-1. Google Cloud CLI
-1. Terraform
+## REQUIREMENTS - Local Machine
 
->CLONE PROJECT ON LOCAL MACHINE
+Below are the required applications on the local machine
+
+### Google SDK
+* Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
+* Required on the local machine
+* VM comes with this pre-installed
+
+### Terraform
+* Download from [here](https://developer.hashicorp.com/terraform/downloads)
+
+## CREATING GCP PROJECT VIA CLI & TERRAFORM
+
+### Initial Setup
 1. Clone the project 
 ```bash
 git clone https://github.com/sanyassyed/sf_eviction.git
@@ -12,11 +22,9 @@ cd sf_eviction
 ```
 2. Change the name of the `env_boilerplate` file to .env
 
->GCP & TERRAFORM
-
-## GCP Setup Via CLI
+### PROJECT CREATION VIA CLI
 - [Documentation](https://cloud.google.com/sdk/docs)
-1. Create the GCP Project
+1. Create the GCP Project by executing the below from the project folder in the terminal
 
         ```bash
         # Follow instructions to setup your project and do the intial project setup
@@ -39,11 +47,7 @@ cd sf_eviction
 
 1. [Enable billing](https://support.google.com/googleapi/answer/6158867?hl=en) for the project on the GCP Console
 1. Enable API's, create Service Account, setup Access via IAM Roles & Download Credentials
-    - To find the name of the API to be enabled, goto the the API in the [API Library](https://console.cloud.google.com/apis/library) and in the url find the format to be used to refer to that API; it usually contains `apiname.googleapis.com`
-    - [Documentation for Roles](https://cloud.google.com/iam/docs/understanding-roles)
-    - [Documentation for API's](https://cloud.google.com/sdk/gcloud/reference/services/enable)
-    - [List API's via CLI for a Project](https://cloud.google.com/service-usage/docs/list-services#gcloud)
-    
+
         ```bash
         # set the environment variables from the .env file
         set -o allexport && source .env && set +o allexport
@@ -69,14 +73,8 @@ cd sf_eviction
         # view all the IAM Roles added to the project
         gcloud projects get-iam-policy $GCP_PROJECT_ID
         ```
-## Terraform 
-1. Create the following configuration files in the terraform folder
-    - .terraform-version
-    - main.tf
-    - gstorage.tf
-    - bigquery.tf
-    - compute.tf [Code Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#nested_boot_disk)
-    - variables.tf  
+### PROJECT INFRASTRUCTURE CREATION VIA Terraform 
+1. build the project infrastructure via Terraform as follows 
 ```bash
 # set the env variables
 set -o allexport && source .env && set +o allexport
@@ -90,7 +88,7 @@ terraform -chdir=terraform destroy
 ```
 1. Now check the GCP Console to make sure all resources are created
 
-## SSH Keys for VM
+### SSH Keys CREATION FOR THE VM
 1. Generate ssh keys to connect to the VM [Documentation](https://cloud.google.com/compute/docs/connect/create-ssh-keys)
 ```bash
 cd ~/.ssh
@@ -98,223 +96,77 @@ ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
 # Remember the passphrase as you need it when sshing into the machine
 ```
 1. Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
-1. Option A (via Console)
+1. Goto the GCP Console on the Browser into this project
     - Goto Metadata > SSH Keys tab > Click Edit > Click Add item > Add the public key here
-1. Option B (via CLI) [Source Documentation](https://cloud.google.com/compute/docs/connect/add-ssh-keys#gcloud_1)
-    - create a new file and add contents of the id_eviction.pub file as username:key_value
-    - name the file as id_eviction_gcp.pub and save and close
-    - Now add the SSH public key to the VM via CLI; make sure you replace the path to the ssh key accourdingly
-    ```bash
-        touch id_eviction_gcp.pub
-        nano id_eviction_gcp.pub
-        # add the username and key_value to the file as
-        # project_user:ssh-rsa ******
-        # Ctrl+o Enter : to save
-        # Ctrl+x Enter : to exit
-        gcloud compute project-info add-metadata --metadata-from-file=ssh-keys=/c/Users/SANYA/.ssh/id_eviction_gcp.pub
-    ```
-## Start the VM & SSH into it
+
+### Start the VM & SSHing into it
 1. Start the VM and get the External IP
-```bash
-gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_ID
-```
-1. Make a note of the External IP
-1. SSH into VM Option A 
-    - `ssh -i ~/.ssh/id_eviction@<external_ip>`
-1. SSH into VM Option B 
-    - open the ~/.ssh/config and append the following
-        ```
-        Host <GCP_COMPUTE_ENGINE_NAME>
-            HostName <External IP>
-            User project_user
-            IdentityFile ~\.ssh\id_eviction
-            ServerAliveInterval 600
-            TCPKeepAlive no
-        ```
-    - SSH into the VM as follows:
     ```bash
-    ssh $GCP_COMPUTE_ENGINE_NAME
+        gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_ID
+    ```
+1. Make a note of the External IP
+1. SSH into VM as follows:
+    ```bash
+        ssh -i ~/.ssh/id_eviction@<external_ip>
     ```
 
->ON THE VM
-## Clone Project Repo on VM
-```bash
-git clone https://github.com/sanyassyed/sf_eviction.git
-```
->PACKAGES & CREDENTIALS - VM
-1. Miniconda- Download and install miniconda 64-Bit Installer from [here](https://docs.conda.io/en/latest/miniconda.html)
+## EXECUTING PROJECT ON THE VM
+
+1. Clone the Project repo on the VM
     ```bash
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
-        rm Miniconda3-latest-Linux-x86_64.sh
-        eval "$(~/miniconda/bin/conda shell.bash hook)"
-        conda init
-        source ~/.bashrc
-        TODO: ********************************
+    git clone https://github.com/sanyassyed/sf_eviction.git
     ```
-    
+2. Replace the env_boilerplate file with .env file from your local system
+
+## SOFTWARE REQUIREMENTS - Local Machine
+
+Below are the required API's and Applications needed for this project and the instructions to install them on the VM.
+
+NOTE: All the installations are from the `root directory`
+
 1. Make
-    - `sudo apt install make`
-1. Java & Spark
+
+    Install the `make` software as follows:
+
     ```bash
+        sudo apt install make
+    ```
+1. Java, Spark & Miniconda
+
+    We are going to install these using the Makefile which is in the `sf_eviction` project folder which needs to be copied to the system root directory first
+
+    ```bash
+        # Execute the below in the system root directory
         # Copy the Makefile to system root
         cp sf_eviction/Makefile .
-        # install java & spark as follows
+        # install java, spark & miniconda as follows
         make install-java
         make install-spark
+        make install-conda
     ```
-1. conda
-1. virtual conda env with pip 
-1. pip install all the packages in requirements.txt
-    * Development
-        * Getting all the packages required by the project via pipreqs
-            ```bash
-                cd sf_eviction
-                conda activate .my_env
-                pip install pipreqs
-                # ignore the virtual env
-                pipreqs . --ignore ".my_env"
-            ```
-        * This will add all the required packages to requirements.txt
-    * Replication
-        * to install all the packages in requirement.txt
-            ```bash
-                conda activate .my_env
-                pip install -r requirements.txt
-            ```
-* Goto Project Directory - **Step 3**
-```bash
-cd sf_eviction
-```
-## Requirements 
-Below are the required API's, Applications needed for this project and the instructions to install them on the VM
-
-### Google SDK
-* Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
-* Required on the local machine
-* VM comes with this pre-installed
-
-### Terraform
-* Download from [here](https://developer.hashicorp.com/terraform/downloads)
-
-### API's
-* TODO:
-* API Keys (`API_KEY_ID` & `API_KEY_SECRET`) are needed for extracting Eviction data for this project; find the instructions [here](docs/info_api.md) to get your key.
-
-### conda 
-* TODO:
-
-### Java
-* TODO: refer to week 5 de-zoomcamp
-
-### Spark
-* TODO: refer to week 5 de-zoomcamp
-
-### Jupyter notebook
-* TODO: Check if conda comes with jupyter notebook installed?
-Maybe not required to run the project
-
->PROJECT VIRTUAL ENVIRONMENT & PACKAGES 
-## Virtual conda env
-* ` conda create --prefix ./.my_env python=3.10.9 pip` -> Path to install the virtual env in the current project directory with python 3.10 and pip
-*  `conda activate .my_env` - to activate the virtual env - **Step 4 Option a**
-* `conda activate` -> don't use deactivate just use `activate` to go to base
-
-## Jupyter Notebook with different kernal 
-
-Using jupyter installed on the system and  the kernel from conda virtual env [Ref](https://stackoverflow.com/questions/58068818/how-to-use-jupyter-notebooks-in-a-conda-environment) 
-
-<p> We are going to use the pyhton in the conda virtual env and create a kernal and activate that in the system jupyter notebook </p>
-
-1. Add the conda virtual env python to kernal
-    
-    ```python
-    conda activate .my_env       # activate environment in terminal
-    conda/pip install ipykernel  # install Python kernel in new conda env
-    ipython kernel install --user --name=conda-myenv-kernel   # configure Jupyter to use Python kernel
-    
-    # Then run jupyter from the system installation or a different conda environment:
-    conda activate               # this step activates the system conda
-    jupyter notebook             # run jupyter from system
-    ```
-    
-2. Select the `conda-myenv-kernal` in jupyter notebook form the `New` drop down box
-
-### Start Jupter notebooks **Step 4 Option b**
-```bash
-conda activate # to goto base conda which has the jupyter installation
-screen -A -m -d -S jupyterscreen jupyter notebook --port=8888 # to start jupyter in the background 
-# This command launches a Jupyter Notebook server using the "screen" utility with the session name "jupyterscreen".
-# Here is a breakdown of the different components of the command:
-# screen: A terminal multiplexer that allows you to run multiple shell sessions within a single terminal window.
-# -A: Adapt the terminal's size to the current screen size.
-# -m: Start a new session without attaching to any existing sessions.
-# -d: Detach the screen session after it has been started.
-# -S jupyterscreen: Name the screen session "jupyterscreen".
-# jupyter notebook: Launch the Jupyter Notebook server.
-# --port=8888: Specify the port number on which the Jupyter Notebook server will run. In this case, it's set to port 8888.
-# When you run this command, it will start a detached screen session with the name "jupyterscreen" and launch a Jupyter Notebook server on port 8888 within that session. This means that you can access the Jupyter # Notebook server from another terminal window or from a web browser.
-# goto the browser and open http://localhost:8888 and select the virtual env kernal
-# to stop jupyter notebook
-pgrep jupyter
-# use the pid printed
-kill pid
-# activate the project venv
-conda activate .my_env/
-```
-
-### Installing packages on Conda Virtual env
-* `pip install <name_of_the_package>`
-* `python-decouple` -> used for setting up and using environment variable within the python code
-* `ipykernel` -> to add the virtual conda kernal to the list of kernals available on Jupyter notebook
-
->ENVIRONMENT VARIABLES
-### Environment Variables for the project
-
-Add environment variables as follows [Ref](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.env,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file,stored%20in%20your%20.env%20file.)
-
-* `pip install python-decouple`
-* `touch .env` # create a new .env file
-* `nano .env`    # open the .env file in the nano text editor and write the environment variables here
-    * Now that you have your environment variables stored in a .env file, you can access them in your Python code like this:
-    
-        ```python
-        from decouple import config, AutoConfig
-        config = AutoConfig(search_path='.env')
-        API_USERNAME = config('API_USER')
-        API_KEY = config('API_KEY')
+1. Virtual conda env with pip 
+    * Goto the Project Directory 
+        ```bash
+            cd sf_eviction
         ```
-    * To specify a different path for .env refer [here](https://stackoverflow.com/questions/43570838/how-do-you-use-python-decouple-to-load-a-env-file-outside-the-expected-paths)
 
->GENERAL DOCUMENTATION
-## Project Structure
-TODO: later use tree command to copy paste updated structure 
-```bash
-sf_eviction/
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   └── ...
-├── flows/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── main.py
-│   └── ...
-├── dbt/
-│   ├── analysis/
-│   ├── macros/
-│   ├── models/
-│   ├── snapshots/
-│   ├── tests/
-│   ├── dbt_project.yml
-│   └── ...
-├── README.md
-└── setup.py
-```
+    * Install the virtual conda env with pip and python 3.10.9 as follows
+        ```bash
+            conda create --prefix ./.my_env python=3.10.9 pip
+            conda activate .my_env
+            pip install -r requirements.txt
+        ```
 
->Do the following on the VM
+## API REQUIREMENTS
+* TODO:
+* SODU API Keys:
+    - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](docs/info_api.md) to get your key.
+* PREFECT CLOUD API:
+    - Get your Prefect API Key by following instructions [here](https://docs.prefect.io/latest/ui/cloud-api-keys/)
+* Add the keys to the .env file
+
 >PREFECT
-
+TODO: *******************************
 1. Install prefect in the virtual env
     ```bash
     # In a conda environment, install all package dependencies with
