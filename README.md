@@ -122,8 +122,6 @@ ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
 
 Below are the required API's and Applications needed for this project and the instructions to install them on the VM.
 
-NOTE: All the installations are from the `root directory`
-
 1. Make
 
     Install the `make` software as follows:
@@ -133,24 +131,17 @@ NOTE: All the installations are from the `root directory`
     ```
 1. Java, Spark & Miniconda
 
-    We are going to install these using the Makefile which is in the `sf_eviction` project folder which needs to be copied to the system root directory first
+    We are going to install these using the Makefile which is in the `sf_eviction`
 
     ```bash
-        # Execute the below in the system root directory
-        # Copy the Makefile to system root
-        cp sf_eviction/Makefile .
-        # install java, spark & miniconda as follows
-        make install-java
-        make install-spark
-        make install-conda
+        # goto project directory
+        cd sf_eviction
+        # install java, spark & miniconda in the system ~ as follows
+        make install-sw
     ```
 1. Virtual conda env with pip 
-    * Goto the Project Directory 
-        ```bash
-            cd sf_eviction
-        ```
 
-    * Install the virtual conda env with pip and python 3.10.9 as follows
+    Install the virtual conda env with pip and python 3.10.9 as follows
         ```bash
             conda create --prefix ./.my_env python=3.10.9 pip
             conda activate .my_env
@@ -158,27 +149,10 @@ NOTE: All the installations are from the `root directory`
         ```
 
 ## API REQUIREMENTS
-* TODO:
 * SODU API Keys:
     - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](docs/info_api.md) to get your key.
 * PREFECT CLOUD API:
-    - Get your Prefect API Key by following instructions [here](https://docs.prefect.io/latest/ui/cloud-api-keys/)
-* Add the keys to the .env file
-
->PREFECT
-TODO: *******************************
-1. Install prefect in the virtual env
-    ```bash
-    # In a conda environment, install all package dependencies with
-    conda activate .my_env/
-    pip install -r requirements_prefect.txt
-    # add the below to requirements_prefect if not already added
-    pip install "prefect-gcp[cloud_storage]" # Cloud storage apapter for creating GCS Block
-    pip install "prefect-gcp[bigquery]" # for creating BQ Block
-    ```
-
-2. Use Prefect Cloud [Option 2: the other option is to use the local prefect orion for which you will use `prefect orion start`]
-* You must do this step first as the blocks will be created on Prefect Cloud once you log into it using API
+    - Get your Prefect API Key by following instructions below or  [here](https://docs.prefect.io/latest/ui/cloud-api-keys/)
     * First Create a Prefect Cloud account
     * Get the API as follows:   
         - To create an API key, select the account icon at the bottom-left corner of the UI and select your account name and the cog-wheel. 
@@ -186,26 +160,23 @@ TODO: *******************************
         - Select the API Keys tab on the left
         - Select the API Keys tab. This displays a list of previously generated keys and lets you create new API keys or delete keys.
         - Create sf_eviction key and add this data to the .env file as PREFECT_CLOUD_API
+* Add the keys to the .env file
+* Copy the  `credentials/gcp-credentials.json` file from your local system to vm
+* Add the data from the gcp-credentials.json to the .env file
+
+>PREFECT
+1. Log into Prefect Cloud as blocks will be created on Prefect Cloud once you log into it using API
     ```bash
-    source env_variables.sh
+    set -o allexport && source .env && set +o allexport
     prefect cloud login -k $PREFECT_CLOUD_API # or ${PREFECT_CLOUD_API}
     ```
     * Now you can use the Prefect cloud to register blocks and run your flows
 
 4. Create Prefect Blocks via code
-    * The block creation is done in the file `create_prefect_blocks.py`
-    * In this file we created 
-        - A GCP Credentials Block - this is to connect to the GCP account
-        - A GCS Bucket Block - To access the Buckets in GCS
-        - A BQ Bucket Block - To connect and access BQ
-    * NOTE: Block names must only contain lowercase letters, numbers, and dashes
-    * Run the below to register the blocks created via the .py file. [Ref](https://docs.prefect.io/concepts/blocks/)
     ```bash
     # Run the create_prefect_blocks.py and register the block
-    prefect block register --file create_prefect_blocks.py
+    prefect block register --file flows/create_prefect_blocks.py
     ```
-    Now for this project we will always connect to the Prefect orion cloud, pull the blocks from there and use it for running our flows.
-
 5. Create flows in ingest.py to
     - Pull raw data from the web
     - Store on VM locally

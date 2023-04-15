@@ -56,7 +56,7 @@ GcpCredentials(service_account_info=service_account_info_dict).save(GCP_CREDENTI
 gcp_credentials = GcpCredentials.load(GCP_CREDENTIALS_BLOCK)
 
 # Creating GCS Bucket Block
-gcs_bucket=config("GCS_BUCKET")
+gcs_bucket=config("GCS_BUCKET_NAME")
 gcs_bucket_block =config("GCS_BUCKET_BLOCK")
 
 GcsBucket(gcp_credentials=gcp_credentials,bucket=gcs_bucket).save(gcs_bucket_block, overwrite=True)

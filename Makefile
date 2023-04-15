@@ -26,4 +26,4 @@ install-sw:
 	make -C ~ install-java && \
 	make -C ~ install-spark
 
-# make install-all -C ~
+# make install-sw
