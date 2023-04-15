@@ -21,7 +21,7 @@ install-miniconda:
 	conda init
 	. ~/.bashrc
 
-install-all:
-	make install-java && make install-spark && make install-miniconda
+install-sw:
+	make install-java -C ~ && make install-spark -C ~ && make install-miniconda -C ~
 
 # make install-all -C ~
