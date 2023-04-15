@@ -22,7 +22,7 @@ install-miniconda:
 	. ~/.bashrc
 
 install-sw:
-	install-java && \
+	make install-java && \
 	make install-spark && \
 	make install-miniconda
 
