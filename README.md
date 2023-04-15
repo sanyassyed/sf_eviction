@@ -172,10 +172,23 @@ Below are the required API's and Applications needed for this project and the in
     ```
     * Now you can use the Prefect cloud to register blocks and run your flows
 
-4. Create Prefect Blocks via code
+1. Create Prefect Blocks via code
     ```bash
-    # Run the create_prefect_blocks.py and register the block
-    prefect block register --file flows/create_prefect_blocks.py
+        # Run the create_prefect_blocks.py and register the block
+        prefect block register --file flows/create_prefect_blocks.py
+        python flows/deploy_ingest.py
+        # goto prefect cloud using login s***08@gmail.com and check if the deployment is set there
+        # on VM-start the agent
+        # in detached mode use 
+        screen -A -m -d -S prefectagent prefect agent start --work-queue "development"
+        # force run the deployment for testing or you can let it run on schedule
+        prefect deployment run ParentFlow/etl_web_to_gcp
+        # Goto the agent screen or prefect-Cloud to view the execution
+        # screen -r prefectagent
+        # Stop the prefect agent 
+        screen -r prefectagent # whatever screen name you gave
+        Ctrl + C
+        prefect cloud logout
     ```
 5. Create flows in ingest.py to
     - Pull raw data from the web

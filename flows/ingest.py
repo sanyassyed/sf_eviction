@@ -33,7 +33,7 @@ config = AutoConfig(search_path='.env')
 GCS_BUCKET_BLOCK = config("GCS_BUCKET_BLOCK")
 BQ_BLOCK = config("BQ_BLOCK")
 GCP_PROJECT_ID = config("GCP_PROJECT_ID")
-GCS_BUCKET = config("GCS_BUCKET")
+GCS_BUCKET = config("GCS_BUCKET_NAME")
 BQ_DATASET_RAW = config("DBT_ENV_BQ_DS_RAW")
 # SODU API Credentials
 API_KEY_ID = config("API_KEY_ID")
