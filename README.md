@@ -124,10 +124,11 @@ Below are the required API's and Applications needed for this project and the in
 
 1. Make
 
-    Install the `make` software as follows:
+    Install the `make` & `screen` software as follows:
 
     ```bash
         sudo apt install make
+        sudo apt install screen
     ```
 1. Java, Spark & Miniconda
 
@@ -178,8 +179,7 @@ Below are the required API's and Applications needed for this project and the in
         prefect block register --file flows/create_prefect_blocks.py
         python flows/deploy_ingest.py
         # goto prefect cloud using login s***08@gmail.com and check if the deployment is set there
-        # on VM-start the agent
-        # in detached mode use 
+        # on VM start the agent in detached mode
         screen -A -m -d -S prefectagent prefect agent start --work-queue "development"
         # force run the deployment for testing or you can let it run on schedule
         prefect deployment run ParentFlow/etl_web_to_gcp
