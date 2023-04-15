@@ -22,8 +22,8 @@ install-miniconda:
 	. ~/.bashrc
 
 install-sw:
-	make install-java  -C ~ -f ~/sf_eviction/Makefile && \
-	make install-spark  -C ~ -f ~/sf_eviction/Makefile && \
-	make install-miniconda  -C ~ -f ~/sf_eviction/Makefile
+	install-java && \
+	make install-spark && \
+	make install-miniconda
 
 # make install-all -C ~
