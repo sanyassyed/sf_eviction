@@ -20,6 +20,7 @@ install-miniconda:
 	eval "$$(~/miniconda/bin/conda shell.bash hook)"
 	conda init
 	. ~/.bashrc
+
 install-all:
 	install-java && install-spark && install-miniconda
 
