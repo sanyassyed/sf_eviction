@@ -24,6 +24,6 @@ install-miniconda:
 install-sw:
 	make -C ~ install-miniconda && \
 	make -C ~ install-java && \
-	make -C ~ install-spark && 
+	make -C ~ install-spark
 
 # make install-all -C ~
