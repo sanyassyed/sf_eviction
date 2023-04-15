@@ -22,6 +22,6 @@ install-miniconda:
 	. ~/.bashrc
 
 install-all:
-	install-java && install-spark && install-miniconda
+	make install-java && make install-spark && make install-miniconda
 
 # make install-all -C ~
