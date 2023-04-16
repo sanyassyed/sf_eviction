@@ -74,7 +74,7 @@ dbt_cli_command_dev_block = config("DBT_CLI_COMMAND_DEV_BLOCK")
 
 #dbt_cli_profile_dev = DbtCliProfile.load(dbt_cli_profile_dev_block)
 dbt_core_operation_dev = DbtCoreOperation(
-    commands=["dbt build --var 'is_test_run: false'"],
+    commands=["dbt deps", "dbt build --var 'is_test_run: false'"],
     dbt_cli_profile=dbt_cli_profile_dev,
     working_dir=dbt_dir_path,
     project_dir=dbt_dir_path,
