@@ -103,7 +103,7 @@ dbt_cli_profile_prod.save(dbt_profile_prod_block, overwrite=True)
 dbt_cli_command_prod_block = config("DBT_CLI_COMMAND_PROD_BLOCK") 
 
 dbt_core_operation_prod = DbtCoreOperation(
-    commands=["dbt build --var 'is_test_run: false'"],
+    commands=["dbt deps", "dbt build --var 'is_test_run: false'"],
     dbt_cli_profile=dbt_cli_profile_prod,
     working_dir=dbt_dir_path,
     project_dir=dbt_dir_path,
