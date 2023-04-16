@@ -100,6 +100,14 @@ Instructions to clone the project repo on a VM and enable pushing and pulling to
                 conda activate .my_env
                 pip install -r requirements.txt
             ```
+    * Additionally add the following to the requirements.txt
+        ```
+            prefect_gcp[bigquery]==0.2.4
+            prefect-gcp[cloud_storage]==0.2.4
+            dbt-bigquery==1.4.3
+            dbt-core==1.4.5
+
+        ```
 * Goto Project Directory - **Step 3**
 ```bash
 cd sf_eviction
@@ -862,22 +870,22 @@ We have developed (documented and tested) and deployed the dbt models on dbt-clo
 * Create a profiles.yml file in the project root folder and specify the values for the two targets(dev and prod) and use environment variables
 * Activate the virtual conda env & install dbt-core with BQ adapter
     ```bash
-    conda activate .my_env
-    # install dbt-core and dbt with bigquery adapter and piperider with bigquery adapter
-    pip install dbt-core dbt-bigquery 'piperider[bigquery]'
-    
-    # set the env variables such that they are available to all child processes
-    source .env
-    export $(cut -d= -f1 .env)
-    # This command uses cut to extract the variable names from .env and passes them as arguments to the `export` command and exports those variables which have already been set by source .env
-    # For eg: `export $DBT_ENV_PROJECT_DIR`; does this for all variables
-    
-    # Install dbt deps and build dbt models by specifying the project directory
-    dbt deps --project-dir $DBT_ENV_PROJECT_DIR # downloads the dependencies for current dbt version
-    
-    # test dbt-core and big-query connection
-    dbt debug --project-dir $DBT_ENV_PROJECT_DIR
-    # use --profile profiles.yml if the profiles.yml is in the ~/.dbt/profiles.yml folder
+        conda activate .my_env
+        # install dbt-core and dbt with bigquery adapter and piperider with bigquery adapter
+        pip install dbt-core dbt-bigquery 'piperider[bigquery]'
+        
+        # set the env variables such that they are available to all child processes
+        source .env
+        export $(cut -d= -f1 .env)
+        # This command uses cut to extract the variable names from .env and passes them as arguments to the `export` command and exports those variables which have already been set by source .env
+        # For eg: `export $DBT_ENV_PROJECT_DIR`; does this for all variables
+        
+        # Install dbt deps and build dbt models by specifying the project directory
+        dbt deps --project-dir $DBT_ENV_PROJECT_DIR # downloads the dependencies for current dbt version
+        
+        # test dbt-core and big-query connection
+        dbt debug --project-dir $DBT_ENV_PROJECT_DIR
+        # use --profile profiles.yml if the profiles.yml is in the ~/.dbt/profiles.yml folder
     ```
 * NOTE: Here is what each part of the command means:
     - export is a shell command that sets an environment variable.
