@@ -39,22 +39,22 @@ create-sa:
 add-access:
 	gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/storage.admin'
+	--role='roles/storage.admin' ; \
 	gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/storage.objectAdmin'
+	--role='roles/storage.objectAdmin' ;\
     gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/bigquery.admin'
+	--role='roles/bigquery.admin' ; \
     gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/compute.instanceAdmin'
+	--role='roles/compute.instanceAdmin' ; \
     gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/viewer'
+	--role='roles/viewer' ; \
     gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/iam.serviceAccountUser'
+	--role='roles/iam.serviceAccountUser' ; \
     gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
 	--role='roles/compute.osLoginExternalUser 
