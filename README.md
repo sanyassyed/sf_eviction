@@ -69,7 +69,7 @@ ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
 ```
 1. Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
 1. Goto the GCP Console on the Browser into this project
-    - Goto Metadata > SSH Keys tab > Click Edit > Click Add item > Add the public key here
+    - Goto Compute Engine > Metadata > SSH Keys tab > Click Edit > Click Add item > Add the public key here
 
 ### Start the VM & SSHing into it
 1. Start the VM and get the External IP
