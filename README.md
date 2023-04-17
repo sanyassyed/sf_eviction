@@ -18,7 +18,7 @@ cd sf_eviction
 
 ### PROJECT CREATION VIA CLI
 - [Documentation](https://cloud.google.com/sdk/docs)
-1. **Create the GCP Project** by executing the below from the `sf_eviction` project folder in the terminal
+1. **Create the GCP Project:** by executing the below from the `sf_eviction` project folder in the terminal
 
         ```bash
         # Follow instructions to setup your project and do the intial project setup
@@ -32,46 +32,25 @@ cd sf_eviction
         # To check that all is configured correctly and that your CLI is configured to use your created project use the command
         gcloud info
         ```
-    - Add the following values to your .env file
-        * GCP_PROJECT_ID - the one you entered above
-        * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
-        * GCP_REGION - the region for your project
-        * GCP_ZONE - the zone for your project
+1. **Set env variables:** Add the following values to your .env file
+    * GCP_PROJECT_ID - the one you entered above
+    * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
+    * GCP_REGION - the region for your project
+    * GCP_ZONE - the zone for your project
 
-1. [Enable billing](https://support.google.com/googleapi/answer/6158867?hl=en) for the project on the GCP Console
-1. Enable API's, create Service Account, setup Access via IAM Roles & Download Credentials
+1. **[Enable billing:](https://support.google.com/googleapi/answer/6158867?hl=en)** for the project on the GCP Console
+1. **Setup Access:** Enable API's, Create Service Account, Setup Access via IAM Roles & Download Credentials
 
         ```bash
         # set the environment variables from the .env file
         set -o allexport && source .env && set +o allexport
-        # 1 Enable API's for the project
-        gcloud services enable iam.googleapis.com \
-                compute.googleapis.com \
-                bigquery.googleapis.com 
-        # 2 Create Service Account
-        gcloud iam service-accounts create $GCP_SERVICE_ACCOUNT_NAME --display-name="Master Service Account"
-        # 3 Add access for the Service Account via IAM Roles
-        # We create IAM roles for the service account
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.admin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/storage.objectAdmin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/bigquery.admin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.instanceAdmin'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/viewer'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/iam.serviceAccountUser'
-        gcloud projects add-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.osLoginExternalUser' # to add ssh keys to VM via CLI
-        
-        # gcloud projects remove-iam-policy-binding $GCP_PROJECT_ID --member='serviceAccount:'"$GCP_SERVICE_ACCOUNT_NAME"'@'"$GCP_PROJECT_ID"'.iam.gserviceaccount.com' --role='roles/compute.admin'
-        # 4 Download the json credential file
-        gcloud iam service-accounts keys create $LOCAL_SERVICE_ACCOUNT_FILE_PATH --iam-account=$GCP_SERVICE_ACCOUNT_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com
+        make gcp-set-all
         # view all the IAM Roles added to the project
-        gcloud projects get-iam-policy $GCP_PROJECT_ID
+        #gcloud projects get-iam-policy $GCP_PROJECT_ID
         ```
-### PROJECT INFRASTRUCTURE CREATION VIA Terraform 
-1. build the project infrastructure via Terraform as follows 
+1. **Build the Project Infrastructure** via Terraform as follows 
 ```bash
-# set the env variables
-set -o allexport && source .env && set +o allexport
-# run terrafrom from parent directory
+# run terrafrom from sf_eviction project root directory
 # initialize the folder
 terraform -chdir=terraform init
 terraform -chdir=terraform plan
