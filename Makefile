@@ -57,7 +57,7 @@ add-access:
 	--role='roles/iam.serviceAccountUser' ; \
     gcloud projects add-iam-policy-binding ${GCP_PROJECT_ID} \
 	--member='serviceAccount:'"${GCP_SERVICE_ACCOUNT_NAME}"'@'"${GCP_PROJECT_ID}"'.iam.gserviceaccount.com' \
-	--role='roles/compute.osLoginExternalUser 
+	--role='roles/compute.osLoginExternalUser' 
 
 get-key:
 	gcloud iam service-accounts keys create \
