@@ -1,3 +1,6 @@
+install-screen:
+	sudo apt install screen
+
 install-java:
 	mkdir spark
 	wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz -P ~/spark
@@ -22,6 +25,7 @@ install-miniconda:
 	. ~/.bashrc
 
 install-sw:
+	make -C ~ install-screen && \
 	make -C ~ install-miniconda && \
 	make -C ~ install-java && \
 	make -C ~ install-spark
