@@ -1095,3 +1095,4 @@ prefect cloud logout
     - [ ] Add more tables like neighbourhood table, district table etc [ref:](https://catalog.data.gov/dataset/?q=&sort=metadata_modified+desc&groups=local&res_format=CSV&tags=planning&tags=zoning&organization=city-of-san-francisco&ext_location=&ext_bbox=&ext_prev_extent=-164.53125%2C-80.17871349622823%2C164.53125%2C80.17871349622823) Try searching for San Francisco Neighbourhood, District Demographics
     - [ ] Remove `rn` column from 'fact_eviction` table
     - [ ] Add documentation for the fact_eviction model as well
+    - [ ] Create sepetare deploy_ingest for prod and dev

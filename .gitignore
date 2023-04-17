@@ -16,6 +16,7 @@ env_local.bashrc
 env_main*
 env_variables.sh
 
+
 #### CREDENTIALS
 credentials.txt
 __pycache__

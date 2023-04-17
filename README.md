@@ -1,16 +1,10 @@
-# Project Creation
+# Project Replication
 
 ## REQUIREMENTS - Local Machine
 
-Below are the required applications on the local machine
+* Google SDK: Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
 
-### Google SDK
-* Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
-* Required on the local machine
-* VM comes with this pre-installed
-
-### Terraform
-* Download from [here](https://developer.hashicorp.com/terraform/downloads)
+* Terraform: Download from [here](https://developer.hashicorp.com/terraform/downloads)
 
 ## CREATING GCP PROJECT VIA CLI & TERRAFORM
 
@@ -24,11 +18,11 @@ cd sf_eviction
 
 ### PROJECT CREATION VIA CLI
 - [Documentation](https://cloud.google.com/sdk/docs)
-1. Create the GCP Project by executing the below from the project folder in the terminal
+1. **Create the GCP Project** by executing the below from the `sf_eviction` project folder in the terminal
 
         ```bash
         # Follow instructions to setup your project and do the intial project setup
-        gcloud init --no-browser
+        gcloud init --no-browser --skip-diagnostics
         # Select Option 2 - Create a new configuration
         # Enter configuration name (enter the project name here): sf-eviction
         # Choose the account you would like to use to perform operations for this configuration: 1 (your gmail account)
@@ -41,9 +35,8 @@ cd sf_eviction
     - Add the following values to your .env file
         * GCP_PROJECT_ID - the one you entered above
         * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
-        * GCP_ZONE - the region for your project
-        * LOCAL_SERVICE_ACCOUNT_FILE_PATH=credentials/gcp-credentials.json - this is where your credentials will be downloaded
-    - Create a `credentials` folder where your .json file will be saved
+        * GCP_REGION - the region for your project
+        * GCP_ZONE - the zone for your project
 
 1. [Enable billing](https://support.google.com/googleapi/answer/6158867?hl=en) for the project on the GCP Console
 1. Enable API's, create Service Account, setup Access via IAM Roles & Download Credentials
