@@ -65,7 +65,7 @@ get-key:
 	--iam-account=${GCP_SERVICE_ACCOUNT_NAME}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 
 gcp-set-all:
-	make enble-apis && \
+	make enable-apis && \
 	make create-sa && \
 	make add-access && \
 	make get-key
