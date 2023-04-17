@@ -77,7 +77,7 @@ terraform -chdir=terraform destroy
 1. Make a note of the External IP
 1. SSH into VM as follows:
     ```bash
-        ssh -i ~/.ssh/id_eviction@<external_ip>
+        ssh -i ~/.ssh/id_eviction $GCP_COMPUTE_ENGINE_SSH_USER@<external_ip>
     ```
 
 ## EXECUTING PROJECT ON THE VM
@@ -85,7 +85,6 @@ terraform -chdir=terraform destroy
 1. Clone the Project repo on the VM
     ```bash
     git clone https://github.com/sanyassyed/sf_eviction.git
-    cd sf_eviction
     ```
 1. Copy the variables from your local .env file to the env_boilerplate on the VM.
 
@@ -111,6 +110,8 @@ Below are the required API's and Applications needed for this project and the in
     ```bash
         # goto project directory
         cd sf_eviction
+        # set the environment variables from the .env file
+        set -o allexport && source .env && set +o allexport
         # install java, spark & miniconda in the system ~ as follows
         make install-sw
     ```
