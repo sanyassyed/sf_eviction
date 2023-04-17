@@ -26,9 +26,6 @@ install-sw:
 	make -C ~ install-java && \
 	make -C ~ install-spark
 
-set-env:
-	set -o allexport && source .env && set +o allexport
-
 enable-apis:
 	gcloud services enable \
 	iam.googleapis.com \
@@ -68,7 +65,6 @@ get-key:
 	--iam-account=${GCP_SERVICE_ACCOUNT_NAME}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 
 gcp-set-all:
-	make set-env && \
 	make enble-apis && \
 	make create-sa && \
 	make add-access && \
