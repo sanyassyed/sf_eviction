@@ -27,4 +27,8 @@ resource "google_compute_instance" "agent-vm" {
   scheduling {
     on_host_maintenance="MIGRATE"
   }
+
+  metadata {
+    sshKeys = "${var.SSH_USER}:${file(var.SSH_PUB_KEY_FILE)}"
+  }
 }
