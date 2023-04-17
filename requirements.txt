@@ -1,5 +1,6 @@
 prefect==2.7.7
 prefect_dbt==0.3.1
+prefect-dbt[cli]==0.3.1
 prefect_gcp==0.2.4
 prefect_gcp[bigquery]==0.2.4
 prefect-gcp[cloud_storage]==0.2.4
