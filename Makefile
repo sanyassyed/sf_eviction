@@ -61,7 +61,7 @@ add-access:
 
 get-key:
 	gcloud iam service-accounts keys create \
-	${LOCAL_SERVICE_ACCOUNT_FILE_PATH} \
+	${LOCAL_SERVICE_ACCOUNT_CREDENTIAL_PATH} \
 	--iam-account=${GCP_SERVICE_ACCOUNT_NAME}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 
 gcp-set-all:
