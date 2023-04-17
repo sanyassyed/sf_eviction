@@ -22,7 +22,6 @@ install-miniconda:
 	. ~/.bashrc
 
 install-sw:
-	make -C ~ install-screen && \
 	make -C ~ install-miniconda && \
 	make -C ~ install-java && \
 	make -C ~ install-spark

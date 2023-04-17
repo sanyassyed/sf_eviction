@@ -102,6 +102,7 @@ Below are the required API's and Applications needed for this project and the in
     ```bash
         cd ~
         sudo apt install make
+        sudo apt install screen
     ```
 1. Java, Spark & Miniconda
 
