@@ -1,6 +1,6 @@
 include .env
 
-install-screen:
+install-screen
 	sudo apt install screen
 
 install-java:
