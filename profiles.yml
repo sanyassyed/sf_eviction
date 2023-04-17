@@ -8,7 +8,7 @@ sf_eviction_dbt:
       dataset: "{{ env_var('DBT_ENV_BQ_DS_DEV') }}"
       threads: 4
       priority: interactive
-      keyfile: /home/sanyashireen/.google/credentials/google_credentials.json
+      keyfile: ~/sf_eviction/credentials/gcp-credentials.json
     prod:
       type: bigquery
       method: service-account
@@ -16,4 +16,4 @@ sf_eviction_dbt:
       dataset: "{{ env_var('DBT_ENV_BQ_DS_PROD') }}"
       threads: 4
       priority: interactive
-      keyfile: /home/sanyashireen/.google/credentials/google_credentials.json
+      keyfile: ~/sf_eviction/credentials/gcp-credentials.json

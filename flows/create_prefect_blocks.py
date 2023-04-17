@@ -14,7 +14,7 @@ config = AutoConfig(search_path='.env')
 
 GCP_CREDENTIALS_BLOCK=config("GCP_CREDENTIALS_BLOCK")
 
-service_account_file = Path("credentials/gcp-credentials.json")
+service_account_file = Path("~/sf_eviction/credentials/gcp-credentials.json")
 GcpCredentials(service_account_file=service_account_file).save(GCP_CREDENTIALS_BLOCK, overwrite=True)
 
 
