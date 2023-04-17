@@ -17,7 +17,7 @@ resource "google_compute_instance" "agent-vm" {
     ]
   }
 
-  metadata {
+  metadata = {
     ssh-keys = "${var.SSH_USER}:${file(var.SSH_PUB_KEY_FILE)}"
   }
 
