@@ -32,6 +32,15 @@ cd sf_eviction
         # To check that all is configured correctly and that your CLI is configured to use your created project use the command
         gcloud info
         ```
+1. **SSH Key Creation** : Generate ssh keys which will be used to connect to the VM. [Documentation](https://cloud.google.com/compute/docs/connect/create-ssh-keys)
+    
+    ```bash
+        cd ~/.ssh
+        ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
+        # Remember the passphrase as you need it when sshing into the machine
+    ```
+    Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
+
 1. **Set env variables:** Add the following values to your .env file
     * GCP_PROJECT_ID - the one you entered above
     * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
@@ -60,17 +69,6 @@ terraform -chdir=terraform destroy
 ```
 1. Now check the GCP Console to make sure all resources are created
 
-### SSH Keys CREATION FOR THE VM
-1. Generate ssh keys to connect to the VM [Documentation](https://cloud.google.com/compute/docs/connect/create-ssh-keys)
-```bash
-cd ~/.ssh
-ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
-# Remember the passphrase as you need it when sshing into the machine
-```
-1. Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
-1. Goto the GCP Console on the Browser into this project
-    - Goto Compute Engine > Metadata > SSH Keys tab > Click Edit > Click Add item > Add the public key here
-
 ### Start the VM & SSHing into it
 1. Start the VM and get the External IP
     ```bash
@@ -87,8 +85,11 @@ ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
 1. Clone the Project repo on the VM
     ```bash
     git clone https://github.com/sanyassyed/sf_eviction.git
+    cd sf_eviction
     ```
-2. Replace the env_boilerplate file with .env file from your local system
+1. Copy the variables from your local .env file to the env_boilerplate on the VM.
+
+1. Rename the file env_boilerplate on the VM to .env
 
 ## SOFTWARE REQUIREMENTS - Local Machine
 
@@ -99,6 +100,7 @@ Below are the required API's and Applications needed for this project and the in
     Install the `make` & `screen` software as follows:
 
     ```bash
+        cd ~
         sudo apt install make
         sudo apt install screen
     ```
