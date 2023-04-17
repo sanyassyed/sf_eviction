@@ -1,4 +1,4 @@
-invlude .env
+include .env
 
 install-screen:
 	sudo apt install screen
