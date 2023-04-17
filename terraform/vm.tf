@@ -17,6 +17,10 @@ resource "google_compute_instance" "agent-vm" {
     ]
   }
 
+  metadata {
+    sshKeys = "${var.SSH_USER}:${file(var.SSH_PUB_KEY_FILE)}"
+  }
+
   network_interface {
     network = "default"
     access_config {
@@ -28,7 +32,4 @@ resource "google_compute_instance" "agent-vm" {
     on_host_maintenance="MIGRATE"
   }
 
-  metadata {
-    sshKeys = "${var.SSH_USER}:${file(var.SSH_PUB_KEY_FILE)}"
-  }
 }
