@@ -20,8 +20,8 @@ install-miniconda:
 
 set-condapath:
 	$(eval $(shell ~/miniconda/bin/conda shell.bash hook))
-	conda init
 	. ~/.bashrc
+	conda init
 
 install-sw: install-miniconda set-condapath install-java install-spark
 

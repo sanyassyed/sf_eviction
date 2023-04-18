@@ -65,7 +65,7 @@ terraform -chdir=terraform init
 terraform -chdir=terraform plan
 terraform -chdir=terraform apply
 # if any errors the destroyall that you created as follows
-terraform -chdir=terraform destroy
+#terraform -chdir=terraform destroy
 ```
 1. Now check the GCP Console to make sure all resources are created
 
@@ -85,8 +85,9 @@ terraform -chdir=terraform destroy
 1. Clone the Project repo on the VM
     ```bash
     git clone https://github.com/sanyassyed/sf_eviction.git
+    cd sf_eviction
     ```
-1. Copy the variables from your local .env file to the env_boilerplate on the VM.
+1. Copy the variables from your local sf_eviction/.env file to the sf_eviction/env_boilerplate file on the VM.
 
 1. Rename the file env_boilerplate on the VM to .env
 
@@ -111,7 +112,7 @@ Below are the required API's and Applications needed for this project and the in
         # goto project directory
         cd sf_eviction
         # install java, spark & miniconda in the system ~ as follows
-        make -C .. -f sf_eviction/Makefile install-sw
+        make -C ~ -f sf_eviction/Makefile install-sw
     ```
 1. Virtual conda env with pip 
 
