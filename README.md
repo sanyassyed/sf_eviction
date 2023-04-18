@@ -84,8 +84,7 @@ terraform -chdir=terraform apply
 
 1. Clone the Project repo on the VM
     ```bash
-    git clone https://github.com/sanyassyed/sf_eviction.git
-    cd sf_eviction
+    git clone https://github.com/sanyassyed/sf_eviction.git && cd sf_eviction
     ```
 1. Copy the variables from your local sf_eviction/.env file to the sf_eviction/env_boilerplate file on the VM.
 
@@ -100,9 +99,7 @@ Below are the required API's and Applications needed for this project and the in
     Install the `make` & `screen` software as follows:
 
     ```bash
-        cd ~
-        sudo apt install make
-        sudo apt install screen
+        cd ~ && sudo apt install make && sudo apt install screen
     ```
 1. Java, Spark & Miniconda
 
@@ -115,13 +112,14 @@ Below are the required API's and Applications needed for this project and the in
         make -C ~ -f sf_eviction/Makefile install-sw
         # activate & initialize conda
         eval "$(~/miniconda/bin/conda shell.bash hook)" && conda init
+        source ~/.bashrc
     ```
 1. Virtual conda env with pip 
 
     Install the virtual conda env with pip and python 3.10.9 as follows
         ```bash
             conda create --prefix ./.my_env python=3.10.9 pip
-            conda activate .my_env
+            conda activate .my_env/
             pip install -r requirements.txt
         ```
 
@@ -129,17 +127,9 @@ Below are the required API's and Applications needed for this project and the in
 * SODU API Keys:
     - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](docs/info_api.md) to get your key.
 * PREFECT CLOUD API:
-    - Get your Prefect API Key by following instructions below or  [here](https://docs.prefect.io/latest/ui/cloud-api-keys/)
-    * First Create a Prefect Cloud account
-    * Get the API as follows:   
-        - To create an API key, select the account icon at the bottom-left corner of the UI and select your account name and the cog-wheel. 
-        - This displays your account profile.
-        - Select the API Keys tab on the left
-        - Select the API Keys tab. This displays a list of previously generated keys and lets you create new API keys or delete keys.
-        - Create sf_eviction key and add this data to the .env file as PREFECT_CLOUD_API
+    - Get your Prefect API Key by following instructions [here](docs/info_api.md) 
 * Add the keys to the .env file
 * Copy the  `credentials/gcp-credentials.json` file from your local system to vm
-* Add the data from the gcp-credentials.json to the .env file
 
 >PREFECT
 1. Log into Prefect Cloud as blocks will be created on Prefect Cloud once you log into it using API
