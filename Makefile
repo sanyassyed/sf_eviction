@@ -19,7 +19,7 @@ install-miniconda:
 	rm ~/miniconda.sh
 
 set-condapath:
-	$(eval $(shell ~/miniconda/bin/conda shell.bash hook))
+	eval "$$(~/miniconda/bin/conda shell.bash hook)"
 	. ~/.bashrc
 	conda init
 
