@@ -110,10 +110,8 @@ Below are the required API's and Applications needed for this project and the in
     ```bash
         # goto project directory
         cd sf_eviction
-        # set the environment variables from the .env file
-        set -o allexport && source .env && set +o allexport
         # install java, spark & miniconda in the system ~ as follows
-        make install-sw
+        make -C .. -f sf_eviction/Makefile install-sw
     ```
 1. Virtual conda env with pip 
 

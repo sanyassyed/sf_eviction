@@ -1,8 +1,3 @@
-include .env
-
-install-screen:
-	sudo apt install screen
-
 install-java:
 	mkdir spark
 	wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz -P ~/spark
@@ -22,15 +17,13 @@ install-miniconda:
 	wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
 	bash ~/miniconda.sh -b -p ${HOME}/miniconda
 	rm ~/miniconda.sh
-	eval "$$(~/miniconda/bin/conda shell.bash hook)"
+
+set-condapath:
+	$(eval $(shell ~/miniconda/bin/conda shell.bash hook))
 	conda init
 	. ~/.bashrc
 
-install-sw:
-	make -C ~ install-screen && \
-	make -C ~ install-miniconda && \
-	make -C ~ install-java && \
-	make -C ~ install-spark
+install-sw: install-miniconda set-condapath install-java install-spark
 
 enable-apis:
 	gcloud services enable \
