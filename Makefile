@@ -26,6 +26,7 @@ set-condapath:
 conda-init:
 	conda init
 	. ~/.bashrc
+	
 install-sw: install-miniconda set-condapath conda-init install-java install-spark
 
 enable-apis:
