@@ -19,7 +19,7 @@ install-miniconda:
 	rm ~/miniconda.sh
 
 set-condapath:
-	echo 'export export PATH=~/miniconda/bin/:${PATH}' >> ~/.bashrc
+	echo 'export PATH=~/miniconda/bin/:${PATH}' >> ~/.bashrc
 	. ~/.bashrc
 	eval "$$(~/miniconda/bin/conda shell.bash hook)"
 
