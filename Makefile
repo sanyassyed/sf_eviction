@@ -20,10 +20,12 @@ install-miniconda:
 
 set-condapath:
 	eval "$$(~/miniconda/bin/conda shell.bash hook)"
+
+conda-init:
 	. ~/.bashrc
 	conda init
 
-install-sw: install-miniconda set-condapath install-java install-spark
+install-sw: install-miniconda set-condapath conda-init install-java install-spark
 
 enable-apis:
 	gcloud services enable \
