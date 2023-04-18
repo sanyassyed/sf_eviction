@@ -18,17 +18,7 @@ install-miniconda:
 	bash ~/miniconda.sh -b -p ${HOME}/miniconda
 	rm ~/miniconda.sh
 
-set-condapath:
-	echo 'export PATH=~/miniconda/bin/:${PATH}' >> ~/.bashrc
-	. ~/.bashrc
-	eval "$$(~/miniconda/bin/conda shell.bash hook)"
-	echo ${PATH}
-
-conda-init:
-	conda init
-	. ~/.bashrc
-
-install-sw: install-miniconda set-condapath conda-init install-java install-spark
+install-sw: install-miniconda install-java install-spark
 
 enable-apis:
 	gcloud services enable \

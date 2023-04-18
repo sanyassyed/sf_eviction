@@ -113,6 +113,8 @@ Below are the required API's and Applications needed for this project and the in
         cd sf_eviction
         # install java, spark & miniconda in the system ~ as follows
         make -C ~ -f sf_eviction/Makefile install-sw
+        # activate & initialize conda
+        eval "$(~/miniconda/bin/conda shell.bash hook)" && conda init
     ```
 1. Virtual conda env with pip 
 
