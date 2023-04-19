@@ -4,9 +4,13 @@
 
 ### REQUIREMENTS - Local Machine
 
+* GCP Account
+
 * Google SDK: Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
 
 * Terraform: Download from [here](https://developer.hashicorp.com/terraform/downloads)
+
+* Make: Install via  Chocolatey for Windows and `sudo apt install make` for Linux
 
 ### CREATING GCP PROJECT VIA CLI & TERRAFORM
 
@@ -61,7 +65,7 @@
         terraform -chdir=terraform plan
         terraform -chdir=terraform apply
     ```
-1. Now check the GCP Console to make sure all resources are created
+1. Now check the `project on GCP Console to make sure all resources are created
 
 1. Start the VM and get the External IP
     ```bash
