@@ -1,6 +1,6 @@
-## Course Project
+## Data Engineering Zoomcamp Capstone Project
 ---
-The goal of this project is to build an end-to-end batch data pipeline to extract Eviction Data from [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5) mothly to anlyse the eviction patterns from historical data till date.
+The goal of this project is to build an end-to-end batch data pipeline to perform ELT on Eviction Data from [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). And execute this task mothly in order to anlyse the eviction patterns from historical data to till date.
 
 
 ## Problem statement
@@ -113,6 +113,9 @@ The questions that were aimed to answer and the corresponding findings are as be
 
 ![image](images/report.JPG)
 
+## Reproduction:
+---
+You can recreate and run the project by following the step by step instructions [here](ProjectReplication.md)
 
 ## Conclusion
 ---
@@ -121,6 +124,6 @@ Through this project we were able to successfully build a ELT pipeline end to en
 
 ## Future Work
 ---
-Combine data about neighbourhoods and districts from other sources and make the reporting more rich.
-Use DataProc to perform Spark job
-Create a normalized data structure when using more data sources
+- Combine data about neighbourhoods and districts from other sources and make the reporting more rich.
+- Use DataProc to perform Spark job
+- Create a normalized data structure when using more data sources
