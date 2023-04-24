@@ -2,7 +2,6 @@
 ---                                         
 >## Execute the below on your LOCAL MACHINE
 <br>
----
 
 ### ***REQUIREMENTS*** - Local Machine
 ---
@@ -85,7 +84,6 @@
 
 >## Execute the below on the VM we just started
 <br>
----
 
 ### ***CREATING A PIPELINE ON THE VM***
 ---
