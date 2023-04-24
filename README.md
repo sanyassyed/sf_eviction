@@ -116,7 +116,7 @@ The dashboard is accessible from [here](https://lookerstudio.google.com/reportin
 
 ## Reproduction:
 ---
-You can recreate and run the project by following the step by step instructions [here](ProjectReplication.md)
+You can recreate and run the project by following the step by step instructions [here](docs/ProjectReplication.md)
 
 ## Conclusion
 ---
@@ -128,3 +128,4 @@ Through this project we were able to successfully build a ELT pipeline end to en
 - Combine data about neighbourhoods and districts from other sources and make the reporting more rich.
 - Use DataProc to perform Spark job
 - Create a normalized data structure when using more data sources
+- Setup GCP Service Account and access via Terraform
