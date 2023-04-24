@@ -1,165 +1,159 @@
-# Project Replication
+## Course Project
 
-> Execute the below on your local machine
+The goal of this project is to build an end-to-end batch data pipeline to extract Eviction Data from [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5) mothly to anlyse the eviction patterns from historical data till date.
 
-### REQUIREMENTS - Local Machine
 
-* GCP Account
+### Problem statement
 
-* Google SDK: Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
+* ***Dataset***: 
+    The Dataset selected for this project is the `Eviction Notice Dataset of San Francisco` obtained from [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). This data includes eviction notices filed with the San Francisco Rent Board per San Francisco Administrative Code 37.9(c). Notices are published since January 1, 1997. This publshing/update frequency of the dataset is `monthly`. The Data is extracted via Socrate Open Data API (SODA).
 
-* Terraform: Download from [here](https://developer.hashicorp.com/terraform/downloads)
+* ***Solution***:
+    This project aims at extarcting this data from the source via API and building a BATCH ELT which will be scheduled to run monthly and update the connected dashbord for monthly Analytics & Reporting. 
 
-* Make: Install via  Chocolatey for Windows and `sudo apt install make` for Linux
 
-### CREATING GCP PROJECT VIA CLI & TERRAFORM
+## Data Pipeline 
 
-1. Clone the project on your local machine
-    ```bash
-        git clone https://github.com/sanyassyed/sf_eviction.git
-        cd sf_eviction
-    ```
-1. Change the name of the `env_boilerplate` file to .env
+This is a Batch Pipeline which will perform ELT monthly as the data at the spource is also updated monthly. The ELT steps include
 
-1. **Create the GCP Project:** by executing the below from the `sf_eviction` project folder in the terminal [Official Documentation](https://cloud.google.com/sdk/docs)
+* Extract dataset from DataSF via API load the raw data into datalake (GCS)
+* Clean & partition data and load it to datalake 
+* Load the Clean & Partitioned Data from datalake into external tables in the datawarehouse
+* Transform the data in the data warehouse: prepare it for the dashboard
+* Create a dashboard
 
-    ```bash
-        # Follow instructions to setup your project and do the intial project setup
-        gcloud init --no-browser --skip-diagnostics
-        # Select Option 2 - Create a new configuration
-        # Enter configuration name (enter the project name here): sf-eviction
-        # Choose the account you would like to use to perform operations for this configuration: 1 (your gmail account)
-        # Pick cloud project to use: 5 (Create new project)
-        # Please enter project id: sf*******3
+## Technologies 
 
-        # To check that all is configured correctly and that your CLI is configured to use your created project use the command
-        gcloud info
-    ```
-1. **SSH Key Creation** : Generate ssh keys which will be used to connect to the VM [Official Documentation](https://cloud.google.com/compute/docs/connect/create-ssh-keys)
+* Cloud: GCP
+* Infrastructure as code (IaC): Terraform
+* Workflow orchestration: Prefect
+* Data Wareshouse: BigQuery
+* Batch processing: Spark
+* Data Transformation: dbt-core
+* Dashboard: Looker Studio
+* Software Building Automation Tool: Make
+* Virtual Environment: Anaconda
+* CICD: Git
+
+## Architecture
+
+![BATCH ELT Architecture](images/architecture.JPG)
+
+Detailed Steps in the ELT:
+1. A Project is created on GCP 
+1. SODA API keys and secrets are obtained by creating an account on DataSF to pull the data from the source
+1. Infrastructure for the Project is created using Terraform which creates the following:
+    * Datalake : Google Cloud Storage Bucket
+    * Data Warehouse: Three Datasets on Bigquery namely raw, staging and production to store the tables during different stages of ELT
+    * Virtual Machine: A Linux Compute Engine to schedule and run the pipeline on
+1. Prefect Cloud API is obtained by creating an account
+1. The Pilpeline for ELT is created on the VM which is scheduled for monthly execution and orchestrated via Prefect Cloud which does the following tasks
+    * Extracts raw data from source via API
+    * Loads raw data to GCS Bucket
+    * Cleans and Partitions the raw data using Apache Spark
+    * Loads the cleaned and partitoned data as parquet files to GCS
+    * Creates tables in BigQuery by pulling data from GCS
+    * Transforms Data from BigQuery using dbt-core and creates views and fact tables in the Production/Development Dataset
+1. Transformed Data from BigQuery is used for Reporting and Visualization using Looker Studio to produce Dashboards
+
+## Key Findings
+In the dashboard the data from BigQuery is blended with [Supervisor Dataset](https://data.sfgov.org/Geographic-Locations-and-Boundaries/Supervisor-Districts-2022-/f2zs-jevy/data?no_mobile=true) on Looker Studio to develop Visualizations in order to answer some key questions.
+
+The dashboard is accessible from [here](https://lookerstudio.google.com/reporting/688e19ba-3476-45f2-9dba-94d813bb9328)
+
+The questions that were aimed to answer and the corresponding findings are as below:
+
+1. What has been the trend of overall evictions over the years in San Francisco?
+
+    The trend has been cyclical co-relating with the economic outlook in the city but overall it has been trending downwards with a maximum of 2897 evictions in 1998 to a low of 778 evictions in 2020.
+
+1. What is the most recorded reason for eviction? 
+
+    Looking at the heatmap, it is evident that ***Owner Movein*** has been the most recorded reason for eviction. But in recent years, this reason for eviction has become ***Nuisance***
+
+1. Over the years, what has been the least recorded reason for eviction?
+
+    Over the years that data has been available, the least number of recorded reason for eviction has been for ***Lead Remediation*** 
+
+
+1. What are the top 3 reasons for eviction recorded over the last 10 years?
     
-    ```bash
-        cd ~/.ssh
-        ssh-keygen -t rsa -f ~/.ssh/id_eviction -C project_user -b 2048
-        # Remember the passphrase as you need it when sshing into the machine
-    ```
-    Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
+    The top 3 reasons are 
+    - Breach of contract
+    - Nuisance 
+    - Owner movein
 
-1. **Setting env variables:** Add the following values to your .env file
-    * GCP_PROJECT_ID - the one you entered above
-    * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
-    * GCP_REGION - the region for your project
-    * GCP_ZONE - the zone for your project
+1. Which neighbourhood has seen the most evictions in 2022?
 
-1. **[Enable billing:](https://support.google.com/googleapi/answer/6158867?hl=en)** for the project on the GCP Console
-1. **Setup Access:** Enable API's, Create Service Account, Setup Access via IAM Roles & Download Credentials
+    The neighbourhood which saw most evictions is ***Financial Distriction/South Beach***
 
-    ```bash
-        # set the environment variables from the .env file
-        set -o allexport && source .env && set +o allexport
-        make gcp-set-all
-    ```
-1. **Build the Project Infrastructure** via Terraform as follows 
-    ```bash
-        # run terrafrom from sf_eviction project root directory
-        terraform -chdir=terraform init
-        terraform -chdir=terraform plan
-        terraform -chdir=terraform apply
-    ```
-1. Now check the `project on GCP Console to make sure all resources are created
+1. Which neighbourhood has seen the lowest evictions in 2022?
 
-1. Start the VM and get the External IP
-    ```bash
-        gcloud compute instances start $GCP_COMPUTE_ENGINE_NAME --zone $GCP_ZONE --project $GCP_PROJECT_ID
-    ```
-1. SSH into VM as follows:
-    ```bash
-        ssh -i ~/.ssh/id_eviction $GCP_COMPUTE_ENGINE_SSH_USER@<external_ip>
-    ```
-> Execute the below on the VM we just created using Terraform
+    The neighbourhood which saw lowest evictions is ***Mission Bay***. 
 
-### CREATING A PIPELINE ON THE VM
 
-1. Clone the Project repo on the VM
-    ```bash
-    git clone https://github.com/sanyassyed/sf_eviction.git && cd sf_eviction
-    ```
-1. Copy the variables from your local `sf_eviction/.env` file to the `sf_eviction/env_boilerplate` file on the VM.
+1. Which supervisor has the most challenges w.r.t evictions in SF in 2022?
+    
+    Supervisor ***Matt Dorsey*** had the most number of evictions to deal with . This data could be utilized to ensure that the teams are sized right in the respective districts. 
 
-1. Rename the file `env_boilerplate` on the VM to `.env`
+1. Looking at the trend of data, what would be your recommendation in the way that data is recorded?
+    
+    Given the trend of data, that ***Nusiance*** and ***Breach*** numbers have been increasing, the recommendation would be to break down these 2 reasons to better understand the exact reasons. This will allow the city council to take targeted actions to address this concern. 
 
-### REQUIREMENTS - Local Machine
 
-Below are the required Applications & API's needed for this project and the instructions to install them on the VM.
+The Dashboard: 
 
-1. Make & Screen: Install the `make` & `screen` software as follows:
+![image](images/report.JPG)
 
-    ```bash
-        cd ~ && sudo apt install make && sudo apt install screen
-    ```
-1. Java, Spark & Miniconda: We are going to install these using the Makefile which is in the `sf_eviction`
 
-    ```bash
-        # goto project directory
-        cd sf_eviction
-        # install java, spark & miniconda in the system ~ as follows
-        make -C ~ -f sf_eviction/Makefile install-sw
-        # activate & initialize conda
-        eval "$(~/miniconda/bin/conda shell.bash hook)" && conda init
-        source ~/.bashrc
-    ```
-1. Virtual conda env with pip : Install the virtual conda env with pip and python 3.10.9 as follows
-    ```bash
-        conda create --prefix ./.my_env python=3.10.9 pip
-        conda activate .my_env/
-        pip install -r requirements.txt
-    ```
+## Peer review criteria
 
-### API REQUIREMENTS
-* SODU API Keys:
-    - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](docs/info_api.md) to get your key.
-* PREFECT CLOUD API:
-    - Get your Prefect API Key by following instructions [here](docs/info_api.md) 
-* Add the keys to the .env file
-* Copy the  `credentials/gcp-credentials.json` file from your local system to vm in the same location.
+* Problem description
+    * 0 points: Problem is not described
+    * 1 point: Problem is described but shortly or not clearly 
+    * 2 points: Problem is well described and it's clear what the problem the project solves
+* Cloud
+    * 0 points: Cloud is not used, things run only locally
+    * 2 points: The project is developed in the cloud
+    * 4 points: The project is developed in the cloud and IaC tools are used
+* Data ingestion (choose either batch or stream)
+    * Batch / Workflow orchestration
+        * 0 points: No workflow orchestration
+        * 2 points: Partial workflow orchestration: some steps are orchestrated, some run manually
+        * 4 points: End-to-end pipeline: multiple steps in the DAG, uploading data to data lake
+    * Stream
+        * 0 points: No streaming system (like Kafka, Pulsar, etc)
+        * 2 points: A simple pipeline with one consumer and one producer
+        * 4 points: Using consumer/producers and streaming technologies (like Kafka streaming, Spark streaming, Flink, etc)
+* Data warehouse
+    * 0 points: No DWH is used
+    * 2 points: Tables are created in DWH, but not optimized
+    * 4 points: Tables are partitioned and clustered in a way that makes sense for the upstream queries (with explanation)
+* Transformations (dbt, spark, etc)
+    * 0 points: No tranformations
+    * 2 points: Simple SQL transformation (no dbt or similar tools)
+    * 4 points: Tranformations are defined with dbt, Spark or similar technologies
+* Dashboard
+    * 0 points: No dashboard
+    * 2 points: A dashboard with 1 tile
+    * 4 points: A dashboard with 2 tiles
+* Reproducibility
+    * 0 points: No instructions how to run code at all
+    * 2 points: Some instructions are there, but they are not complete
+    * 4 points: Instructions are clear, it's easy to run the code, and the code works
 
-### RUNNING THE INGESTION PIPELINE
-1. Log into Prefect Cloud
-    ```bash
-        set -o allexport && source .env && set +o allexport
-        prefect cloud login -k $PREFECT_CLOUD_API
-    ```
-    **Now you can use the Prefect cloud to register blocks and run your flows**
 
-1. Create Prefect Blocks & Deploy via code. You can view the execution of the below code in your Prefect Cloud account
-    ```bash
-        # Run the create_prefect_blocks.py and register the block
-        prefect block register --file flows/create_prefect_blocks.py
-        python flows/deploy_ingest.py
-        # on VM start the agent in detached mode
-        screen -A -m -d -S prefectagent prefect agent start --work-queue "development"
-        # force run the deployment for testing or you can let it run on schedule
-        prefect deployment run ParentFlow/etl_web_to_gcp
-        # Stop the prefect agent 
-        screen -r prefectagent
-        Ctrl + C
-        prefect cloud logout
-    ```
-1. Now there should be 
-    1. raw and clean data available on GCS and 
-    2. clean data available in the tables `eviction_external` & `eviction` in the dataset `raw` on BQ.
-    3. transformed data in the `stg_eviction` & `fact_eviction` in the `production`/`staging` dataset depending on which enviroment you are working in.
+## Going the extra mile 
 
-### SHUTDOWN VM
+If you finish the project and you want to improve it, here are a few things you can do:
 
-```bash
-# shutdown / stop the VM
-sudo shutdown now
-```
+* Add tests
+* Use make
+* Add CI/CD pipeline 
 
-### DESTROY THE INFRASTRUCTURE ON GCP
+This is not covered in the course and this is entirely optional.
 
-**On your local machine** in the project folder `sf_eviction` destroy the GCP infrastructure as follows
+If you plan to use this project as your portfolio project, it'll 
+definitely help you to stand out from others.
 
-```bash
-    terraform -chdir=terraform destroy
-```
+> **Note**: this part will not be graded. 

@@ -1,0 +1,81 @@
+##################################################################
+# SODA API CREDENTIALS
+API_KEY_ID=************************************
+API_KEY_SECRET=********************************
+API_TOKEN=*************************************
+
+DATASET_NAME=5cei-gny5
+
+#################################################################
+# GCP CREDENTIALS
+GCP_PROJECT_ID=sf-eviction-2023
+GCP_SERVICE_ACCOUNT_NAME=sf-eviction-editor
+GCP_REGION=us-central1
+GCP_ZONE=us-central1-c
+
+LOCAL_SERVICE_ACCOUNT_CREDENTIAL_PATH=credentials/gcp-credentials.json
+GCP_DATASET_RAW=raw
+GCP_DATASET_DEV=staging
+GCP_DATASET_PROD=production
+
+GCP_COMPUTE_ENGINE_NAME=eviction-vm
+GCP_COMPUTE_ENGINE_MACHINE_TYPE=e2-standard-4
+GCP_COMPUTE_ENGINE_MACHINE_IMAGE=ubuntu-2004-focal-v20220110
+GCP_COMPUTE_ENGINE_SSH_USER=project_user
+GCP_SSH_PUB_KEY_FILE=~/.ssh/id_eviction.pub
+
+GCS_BUCKET_NAME=data-lake-$GCP_PROJECT_ID
+
+###############################################################################################################################
+# PREFECT CREDENTIALS
+
+PREFECT_CLOUD_API=*******************************
+
+GCP_CREDENTIALS_BLOCK=gcp-credentials-eviction
+GCS_BUCKET_BLOCK=gcs-bucket-block-eviction
+BQ_BLOCK=bq-block-eviction
+DBT_CLI_TARGET_DEV_BLOCK=dbt-cli-target-dev-block-eviction
+DBT_CLI_TARGET_PROD_BLOCK=dbt-cli-target-prod-block-eviction
+DBT_CLI_PROFILE_DEV_BLOCK=dbt-cli-profile-dev-block-eviction
+DBT_CLI_PROFILE_PROD_BLOCK=dbt-cli-profile-prod-block-eviction
+DBT_CLI_COMMAND_DEV_BLOCK=dbt-cli-command-dev-block-eviction
+DBT_CLI_COMMAND_PROD_BLOCK=dbt-cli-command-prod-block-eviction
+
+#############################################################################################################################
+# DBT ENVIRONMENT CREDENTIALS 
+DBT_ENV_GCP_PROJECT_ID=$GCP_PROJECT_ID
+DBT_ENV_PROJECT_DIR=dbt
+DBT_ENV_BQ_DS_RAW=$GCP_DATASET_RAW
+DBT_ENV_BQ_DS_DEV=$GCP_DATASET_DEV
+DBT_ENV_BQ_DS_PROD=$GCP_DATASET_PROD
+DBT_ENV_BQ_TABLE_RAW=eviction
+DBT_ENV_BQ_TABLE_STG=stg_eviction
+DBT_ENV_BQ_TABLE_FACT=fact_eviction
+
+#############################################################################################################################
+PYTHONPATH="${SPARK_HOME}/python/:$PYTHONPATH"
+PYTHONPATH="${SPARK_HOME}/python/lib/py4j-0.10.9.5-src.zip:$PYTHONPATH"
+
+############################################################################################################################
+# TERRAFORM VARIABLES
+TF_VAR_REGION=$GCP_REGION
+TF_VAR_PROJECT_ID=$GCP_PROJECT_ID
+TF_VAR_SERVICE_ACCOUNT_NAME=$GCP_SERVICE_ACCOUNT_NAME
+## GCS
+TF_VAR_BUCKET_NAME=$GCS_BUCKET_NAME
+
+## BQ
+TF_VAR_DATASET_RAW=$GCP_DATASET_RAW
+TF_VAR_DATASET_DEV=$GCP_DATASET_DEV
+TF_VAR_DATASET_PROD=$GCP_DATASET_PROD
+
+## COMPUTE ENGINE
+TF_VAR_COMPUTE_ENGINE_NAME=$GCP_COMPUTE_ENGINE_NAME
+TF_VAR_COMPUTE_ENGINE_MACHINE_TYPE=$GCP_COMPUTE_ENGINE_MACHINE_TYPE
+TF_VAR_COMPUTE_ENGINE_MACHINE_IMAGE=$GCP_COMPUTE_ENGINE_MACHINE_IMAGE
+TF_VAR_COMPUTE_ENGINE_ZONE=$GCP_ZONE
+TF_VAR_SSH_USER=$GCP_COMPUTE_ENGINE_SSH_USER
+TF_VAR_SSH_PUB_KEY_FILE=$GCP_SSH_PUB_KEY_FILE
+
+TF_VAR_SERVICE_ACCOUNT_CREDENTIAL_PATH=$LOCAL_SERVICE_ACCOUNT_CREDENTIAL_PATH
+TF_VAR_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL
