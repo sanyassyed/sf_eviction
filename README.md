@@ -66,7 +66,6 @@ Detailed Steps in the ELT:
 ---
 In the dashboard the data from BigQuery is blended with [Supervisor Dataset](https://data.sfgov.org/Geographic-Locations-and-Boundaries/Supervisor-Districts-2022-/f2zs-jevy/data?no_mobile=true) on Looker Studio to develop Visualizations in order to answer some key questions.
 
-The dashboard is accessible from [here](https://lookerstudio.google.com/reporting/688e19ba-3476-45f2-9dba-94d813bb9328)
 
 The questions that were aimed to answer and the corresponding findings are as below:
 
@@ -110,6 +109,8 @@ The questions that were aimed to answer and the corresponding findings are as be
 
 ## The Dashboard: 
 ---
+The dashboard is accessible from [here](https://lookerstudio.google.com/reporting/688e19ba-3476-45f2-9dba-94d813bb9328)
+
 
 ![image](images/report.JPG)
 

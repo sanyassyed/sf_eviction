@@ -1,10 +1,11 @@
 # Project Replication
-                                         
+---                                         
 >## Execute the below on your LOCAL MACHINE
 <br>
+---
 
 ### ***REQUIREMENTS*** - Local Machine
-
+---
 * GCP Account
 
 * Google SDK: Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
@@ -16,7 +17,7 @@
     - Linux: `sudo apt install make`
 
 ### ***CREATING GCP PROJECT VIA CLI & TERRAFORM***
-
+---
 1. Clone the project on your local machine
     ```bash
         git clone https://github.com/sanyassyed/sf_eviction.git
@@ -84,9 +85,10 @@
 
 >## Execute the below on the VM we just started
 <br>
+---
 
 ### ***CREATING A PIPELINE ON THE VM***
-
+---
 1. Clone the Project repo on the VM
     ```bash
     git clone https://github.com/sanyassyed/sf_eviction.git && cd sf_eviction
@@ -96,7 +98,7 @@
 1. Rename the file `env_boilerplate` on the VM to `.env`
 
 ### ***REQUIREMENTS*** - Virtual Machine
-
+---
 Below are the required Applications & API's needed for this project and the instructions to install them on the VM.
 
 1. Make & Screen: Install the `make` & `screen` software as follows:
@@ -123,6 +125,7 @@ Below are the required Applications & API's needed for this project and the inst
     ```
 
 ### ***API REQUIREMENTS***
+---
 * SODU API Keys:
     - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](docs/info_api.md) to get your key.
 * PREFECT CLOUD API:
@@ -131,6 +134,7 @@ Below are the required Applications & API's needed for this project and the inst
 * Copy the  `credentials/gcp-credentials.json` file from your local system to vm in the same location.
 
 ### ***SCHEDULING & RUNNING THE INGESTION PIPELINE***
+---
 1. Log into Prefect Cloud
     ```bash
         set -o allexport && source .env && set +o allexport
@@ -158,14 +162,14 @@ Below are the required Applications & API's needed for this project and the inst
     3. transformed data in the `stg_eviction` & `fact_eviction` in the `production`/`staging` dataset depending on which enviroment you are working in.
 
 ### ***SHUTDOWN VM***
-
+---
 ```bash
 # shutdown / stop the VM
 sudo shutdown now
 ```
 
 ### ***DESTROY THE INFRASTRUCTURE ON GCP***
-
+---
 **On your local machine** in the project folder `sf_eviction` destroy the GCP infrastructure as follows
 
 ```bash
