@@ -56,6 +56,8 @@ The ELT steps include:
 
 ## Architecture
 ---
+Also available [here](images/sf_eviction_pipeline.drawio.pdf)
+
 
 ![BATCH ELT Architecture](images/architecture.JPG)
 
