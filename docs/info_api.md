@@ -7,11 +7,11 @@ Here you will find links to the documentaion pages of the API that were referenc
 * [Main API Documentation Page](https://dev.socrata.com/foundry/data.sfgov.org/5cei-gny5) where you can find instructions on how to access Eviction data via the Socrata Open Data API
 * We are going to extract data via API KEYS
 * Signup & Get API Keys (`API_KEY_ID` & `API_KEY_SECRET`) from the [San Francisco Govt Data Website](https://data.sfgov.org/profile/edit/developer_settings)
-* ![API_KEY Button](images/api/1.JPG)
+* ![API_KEY Button](../images/api/1.JPG)
 * Save the `API_KEY_ID` & `API_KEY_SECRET` to the .env file
 
 # INSTRUCTIONS TO GET YOUR PREFECT CLOUD API
-* First Create a Prefect Cloud account [Source]](https://docs.prefect.io/latest/ui/cloud-api-keys/)
+* First Create a Prefect Cloud account [Source](https://docs.prefect.io/latest/ui/cloud-api-keys/)
 * Get the API as follows:   
     - To create an API key, select the account icon at the bottom-left corner of the UI and select your account name and the cog-wheel. 
     - This displays your account profile.
