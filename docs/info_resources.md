@@ -15,5 +15,5 @@ Find here links to important files, folders and sites related to this project
 
 
 >TOOLS & TECHNOLOGIES
-* [Diagrams.net](https://app.diagrams.net/) -> to draw the project design
+* [Diagrams.net](https://app.diagrams.net/) a.k.a draw.io -> to draw the project design
 * 
