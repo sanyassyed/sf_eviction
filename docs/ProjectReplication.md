@@ -56,7 +56,7 @@
     * GCP_ZONE - the zone for your project. Default is set to `us-central1-c`
 
 1. **[Enable billing:](https://support.google.com/googleapi/answer/6158867?hl=en)** for this project on the GCP Console
-1. **Setup Access:** Enable API's, Create Service Account, Setup Access via IAM Roles & Download Credentials by executing the below commands
+1. **Setup Access:** Enable API's, Create Service Account, Setup Access via IAM Roles & Download Credentials by executing the below commands. **NOTE: This command will take time to execute**
 
     ```bash
         cd ~/sf_eviction
@@ -71,7 +71,10 @@
         terraform -chdir=terraform plan
         terraform -chdir=terraform apply
     ```
-1. Now check the project on GCP Console to make sure all resources are created
+1. Now check the project on GCP Console to make sure the following resources are created
+    * Cloud Storage - 1 Google Storage Bucket named `data-lake-sf-eviction-2023-final`
+    * BigQuery - 3 Datasets named `raw`, `dev` and `prod`
+    * Compute Instance - 1 VM named `eviction-vm`
 
 1. Start the VM from the local machine via CLI and get the External IP
     ```bash
@@ -94,9 +97,13 @@
     ```bash
     git clone https://github.com/sanyassyed/sf_eviction.git && cd sf_eviction
     ```
-1. Copy the variables from your local `sf_eviction/.env` file to the `sf_eviction/env_boilerplate` file on the VM.
 
 1. Rename the file `env_boilerplate` on the VM to `.env`
+    ```bash
+    mv env_boilerplate .env
+    ```
+
+1. Copy the variables from your local machine's `sf_eviction/.env` file to the `sf_eviction/.env` file on the VM.
 
 ### ***REQUIREMENTS*** - Virtual Machine
 ---
@@ -130,7 +137,7 @@ Below are the required Applications & API's needed for this project and the inst
 * SODU API Keys:
     - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](docs/info_api.md) to get your key.
 * PREFECT CLOUD API:
-    - Get your Prefect API Key by following instructions [here](docs/info_api.md) 
+    - Get your Prefect API Key by following instructions [here](info_api.md) 
 * Add the keys to the .env file
 * Copy the  `credentials/gcp-credentials.json` file from your local system to vm in the same location.
 
