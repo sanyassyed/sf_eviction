@@ -150,7 +150,7 @@ Below are the required Applications & API's needed for this project and the inst
     ```
     **Now you can use the Prefect cloud to register blocks and run your flows**
 
-1. Create Prefect Blocks & Deploy via code. You can view the execution of the below code in your Prefect Cloud account
+1. Create Prefect Blocks & Deploy via code. You can view the execution of the below code in your Prefect Cloud account, it takes about 6 mins to finish
     ```bash
         # Run the create_prefect_blocks.py and register the block
         prefect block register --file flows/create_prefect_blocks.py
@@ -164,10 +164,16 @@ Below are the required Applications & API's needed for this project and the inst
         Ctrl + C
         prefect cloud logout
     ```
+1. Once the ELT is complete you can stop the prefect agent on the VM
+    ```bash
+        screen -r prefectagent
+        Ctrl + C
+        prefect cloud logout
+    ```
 1. Now there should be 
-    1. raw and clean data available on GCS and 
-    2. clean data available in the tables `eviction_external` & `eviction` in the dataset `raw` on BQ.
-    3. transformed data in the `stg_eviction` & `fact_eviction` in the `production`/`staging` dataset depending on which enviroment you are working in.
+    1. raw and clean data on GCS 
+    2. tables `eviction_external` & `eviction` in the dataset `raw` on BQ.
+    3. transformed data in `stg_eviction` view & `fact_eviction` table in the `production`/`staging` dataset (the istructions here are for production dataset)
 
 ### ***SHUTDOWN VM***
 ---
@@ -179,6 +185,8 @@ sudo shutdown now
 ### ***DESTROY THE INFRASTRUCTURE ON GCP***
 ---
 **On your local machine** in the project folder `sf_eviction` destroy the GCP infrastructure as follows
+
+***NOTE: To delete the Datasets in BQ the tables or views need to be deleted***
 
 ```bash
     terraform -chdir=terraform destroy
