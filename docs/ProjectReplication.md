@@ -9,6 +9,8 @@
 
 * Google SDK: Download from [here](https://cloud.google.com/sdk/docs/downloads-interactive#linux-mac)
 
+    >NOTE: Don't do the `gcloud init` initialization step just yet
+
 * Terraform: Download from [here](https://developer.hashicorp.com/terraform/downloads)
 
 * Make: 
@@ -22,9 +24,9 @@
         git clone https://github.com/sanyassyed/sf_eviction.git
         cd sf_eviction
     ```
-1. Change the name of the `env_boilerplate` file to .env
+1. Rename `env_boilerplate` file to .env
 
-1. **Create the GCP Project:** by executing the below from the `sf_eviction` project folder in the terminal. [GCP Documentation](https://cloud.google.com/sdk/docs)
+1. **Create the GCP Project named sf-eviction-2023:** by executing the below from the `sf_eviction` project folder in the terminal. [GCP Documentation](https://cloud.google.com/sdk/docs)
 
     ```bash
         # Follow instructions to setup your project and do the intial project setup
@@ -33,7 +35,7 @@
         # Enter configuration name (enter the project name here): sf-eviction
         # Choose the account you would like to use to perform operations for this configuration: 1 (your gmail account)
         # Pick cloud project to use: 5 (Create new project)
-        # Please enter project id: sf*******3
+        # Please enter project id: sf-eviction-2023
 
         # To check that all is configured correctly and that your CLI is configured to use your created project use the command
         gcloud info
@@ -48,10 +50,10 @@
     Now two keys should be created in the .ssh folder id_eviction (private key) and id_eviction.pub (public key)
 
 1. **Setting env variables:** Use the default values or add the following values to your .env file
-    * GCP_PROJECT_ID - the one you entered above
-    * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account
-    * GCP_REGION - the region for your project
-    * GCP_ZONE - the zone for your project
+    * GCP_PROJECT_ID - if the name is different from `sf-eviction-2023`
+    * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account. Default is `sf-eviction-editor`
+    * GCP_REGION - the region for your project. Default is us-central1
+    * GCP_ZONE - the zone for your project. Default is us-central1-c
 
 1. **[Enable billing:](https://support.google.com/googleapi/answer/6158867?hl=en)** for the project on the GCP Console
 1. **Setup Access:** Enable API's, Create Service Account, Setup Access via IAM Roles & Download Credentials by executing the below commands
