@@ -135,9 +135,9 @@ Below are the required Applications & API's needed for this project and the inst
 ### ***API REQUIREMENTS***
 ---
 * SODU API Keys:
-    - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](info_api.md) to get your key.
+    - `API_KEY_ID` & `API_KEY_SECRET` are needed for extracting Eviction data for this project. Find the instructions [here](info_api.md#instructions-to-get-your-sodu-api-key) to get your key.
 * PREFECT CLOUD API:
-    - Get your Prefect API Key by following instructions [here](info_api.md) 
+    - Get your Prefect API Key by following instructions [here](info_api.md#instructions-to-get-your-prefect-cloud-api) 
 * Add the keys to the .env file
 * Copy the  `credentials/gcp-credentials.json` file from your local system to vm in the same location.
 
