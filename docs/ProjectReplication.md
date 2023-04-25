@@ -178,8 +178,8 @@ Below are the required Applications & API's needed for this project and the inst
 ### ***SHUTDOWN VM***
 ---
 ```bash
-# shutdown / stop the VM
-sudo shutdown now
+    # shutdown / stop the VM
+    sudo shutdown now
 ```
 
 ### ***DESTROY THE INFRASTRUCTURE ON GCP***
