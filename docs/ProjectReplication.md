@@ -34,7 +34,7 @@
         # Select Option 2 - Create a new configuration
         # Enter configuration name (enter the project name here): sf-eviction
         # Choose the account you would like to use to perform operations for this configuration: 1 (your gmail account)
-        # Pick cloud project to use: 5 (Create new project)
+        # Pick cloud project to use: (Create new project)
         # Please enter project id: sf-eviction-2023
 
         # To check that all is configured correctly and that your CLI is configured to use your created project use the command
@@ -51,14 +51,15 @@
 
 1. **Setting env variables:** Use the default values or add the following values to your .env file
     * GCP_PROJECT_ID - if the name is different from `sf-eviction-2023`
-    * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account. Default is `sf-eviction-editor`
-    * GCP_REGION - the region for your project. Default is us-central1
-    * GCP_ZONE - the zone for your project. Default is us-central1-c
+    * GCP_SERVICE_ACCOUNT_NAME - name to assign to your service account. Default is set to `sf-eviction-editor`
+    * GCP_REGION - the region for your project. Default is set to `us-central1`
+    * GCP_ZONE - the zone for your project. Default is set to `us-central1-c`
 
-1. **[Enable billing:](https://support.google.com/googleapi/answer/6158867?hl=en)** for the project on the GCP Console
+1. **[Enable billing:](https://support.google.com/googleapi/answer/6158867?hl=en)** for this project on the GCP Console
 1. **Setup Access:** Enable API's, Create Service Account, Setup Access via IAM Roles & Download Credentials by executing the below commands
 
     ```bash
+        cd ~/sf_eviction
         # set the environment variables from the .env file
         set -o allexport && source .env && set +o allexport
         make gcp-set-all
