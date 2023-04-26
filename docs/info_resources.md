@@ -11,8 +11,9 @@ Find here links to important files, folders and sites related to this project
 * [San Francisco Govt Data Website](https://data.sfgov.org/login) where you can create API credentials
 * San Francisco Data API (powered by the Socrata Open Data API) Documentation - [Main Page](https://dev.socrata.com/foundry/data.sfgov.org/5cei-gny5)
 * API Documentation Pages used for this project & info on how to create API Key can be found in [this](info_api.md) document
+* [Supervisor Data](https://data.sfgov.org/Geographic-Locations-and-Boundaries/Supervisor-Districts-2022-/f2zs-jevy/data?no_mobile=true) used in the Dashboard
 
 
 >TOOLS & TECHNOLOGIES
-* [Diagrams.net](https://app.diagrams.net/) -> to draw the project design
+* [Diagrams.net](https://app.diagrams.net/) a.k.a draw.io -> to draw the project design
 * 
