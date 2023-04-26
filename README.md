@@ -1,6 +1,6 @@
-## San Francisco Data Eviction ELT - A Data Engineering Zoomcamp Capstone Project
+## San Francisco Eviction Data ELT - A Data Engineering Zoomcamp Capstone Project
 ---
-The goal of this project is to build an end-to-end batch data pipeline to perform ELT on San Francisco City Eviction Data available at [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). And perform ELT (Extract Load Tranform) mothly in order to anlyse the eviction patterns from historical data to till date.
+The goal of this project is to build an end-to-end batch data pipeline to perform ELT on San Francisco City Eviction Data available at [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). And perform ELT (Extract Load Transform) monthly in order to analyse the eviction patterns from historical data to till date.
 
 ### Table of contents
 
@@ -21,12 +21,12 @@ The goal of this project is to build an end-to-end batch data pipeline to perfor
 ## Problem statement
 ---
 * ### ***Dataset***: 
-    The Dataset selected for this project is the `Eviction Notice Dataset of San Francisco` obtained from [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). This data includes eviction notices filed with the San Francisco Rent Board per San Francisco Administrative Code 37.9(c). Notices are published since January 1, 1997. This publshing/update frequency of the dataset is `monthly`. The Data is extracted via Socrate Open Data API (SODA).
+    The Dataset selected for this project is the `Eviction Notice Dataset of San Francisco` obtained from [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). This data includes eviction notices filed with the San Francisco Rent Board per San Francisco Administrative Code 37.9(c). Notices are published since January 1, 1997. The publishing/update frequency of the dataset is `monthly`. The Data is extracted via Socrata Open Data API (SODA).
 
     The columns in the Dataset and their description is available [here](docs/info_dataset.md)
 
 * ### ***Proposed Solution***:
-    This project aims at extarcting this data from the source via API and building a BATCH ELT which will be scheduled to run monthly and update the connected dashbord for monthly Analytics & Reporting. 
+    This project aims at extracting this data from the source via API and building a BATCH ELT which will be scheduled to run monthly and update the connected Dashbord for monthly Analytics & Reporting. 
 
 
 ## Data Pipeline Overview 
@@ -46,7 +46,7 @@ The ELT steps include:
 * Cloud: ***GCP***
 * Infrastructure as code (IaC): ***Terraform***
 * Workflow orchestration: ***Prefect***
-* Data Wareshouse: ***BigQuery***
+* Data Warehouse: ***BigQuery***
 * Batch processing: ***Spark***
 * Data Transformation: ***dbt-core***
 * Dashboard: ***Looker Studio***
@@ -73,11 +73,11 @@ Steps in the ELT are as follows:
     * Data Warehouse: Three Datasets on ***BigQuery*** namely `raw`, `staging` and `production` are created in order to store the tables/views during different stages of ELT
     * Virtual Machine: A Linux ***Compute Engine*** to schedule and run the pipeline on
 1. ***Prefect Cloud API*** is obtained by creating an account on Prefect Cloud
-1. The Pilpeline for ELT is created on the VM and is scheduled for monthly execution. It is orchestrated via ***Prefect Cloud***; which does the following tasks
+1. The Pipeline for ELT is created on the VM and is scheduled for monthly execution. It is orchestrated via ***Prefect Cloud***; which does the following tasks
     * Extracts raw data from source via ***Socrate Open Data API***
     * Loads raw data to GCS Bucket
     * Cleans and Partitions the raw data using ***Apache Spark***
-    * Loads the cleaned and partitoned data as parquet files to GCS
+    * Loads the cleaned and partitioned data as parquet files to GCS
     * Creates External table & Non-partitioned table in the `raw` Dataset in BigQuery by pulling data from GCS. 
         
         ***Note***: Partitioned or Clustered tables were not created as the dataset produced too many partitions (more than what BigQuery permitted)
@@ -137,7 +137,7 @@ The questions that were aimed to answer and the corresponding findings are as be
 
 1. Which neighbourhood has seen the most evictions in 2022?
 
-    The neighbourhood which saw most evictions is ***Financial Distriction/South Beach***
+    The neighbourhood which saw most evictions is ***Financial District/South Beach***
 
 1. Which neighbourhood has seen the lowest evictions in 2022?
 
@@ -159,7 +159,7 @@ You can recreate and run the project by following the step by step instructions 
 
 ## Conclusion
 ---
-Through this project we were able to successfully build a ELT pipeline end to end which is scheduled to run monthly. And as a result we have a mothly updated list of eviction notices filed in the city of San Francisco which can then be visualized via the Dashboard on Looker Studio. This helps us get some useful insights on the latest eviction trends and patterns.
+Through this project we were able to successfully build a ELT pipeline end to end which is scheduled to run monthly. And as a result we have a monthly updated list of eviction notices filed in the city of San Francisco which can then be visualized via the Dashboard on Looker Studio. This helps us get some useful insights on the latest eviction trends and patterns.
 
 
 ## Future Work

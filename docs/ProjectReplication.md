@@ -29,7 +29,7 @@
 1. **Create the GCP Project named sf-eviction-2023:** by executing the below from the `sf_eviction` project folder in the terminal. [GCP Documentation](https://cloud.google.com/sdk/docs)
 
     ```bash
-        # Follow instructions to setup your project and do the intial project setup
+        # Follow instructions to setup your project and do the initial project setup
         gcloud init --no-browser --skip-diagnostics
         # Select Option 2 - Create a new configuration
         # Enter configuration name (enter the project name here): sf-eviction
