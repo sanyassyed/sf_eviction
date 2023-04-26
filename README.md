@@ -1,6 +1,6 @@
 ## San Francisco Eviction Data ELT - A Data Engineering Zoomcamp Capstone Project
 ---
-The goal of this project is to build an end-to-end batch data pipeline to perform ELT on San Francisco City Eviction Data available at [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). And perform ELT (Extract Load Transform) monthly in order to analyse the eviction patterns from historical data to till date.
+The goal of this project is to build an end-to-end batch data pipeline to perform ELT (Extract Load Transform) on San Francisco City Eviction Data available at [DataSF](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5). And perform ELT monthly in order to analyse the eviction patterns from historical data to till date.
 
 ### Table of contents
 
@@ -16,6 +16,7 @@ The goal of this project is to build an end-to-end batch data pipeline to perfor
 - [Reproduction](#reproduction)
 - [Conclusion](#conclusion)
 - [Future Work](#future-work)
+- [References & Resources](#references--resources)
 
 
 ## Problem statement
@@ -168,5 +169,9 @@ Through this project we were able to successfully build a ELT pipeline end to en
 - Use DataProc to perform Spark job
 - Create a normalized data structure when using more data sources
 - Setup GCP Service Account and Permissions via Terraform
+
+## References & Resources 
+---
+Find them references [here](docs/info_references.md) & resources [here](docs/info_resources.md)
 
 [Back To Top](#data-engineering-zoomcamp-capstone-project)
